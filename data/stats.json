@@ -1,0 +1,6 @@
+[
+  { "value": 200, "label": "Active members",      "suffix": "+" },
+  { "value": 50,  "label": "Projects completed",  "suffix": "+" },
+  { "value": 30,  "label": "Industry partners",   "suffix": "+" },
+  { "value": 6,   "label": "Years running",        "suffix": ""  }
+]

@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* ─── DSS Brand Tokens ─────────────────────────────────────────────────────── */
+/* Static hex values — Tailwind reads these directly and generates utilities.   */
+/* Change colors here ONLY. Never hardcode hex in components.                   */
+@theme {
+  --color-bg:             #FFFFFF;
+  --color-surface:        #F5F8F7;  /* faint cool off-white for alternate sections */
+  --color-ink:            #0B1D1C;  /* primary text — near-black, teal-tinted */
+  --color-muted:          #5A6B68;  /* secondary / caption text */
+  --color-border:         #E2E8E6;
+
+  /* Brand palette — sampled from the DSS logo gradient */
+  --color-primary:        #0C706E;  /* deep teal — OK for body text/links (5.9:1 on white) */
+  --color-primary-bright: #1D8C89;  /* teal — large headings/decoration only (4.1:1) */
+  --color-accent:         #8FB573;  /* sage green — decorative only, never small text */
+}
+
+/* Font references — uses @theme inline because the values are runtime CSS vars  */
+/* injected by next/font onto the <html> element (can't be inlined at build time) */
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-ibm-plex-mono);
+}
+
+/* Gradient lives in :root because complex values aren't supported in @theme */
+:root {
+  --gradient-brand: linear-gradient(135deg, #0C706E 0%, #1D8C89 45%, #AAC48E 100%);
+}
+
+/* ─── Base Styles ──────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Brand utilities ──────────────────────────────────────────────────────── */
+.brand-gradient {
+  background: var(--gradient-brand);
+}
+
+.brand-gradient-text {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Marquee (LogoWall) ───────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-100% / 3)); }
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+  will-change: transform;
+  animation: marquee 30s linear infinite;
+}
+
+/* Hide scrollbar while keeping scroll behavior (used in Gallery) */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

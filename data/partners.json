@@ -1,0 +1,14 @@
+[
+  { "id": "p1",  "name": "Google",      "website": null, "featured": true,  "order": 1  },
+  { "id": "p2",  "name": "Meta",        "website": null, "featured": true,  "order": 2  },
+  { "id": "p3",  "name": "Amazon",      "website": null, "featured": true,  "order": 3  },
+  { "id": "p4",  "name": "McKinsey",    "website": null, "featured": true,  "order": 4  },
+  { "id": "p5",  "name": "Stripe",      "website": null, "featured": true,  "order": 5  },
+  { "id": "p6",  "name": "Palantir",    "website": null, "featured": false, "order": 6  },
+  { "id": "p7",  "name": "Lyft",        "website": null, "featured": false, "order": 7  },
+  { "id": "p8",  "name": "Airbnb",      "website": null, "featured": false, "order": 8  },
+  { "id": "p9",  "name": "Salesforce",  "website": null, "featured": false, "order": 9  },
+  { "id": "p10", "name": "Netflix",     "website": null, "featured": false, "order": 10 },
+  { "id": "p11", "name": "Databricks",  "website": null, "featured": false, "order": 11 },
+  { "id": "p12", "name": "Apple",       "website": null, "featured": false, "order": 12 }
+]

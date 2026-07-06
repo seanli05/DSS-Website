@@ -1,0 +1,58 @@
+[
+  {
+    "id": "president",
+    "name": "TODO: President Name",
+    "role": "President",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "vp-external",
+    "name": "TODO: Name",
+    "role": "VP External",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "vp-internal",
+    "name": "TODO: Name",
+    "role": "VP Internal",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "dir-consulting",
+    "name": "TODO: Name",
+    "role": "Director, Data Consulting",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "dir-ml",
+    "name": "TODO: Name",
+    "role": "Director, Machine Learning",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "dir-education",
+    "name": "TODO: Name",
+    "role": "Director, Education",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "dir-internal",
+    "name": "TODO: Name",
+    "role": "Director, Internal Projects",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  },
+  {
+    "id": "vp-finance",
+    "name": "TODO: Name",
+    "role": "VP Finance",
+    "photo": null,
+    "links": { "linkedin": null, "github": null, "email": null }
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "acadev",
+    "name": "Acadev",
+    "icon": "🎓",
+    "blurb": "TODO: Acadev (Academic Development) committee description — workshops, bootcamps, and skill-building for the DSS community.",
+    "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
+    "lead": "TODO: Committee Lead",
+    "featured": true
+  },
+  {
+    "id": "consulting",
+    "name": "Consulting",
+    "icon": "📊",
+    "blurb": "TODO: Consulting committee description — partner with companies to solve real data problems and deliver insights.",
+    "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
+    "lead": "TODO: Committee Lead",
+    "featured": true
+  },
+  {
+    "id": "social-good",
+    "name": "Social Good",
+    "icon": "🌱",
+    "blurb": "TODO: Social Good committee description — apply data science to nonprofits and community organizations.",
+    "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
+    "lead": "TODO: Committee Lead",
+    "featured": true
+  }
+]

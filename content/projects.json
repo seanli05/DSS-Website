@@ -1,0 +1,79 @@
+[
+  {
+    "id": "churn-prediction",
+    "title": "Customer Churn Prediction",
+    "semester": "Fall 2024",
+    "partner": "TODO: Partner name",
+    "tags": ["Machine Learning", "Python", "Consulting"],
+    "description": "Built a gradient-boosted model achieving 89% accuracy on holdout data, enabling proactive retention strategies and estimated to save $2M annually.",
+    "featured": true,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "medical-imaging",
+    "title": "Medical Image Classification",
+    "semester": "Spring 2024",
+    "partner": "TODO: Partner name",
+    "tags": ["Computer Vision", "Deep Learning", "Healthcare"],
+    "description": "Trained a CNN classifier to detect anomalies in radiology scans with 94% sensitivity, assisting clinicians in early diagnosis workflows.",
+    "featured": true,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "supply-chain",
+    "title": "Supply Chain Demand Forecasting",
+    "semester": "Spring 2024",
+    "partner": "TODO: Partner name",
+    "tags": ["Time Series", "Python", "Operations"],
+    "description": "Developed an LSTM-based demand forecasting model reducing inventory overstock by 22%, deployed to production ahead of peak season.",
+    "featured": false,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "sentiment-analysis",
+    "title": "Real-Time Sentiment Analysis",
+    "semester": "Fall 2023",
+    "partner": "TODO: Partner name",
+    "tags": ["NLP", "Python", "Research"],
+    "description": "Fine-tuned a BERT model on social media data to track brand sentiment in real time, processing 10K+ posts daily with sub-second inference.",
+    "featured": true,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "esg-screening",
+    "title": "ESG Investment Screening Tool",
+    "semester": "Fall 2023",
+    "partner": "TODO: Partner name",
+    "tags": ["NLP", "Finance", "Research"],
+    "description": "Built an NLP pipeline to extract and score ESG disclosures from SEC filings, enabling systematic socially responsible investing at scale.",
+    "featured": false,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "customer-segmentation",
+    "title": "Customer Segmentation Engine",
+    "semester": "Spring 2023",
+    "partner": "TODO: Partner name",
+    "tags": ["Clustering", "Python", "Consulting"],
+    "description": "Applied K-Means and UMAP to segment 500K+ customers into actionable cohorts, driving a 17% uplift in targeted marketing campaign performance.",
+    "featured": false,
+    "image": null,
+    "link": null
+  },
+  {
+    "id": "fraud-detection",
+    "title": "Real-Time Fraud Detection",
+    "semester": "Spring 2023",
+    "partner": "TODO: Partner name",
+    "tags": ["Machine Learning", "Finance", "Engineering"],
+    "description": "Designed a streaming fraud detection system using graph neural networks and feature stores, reducing false positives by 40% versus the legacy rules engine.",
+    "featured": false,
+    "image": null,
+    "link": null
+  }
+]
