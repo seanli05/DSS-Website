@@ -42,6 +42,7 @@ const PARTICLE_CONFIG: ISourceOptions = {
     },
   },
   detectRetina: true,
+  fullScreen: { enable: false },
   resize: { enable: false, delay: 0 },
   pauseOnOutsideViewport: false,
 };

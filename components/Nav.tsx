@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const links = [
@@ -35,8 +36,8 @@ export default function Nav() {
       <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-ink">
-          {/* TODO: replace with SVG logo */}
-          <span className="brand-gradient-text text-xl font-bold tracking-tight">DSS</span>
+          <Image src="/dss-logo-black.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
+          <span className="text-xl font-bold tracking-tight">DSS</span>
         </Link>
 
         {/* Desktop links */}
