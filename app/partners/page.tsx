@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import LogoWall from "@/components/LogoWall";
 import Button from "@/components/Button";
-import { getPartners } from "@/lib/content";
+import { getPartners, getProjects } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -58,6 +58,7 @@ const STEPS = [
 
 export default async function PartnersPage() {
   const partners = await getPartners();
+  const projects = getProjects();
 
   return (
     <>
@@ -106,7 +107,7 @@ export default async function PartnersPage() {
       </Section>
 
       {/* Logo wall */}
-      <LogoWall partners={partners} />
+      <LogoWall partners={partners} projects={projects} />
 
       {/* How it works */}
       <Section

@@ -6,7 +6,10 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <article className="flex flex-col gap-3 rounded-2xl border border-border bg-bg p-6 hover:shadow-md transition-shadow duration-200">
+    <article
+      id={project.id}
+      className="scroll-mt-28 flex flex-col gap-3 rounded-2xl border border-border bg-bg p-6 hover:shadow-md transition-shadow duration-200"
+    >
       {/* Meta row */}
       <div className="flex items-center justify-between gap-2 text-xs text-muted">
         <span className="font-mono">{project.semester}</span>

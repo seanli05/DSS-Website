@@ -12,12 +12,14 @@ import {
   getPartners,
   getFeaturedCommittees,
   getFeaturedProjects,
+  getProjects,
 } from "@/lib/content";
 
 export default async function HomePage() {
   const stats = getStats();
   const committees = getFeaturedCommittees();
   const projects = getFeaturedProjects();
+  const allProjects = getProjects();
   const partners = await getPartners();
 
   return (
@@ -57,7 +59,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Partner logo wall */}
-      <LogoWall partners={partners} />
+      <LogoWall partners={partners} projects={allProjects} />
 
       {/* 5. Committees preview */}
       <Section
