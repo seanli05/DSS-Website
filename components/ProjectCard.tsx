@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Button from "@/components/Button";
+import ProjectModal from "@/components/ProjectModal";
 import type { Project } from "@/lib/content";
 
 interface ProjectCardProps {
@@ -5,26 +11,55 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <article
       id={project.id}
-      className="scroll-mt-28 flex flex-col gap-3 rounded-2xl border border-border bg-bg p-6 hover:shadow-md transition-shadow duration-200"
+      className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 rounded-2xl border border-border bg-bg p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
     >
-      {/* Meta row */}
-      <div className="flex items-center justify-between gap-2 text-xs text-muted">
-        <span className="font-mono">{project.semester}</span>
+      {/* Logo + semester */}
+      <div className="flex items-center justify-between gap-3">
+        {project.logo ? (
+          <Image
+            src={project.logo}
+            alt={`${project.partner} logo`}
+            width={160}
+            height={64}
+            className="h-14 w-auto max-w-[40%] object-contain object-left"
+          />
+        ) : (
+          <div
+            className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-surface font-mono text-sm text-muted"
+            aria-hidden="true"
+          >
+            {project.partner.slice(0, 2).toUpperCase()}
+          </div>
+        )}
+        <span className="font-mono text-xs text-muted">{project.semester}</span>
+      </div>
+
+      {/* Title + partner */}
+      <div>
+        <h3 className="font-semibold text-ink leading-snug">{project.title}</h3>
         {project.partner && (
-          <span className="truncate">{project.partner}</span>
+          <p className="mt-0.5 text-xs text-muted">{project.partner}</p>
         )}
       </div>
 
-      {/* Title */}
-      <h3 className="font-semibold text-ink leading-snug">{project.title}</h3>
-
-      {/* Description */}
-      <p className="text-sm text-muted leading-relaxed line-clamp-3 flex-1">
+      {/* Description — always clamped to 3 lines; full text lives in the popup */}
+      <p className="text-sm text-muted leading-relaxed line-clamp-3">
         {project.description}
       </p>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        className="self-start"
+        onClick={() => setIsOpen(true)}
+      >
+        See more →
+      </Button>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
@@ -49,6 +84,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           View project →
         </a>
       )}
+
+      {isOpen && <ProjectModal project={project} onClose={() => setIsOpen(false)} />}
     </article>
   );
 }

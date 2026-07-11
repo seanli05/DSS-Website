@@ -31,7 +31,7 @@ app/                       Next.js App Router — one folder per route
   page.tsx                 Home (/)
   about/page.tsx           About (/about)
   committees/page.tsx      Committees (/committees)
-  projects/page.tsx        Projects (/projects)
+  committees/[id]/page.tsx Committee detail (/committees/[id]) — includes a projects carousel
   partners/page.tsx        Partners (/partners)
   join/page.tsx            Join (/join)
   contact/page.tsx         Contact (/contact)
@@ -45,7 +45,7 @@ lib/
 
 content/                   JSON files editors update to change site content
   committees.json          The four committees (name, blurb, focus areas, lead)
-  projects.json            Past projects by semester
+  projects.json            Airtable fallback — shown when project env vars are missing
   team.json                Officer / leadership cards
   testimonials.json        Partner/member quotes
 
@@ -74,7 +74,7 @@ The main landing page. Sections in order:
 | Stats strip | `StatCounter` | `data/stats.json` |
 | Partner logo wall (marquee) | `LogoWall` | Airtable → `data/partners.json` fallback |
 | Committee preview (4 cards) | `CommitteeCard` | `content/committees.json` (featured only) |
-| Featured projects (3 cards) | `ProjectCard` | `content/projects.json` (featured only) |
+| Projects carousel (all projects) | `ProjectCarousel` | Airtable (Consulting + Social Good tables) → `content/projects.json` fallback |
 | Dual CTA (join + partner) | `DualCTA` | hardcoded in `DualCTA.tsx` |
 
 ### About — `app/about/page.tsx`
@@ -96,13 +96,14 @@ Lists all four committees. Sections:
 - All `CommitteeCard`s in a 2-col grid — data from `content/committees.json`
 - Apply CTA linking to `/join`
 
-### Projects — `app/projects/page.tsx`
+### Committee detail — `app/committees/[id]/page.tsx`
 
-Full project archive, grouped by semester. Sections:
+One page per committee (e.g. `/committees/consulting`, `/committees/social-good`). Sections:
 
-- Page header
-- Projects auto-grouped by the `semester` field in `content/projects.json`, newest first
-- Partner CTA linking to `/partners`
+- Page header (icon, name, blurb) from `content/committees.json`
+- Focus areas
+- **Projects carousel** (`ProjectCarousel`) — shown only when `getProjectsByCommittee(committee.id)` returns results. `committee` (`"consulting"` or `"social-good"`) comes from which Airtable table the project was fetched from (see Airtable section below); no `/projects` archive page exists anymore, this carousel plus the homepage carousel are the only places projects are browsable.
+- Apply CTA linking to `/join`
 
 ### Partners — `app/partners/page.tsx`
 
@@ -149,7 +150,9 @@ All components live in `components/`. Server Components by default; only interac
 | `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
 | `LogoWall.tsx` | — | CSS marquee of partner name pills (no logos yet — Airtable attachment support is Phase 5) |
 | `CommitteeCard.tsx` | — | Card showing committee name, icon, blurb, and focus area tags |
-| `ProjectCard.tsx` | — | Card showing project title, semester, partner, tags, and description |
+| `ProjectCard.tsx` | ✓ | Card showing project logo, title, partner, tags, and description clamped to 3 lines. A "See more" button opens `ProjectModal` with the full project |
+| `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |
+| `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on the homepage and committee detail pages |
 | `OfficerCard.tsx` | — | Officer photo + name + role + optional LinkedIn/GitHub/email links |
 | `DualCTA.tsx` | — | Two-column CTA strip: "Join DSS" (students) + "Partner with us" (industry) |
 | `Gallery.tsx` | ✓ | Horizontally scrollable photo gallery; hides scrollbar |
@@ -179,23 +182,24 @@ Four committees. Fields:
 
 ### `content/projects.json`
 
-Past project entries. Fields:
+**Fallback only.** `getProjects()` fetches live from two Airtable tables (Consulting Projects, Social Good Projects — see Airtable section below) and only falls back to this file if the env vars are missing or the request fails. Shown on the homepage and each committee's detail page (`/committees/[id]`) in a `ProjectCarousel`. Fields:
 
 ```jsonc
 {
-  "id": "unique-slug",
+  "id": "unique-slug",        // Airtable-sourced projects use the Airtable record id instead
   "title": "Project Title",
-  "semester": "Fall 2024",    // used as a grouping key on /projects — must be consistent
+  "semester": "Fall 2024",    // shown on the card; not used for grouping
   "partner": "Company Name",
+  "committee": "consulting",  // must match a Committee.id — which committee page shows this project
   "tags": ["NLP", "Python"],
-  "description": "...",
-  "featured": true,           // true → shown in the Home page preview (pick 3)
-  "image": null,              // path under /public, or null
-  "link": null                // external URL or null
+  "description": "...",       // the card always clamps this to 3 lines; "See more" opens the full text in a popup
+  "logo": null,                // path under /public, or a hosted URL, or null for a placeholder
+  "images": [],                 // extra image/gif URLs shown as a mini carousel in the "See more" popup
+  "link": null                 // external URL or null
 }
 ```
 
-Add new projects at the top of the array so they sort newest-first.
+Add new projects anywhere in the array — order doesn't matter.
 
 ### `content/team.json`
 
@@ -255,13 +259,13 @@ Single source of truth for all data access. Key functions:
 | `getStats()` | `Stat[]` | `data/stats.json` |
 | `getCommittees()` | `Committee[]` | `content/committees.json` |
 | `getFeaturedCommittees()` | `Committee[]` | filtered by `featured: true` |
-| `getProjects()` | `Project[]` | `content/projects.json` |
-| `getFeaturedProjects()` | `Project[]` | filtered by `featured: true` |
+| `getProjects()` | `Promise<Project[]>` | Airtable REST API (Consulting + Social Good tables) → `content/projects.json` fallback |
+| `getProjectsByCommittee(id)` | `Promise<Project[]>` | `getProjects()` filtered by `committee === id`; powers the carousel on `/committees/[id]` |
 | `getTeam()` | `TeamMember[]` | `content/team.json` |
 | `getTestimonials()` | `Testimonial[]` | `content/testimonials.json` |
 | `getPartners()` | `Promise<Partner[]>` | Airtable REST API → `data/partners.json` fallback |
 
-`getPartners()` is `async` and **server-side only** — never call it from a `"use client"` component. All others are synchronous.
+`getPartners()`, `getProjects()`, and `getProjectsByCommittee()` are `async` and **server-side only** — never call them from a `"use client"` component. All others are synchronous.
 
 ---
 
@@ -301,19 +305,33 @@ The monospace font is used for eyebrow labels, stat numbers, and small data-scie
 
 ---
 
-## Airtable (partner logos)
+## Airtable (partner logos + projects)
 
-Partner logos are fetched from Airtable at build time. Required env vars (set in `.env.local` and in Vercel project settings):
+Partner logos and project data are fetched from Airtable at build time, all from the same base. Required env vars (set in `.env.local` and in Vercel project settings):
 
 ```
 AIRTABLE_TOKEN=...
 AIRTABLE_BASE_ID=...
 LOGOWALL_TABLE=...
+CONSULTING_PROJECTS_TABLE=...
+SOCIAL_GOOD_PROJECTS_TABLE=...
 ```
 
-If any of these are missing, `getPartners()` silently falls back to `data/partners.json`. A failed Airtable fetch never breaks the build.
+If any of a function's required env vars are missing, it silently falls back to the matching local JSON file (`data/partners.json` or `content/projects.json`). A failed Airtable fetch never breaks the build.
 
-**To trigger a rebuild when logos change:** set up an Airtable automation → Vercel deploy hook.
+**Projects tables** (`CONSULTING_PROJECTS_TABLE`, `SOCIAL_GOOD_PROJECTS_TABLE`) — same schema in both, fetched in parallel by `getProjects()` in `lib/content.ts`. Which table a project came from becomes its `committee` (`"consulting"` or `"social-good"`) — there's no committee column in Airtable itself.
+
+| Airtable column | Type | Maps to |
+|---|---|---|
+| `Project Title` | text | `title` |
+| `Client` | text | `partner` |
+| `Semester` | text | `semester` |
+| `Project Summary` | text | `description` |
+| `Logo` | attachment | `logo` (first attachment's URL) |
+| `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
+| `Additional Images/GIFS` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup) |
+
+**To trigger a rebuild when Airtable data changes:** set up an Airtable automation → Vercel deploy hook.
 
 ---
 
@@ -337,7 +355,7 @@ Search the codebase for `TODO` to find all placeholders. High-priority ones:
 - **All page headers**: copy marked `TODO: finalize with DSS leadership`
 - **`content/committees.json`**: all `"lead"` fields are `"TODO: Committee Lead"`
 - **`content/team.json`**: empty — add officer entries to populate `/about` leadership section
-- **`content/projects.json`**: placeholder projects — replace with real ones
+- **`content/projects.json`**: only used as a fallback now — real project data lives in Airtable (`CONSULTING_PROJECTS_TABLE`, `SOCIAL_GOOD_PROJECTS_TABLE`). Some Consulting Projects rows currently have blank `Project Title`/`Client` cells, and `Tech Stack` appears empty on every row checked so far — worth a pass in Airtable
 - **`app/join/page.tsx`**: application link is `href="#"` — update each semester with the real Typeform/Google Form URL
 - **`app/contact/page.tsx`**: meeting room location is TBD; mailing list sign-up link is `#`
 - **`components/Nav.tsx`**: logo text placeholder — replace with SVG logo
@@ -350,7 +368,7 @@ Search the codebase for `TODO` to find all placeholders. High-priority ones:
 
 1. **No hardcoded content in components** — all text and data flows through `lib/content.ts` or is clearly marked as UI copy.
 2. **Colors only in `app/globals.css`** — never write hex values in component files.
-3. **`getPartners()` is server-side only** — never import it into a `"use client"` component.
+3. **`getPartners()` and `getProjects()` are server-side only** — never import them into a `"use client"` component.
 4. **Secrets stay server-side** — Airtable credentials live in `.env.local` (gitignored) and Vercel settings.
 5. **Default to Server Components** — add `"use client"` only when you need browser APIs or React state.
 6. **Footer disclaimer must stay** — required Berkeley independent-org language, do not remove.

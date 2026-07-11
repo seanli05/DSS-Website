@@ -57,8 +57,7 @@ const STEPS = [
 ];
 
 export default async function PartnersPage() {
-  const partners = await getPartners();
-  const projects = getProjects();
+  const [partners, projects] = await Promise.all([getPartners(), getProjects()]);
 
   return (
     <>

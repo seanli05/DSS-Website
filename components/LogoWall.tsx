@@ -14,7 +14,7 @@ export default function LogoWall({ partners, projects = [] }: LogoWallProps) {
   const duration = `${partners.length * 3}s`;
 
   const projectByPartner = new Map(
-    projects.map((p) => [p.partner.toLowerCase(), p.id])
+    projects.map((p) => [p.partner.toLowerCase(), { id: p.id, committee: p.committee }])
   );
 
   return (
@@ -37,7 +37,7 @@ export default function LogoWall({ partners, projects = [] }: LogoWallProps) {
           style={{ animationDuration: duration }}
         >
           {items.map((partner, i) => {
-            const projectId = projectByPartner.get(partner.name.toLowerCase());
+            const project = projectByPartner.get(partner.name.toLowerCase());
             const logo = partner.logoUrl ? (
               <Image
                 src={partner.logoUrl}
@@ -54,9 +54,9 @@ export default function LogoWall({ partners, projects = [] }: LogoWallProps) {
 
             return (
               <div key={`${partner.id}-${i}`} className="flex-shrink-0 px-10 flex items-center h-12">
-                {projectId ? (
+                {project ? (
                   <Link
-                    href={`/projects#${projectId}`}
+                    href={`/committees/${project.committee}#${project.id}`}
                     className="group flex items-center h-full"
                     aria-label={`View the project we built with ${partner.name}`}
                   >

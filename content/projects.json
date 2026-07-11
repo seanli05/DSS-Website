@@ -4,10 +4,11 @@
     "title": "Customer Churn Prediction",
     "semester": "Fall 2024",
     "partner": "Nimbus",
+    "committee": "consulting",
     "tags": ["Machine Learning", "Python", "Consulting"],
-    "description": "Built a gradient-boosted model achieving 89% accuracy on holdout data, enabling proactive retention strategies and estimated to save $2M annually.",
-    "featured": true,
-    "image": null,
+    "description": "Nimbus was losing subscribers faster than sales could replace them and had no way to flag at-risk accounts before they churned. Our team pulled two years of product usage, billing, and support-ticket data, engineered behavioral features (login cadence, feature adoption, ticket sentiment), and trained a gradient-boosted classifier that reached 89% accuracy on holdout data. We shipped a weekly risk-scored account list to the customer success team, plus a short playbook mapping risk drivers to intervention types. Projected retention lift: $2M in annual recurring revenue saved.",
+    "logo": "/partners/nimbus.svg",
+    "images": [],
     "link": null
   },
   {
@@ -15,10 +16,11 @@
     "title": "Medical Image Classification",
     "semester": "Spring 2024",
     "partner": "Vertex Labs",
+    "committee": "consulting",
     "tags": ["Computer Vision", "Deep Learning", "Healthcare"],
     "description": "Trained a CNN classifier to detect anomalies in radiology scans with 94% sensitivity, assisting clinicians in early diagnosis workflows.",
-    "featured": true,
-    "image": null,
+    "logo": "/partners/vertex-labs.svg",
+    "images": [],
     "link": null
   },
   {
@@ -26,10 +28,11 @@
     "title": "Supply Chain Demand Forecasting",
     "semester": "Spring 2024",
     "partner": "Northwind",
+    "committee": "consulting",
     "tags": ["Time Series", "Python", "Operations"],
-    "description": "Developed an LSTM-based demand forecasting model reducing inventory overstock by 22%, deployed to production ahead of peak season.",
-    "featured": false,
-    "image": null,
+    "description": "Northwind's warehouses were routinely over-ordering slow-moving SKUs while under-stocking fast movers ahead of peak season, tying up working capital and causing stockouts. We built an LSTM forecasting pipeline on three years of SKU-level sales, promotions, and seasonality data, benchmarked it against their existing moving-average baseline, and integrated it into their replenishment workflow. The model cut inventory overstock by 22% in the first post-launch quarter while holding stockout rates flat, and the team handed off a retraining notebook so Northwind's data team could maintain it independently.",
+    "logo": "/partners/northwind.svg",
+    "images": [],
     "link": null
   },
   {
@@ -37,10 +40,11 @@
     "title": "Real-Time Sentiment Analysis",
     "semester": "Fall 2023",
     "partner": "Cobalt Systems",
+    "committee": "consulting",
     "tags": ["NLP", "Python", "Research"],
     "description": "Fine-tuned a BERT model on social media data to track brand sentiment in real time, processing 10K+ posts daily with sub-second inference.",
-    "featured": true,
-    "image": null,
+    "logo": "/partners/cobalt-systems.svg",
+    "images": [],
     "link": null
   },
   {
@@ -48,10 +52,11 @@
     "title": "ESG Investment Screening Tool",
     "semester": "Fall 2023",
     "partner": "Lumen Works",
+    "committee": "consulting",
     "tags": ["NLP", "Finance", "Research"],
     "description": "Built an NLP pipeline to extract and score ESG disclosures from SEC filings, enabling systematic socially responsible investing at scale.",
-    "featured": false,
-    "image": null,
+    "logo": "/partners/lumen-works.svg",
+    "images": [],
     "link": null
   },
   {
@@ -59,10 +64,11 @@
     "title": "Customer Segmentation Engine",
     "semester": "Spring 2023",
     "partner": "Parallel Co.",
+    "committee": "consulting",
     "tags": ["Clustering", "Python", "Consulting"],
-    "description": "Applied K-Means and UMAP to segment 500K+ customers into actionable cohorts, driving a 17% uplift in targeted marketing campaign performance.",
-    "featured": false,
-    "image": null,
+    "description": "Parallel Co.'s marketing team was running one-size-fits-all campaigns across a customer base with wildly different purchase behavior. We combined K-Means clustering with UMAP dimensionality reduction on 500K+ customer profiles (purchase history, browsing behavior, and demographics) to surface six distinct, actionable segments. Each segment came with a profile deck and recommended messaging angle. Parallel Co.'s next campaign cycle, targeted using our segments, saw a 17% uplift in click-through and conversion versus their prior broad-based approach.",
+    "logo": "/partners/parallel-co.svg",
+    "images": [],
     "link": null
   },
   {
@@ -70,10 +76,47 @@
     "title": "Real-Time Fraud Detection",
     "semester": "Spring 2023",
     "partner": "TODO: Partner name",
+    "committee": "consulting",
     "tags": ["Machine Learning", "Finance", "Engineering"],
     "description": "Designed a streaming fraud detection system using graph neural networks and feature stores, reducing false positives by 40% versus the legacy rules engine.",
-    "featured": false,
-    "image": null,
+    "logo": null,
+    "images": [],
+    "link": null
+  },
+  {
+    "id": "foodbank-demand-forecasting",
+    "title": "Food Bank Demand Forecasting",
+    "semester": "Fall 2024",
+    "partner": "TODO: Partner name",
+    "committee": "social-good",
+    "tags": ["Time Series", "Python", "Nonprofit"],
+    "description": "TODO: expand with real partner details once confirmed. A regional food bank network was over-provisioning some distribution sites and running short at others, driving both spoilage and unmet need. We built a lightweight demand forecasting model using historical distribution counts, local demographic data, and seasonal trends, then packaged it into a spreadsheet-based tool the (largely volunteer-run) operations team could use without any coding. Early pilot results estimated a 15% reduction in food waste alongside fewer stockouts at high-need sites.",
+    "logo": null,
+    "images": [],
+    "link": null
+  },
+  {
+    "id": "shelter-resource-allocation",
+    "title": "Shelter Resource Allocation Dashboard",
+    "semester": "Spring 2024",
+    "partner": "TODO: Partner name",
+    "committee": "social-good",
+    "tags": ["Data Visualization", "Python", "Nonprofit"],
+    "description": "Built an interactive dashboard helping a homelessness services nonprofit allocate beds and case-manager hours across sites based on real-time intake data.",
+    "logo": null,
+    "images": [],
+    "link": null
+  },
+  {
+    "id": "voter-turnout-outreach",
+    "title": "Nonpartisan Voter Turnout Outreach Model",
+    "semester": "Fall 2023",
+    "partner": "TODO: Partner name",
+    "committee": "social-good",
+    "tags": ["Machine Learning", "Research", "Nonprofit"],
+    "description": "TODO: expand with real partner details once confirmed. A nonpartisan civic engagement nonprofit had a fixed canvassing budget and no data-driven way to decide which precincts to prioritize. We trained a turnout propensity model on public voter file and prior-election data, validated it against two past election cycles, and delivered a ranked precinct list with confidence bands. The nonprofit used the ranking to reallocate roughly a third of its canvassing hours toward higher-impact precincts for the following election cycle.",
+    "logo": null,
+    "images": [],
     "link": null
   }
 ]

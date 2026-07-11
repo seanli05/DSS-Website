@@ -4,23 +4,20 @@ import Section from "@/components/Section";
 import StatCounter from "@/components/StatCounter";
 import LogoWall from "@/components/LogoWall";
 import CommitteeCard from "@/components/CommitteeCard";
-import ProjectCard from "@/components/ProjectCard";
+import ProjectCarousel from "@/components/ProjectCarousel";
 import DualCTA from "@/components/DualCTA";
 import Button from "@/components/Button";
 import {
   getStats,
   getPartners,
   getFeaturedCommittees,
-  getFeaturedProjects,
   getProjects,
 } from "@/lib/content";
 
 export default async function HomePage() {
   const stats = getStats();
   const committees = getFeaturedCommittees();
-  const projects = getFeaturedProjects();
-  const allProjects = getProjects();
-  const partners = await getPartners();
+  const [projects, partners] = await Promise.all([getProjects(), getPartners()]);
 
   return (
     <>
@@ -59,7 +56,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Partner logo wall */}
-      <LogoWall partners={partners} projects={allProjects} />
+      <LogoWall partners={partners} projects={projects} />
 
       {/* 5. Committees preview */}
       <Section
@@ -80,20 +77,16 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* 6. Featured projects */}
+      {/* 6. Projects */}
       <Section
         eyebrow="Our work"
         heading="Real projects, real impact."
         subtext="We don't just study data science — we apply it. Every semester, DSS teams deliver production-quality work for industry partners."
       >
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((p) => (
-            <ProjectCard key={p.id} project={p} />
-          ))}
-        </div>
+        <ProjectCarousel projects={projects} />
         <div className="mt-10 text-center">
-          <Button href="/projects" variant="outline">
-            View all projects →
+          <Button href="/committees" variant="outline">
+            See committee projects →
           </Button>
         </div>
       </Section>

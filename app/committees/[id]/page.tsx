@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Section from "@/components/Section";
 import Button from "@/components/Button";
-import { getCommittees } from "@/lib/content";
+import ProjectCarousel from "@/components/ProjectCarousel";
+import { getCommittees, getProjectsByCommittee } from "@/lib/content";
 
 export function generateStaticParams() {
   return getCommittees().map((c) => ({ id: c.id }));
@@ -28,6 +29,7 @@ export default async function CommitteePage({
   const { id } = await params;
   const committee = getCommittees().find((c) => c.id === id);
   if (!committee) notFound();
+  const projects = await getProjectsByCommittee(committee.id);
 
   return (
     <>
@@ -73,6 +75,18 @@ export default async function CommitteePage({
           </p>
         )}
       </Section>
+
+      {/* Projects carousel */}
+      {projects.length > 0 && (
+        <Section
+          eyebrow="Our work"
+          heading={`${committee.name} projects`}
+          subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
+          surface
+        >
+          <ProjectCarousel projects={projects} />
+        </Section>
+      )}
 
       {/* Apply CTA */}
       <section className="bg-surface">
