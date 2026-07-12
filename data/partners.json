@@ -1,12 +1,10 @@
 [
-  { "id": "p1",  "name": "Nimbus",         "logoUrl": "/partners/nimbus.svg",         "website": null, "featured": true,  "order": 1  },
-  { "id": "p2",  "name": "Vertex Labs",    "logoUrl": "/partners/vertex-labs.svg",    "website": null, "featured": true,  "order": 2  },
-  { "id": "p3",  "name": "Northwind",      "logoUrl": "/partners/northwind.svg",      "website": null, "featured": true,  "order": 3  },
-  { "id": "p4",  "name": "Cobalt Systems", "logoUrl": "/partners/cobalt-systems.svg", "website": null, "featured": true,  "order": 4  },
-  { "id": "p5",  "name": "Lumen Works",    "logoUrl": "/partners/lumen-works.svg",    "website": null, "featured": true,  "order": 5  },
-  { "id": "p6",  "name": "Parallel Co.",   "logoUrl": "/partners/parallel-co.svg",    "website": null, "featured": false, "order": 6  },
-  { "id": "p7",  "name": "Meridian",       "logoUrl": "/partners/meridian.svg",       "website": null, "featured": false, "order": 7  },
-  { "id": "p8",  "name": "Fathom",         "logoUrl": "/partners/fathom.svg",         "website": null, "featured": false, "order": 8  },
-  { "id": "p9",  "name": "Anchor Point",   "logoUrl": "/partners/anchor-point.svg",   "website": null, "featured": false, "order": 9  },
-  { "id": "p10", "name": "Haventree",      "logoUrl": "/partners/haventree.svg",      "website": null, "featured": false, "order": 10 }
+  { "id": "p1", "name": "Analog Devices",     "logoUrl": "/partners/analog-devices.png",     "website": null, "featured": true,  "order": 1 },
+  { "id": "p2", "name": "Arc'teryx",          "logoUrl": "/partners/arcteryx.png",           "website": null, "featured": true,  "order": 2 },
+  { "id": "p3", "name": "Boeing",             "logoUrl": "/partners/boeing.png",             "website": null, "featured": true,  "order": 3 },
+  { "id": "p4", "name": "National Geographic","logoUrl": "/partners/national-geographic.svg","website": null, "featured": true,  "order": 4 },
+  { "id": "p5", "name": "Databricks",         "logoUrl": "/partners/databricks.png",         "website": null, "featured": true,  "order": 5 },
+  { "id": "p6", "name": "Oracle",             "logoUrl": "/partners/oracle.png",             "website": null, "featured": false, "order": 6 },
+  { "id": "p7", "name": "Stanford Medicine",  "logoUrl": "/partners/stanford-medicine.png",  "website": null, "featured": false, "order": 7 },
+  { "id": "p8", "name": "WWF",                "logoUrl": "/partners/wwf.png",                "website": null, "featured": false, "order": 8 }
 ]

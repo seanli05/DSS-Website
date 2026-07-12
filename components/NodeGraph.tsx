@@ -18,8 +18,9 @@ interface NodeGraphProps {
 }
 
 const PARTICLE_CONFIG: ISourceOptions = {
+  fpsLimit: 30,
   particles: {
-    number: { value: 50, density: { enable: true, width: 800 } },
+    number: { value: 24, density: { enable: true, width: 800 } },
     color: { value: "#ffffff" },
     shape: { type: "circle" },
     opacity: { value: 0.6 },
@@ -41,10 +42,15 @@ const PARTICLE_CONFIG: ISourceOptions = {
       repulse: { distance: 120, duration: 0.4 },
     },
   },
-  detectRetina: true,
+  // false is intentional: on a Retina/HiDPI screen this canvas covers the entire hero, so
+  // detectRetina would quadruple (2x²) the pixels the GPU has to raster/composite every frame
+  // for background decoration that doesn't need pixel-sharp edges. This was the dominant cost
+  // in a real trace (GPU compositor thread was blocked ~80ms/frame — a 3-8fps hero).
+  detectRetina: false,
   fullScreen: { enable: false },
   resize: { enable: false, delay: 0 },
-  pauseOnOutsideViewport: false,
+  // Stop the animation loop (and its CPU cost) once the hero scrolls out of view.
+  pauseOnOutsideViewport: true,
 };
 
 export default function NodeGraph({ id = "tsparticles", className = "", opacity = 0.12 }: NodeGraphProps) {

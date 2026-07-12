@@ -65,17 +65,13 @@ public/                    Static assets (images, logos, favicon)
 
 ### Home — `app/page.tsx`
 
-The main landing page. Sections in order:
+The main landing page — deliberately short (three sections):
 
 | Section | Component(s) | Data source |
 |---|---|---|
-| Hero (gradient + typing animation) | `Hero` | hardcoded in `Hero.tsx` |
-| Mission one-liner | inline `<Section>` | hardcoded (TODO: finalize copy) |
-| Stats strip | `StatCounter` | `data/stats.json` |
-| Partner logo wall (marquee) | `LogoWall` | Airtable → `data/partners.json` fallback |
-| Committee preview (4 cards) | `CommitteeCard` | `content/committees.json` (featured only) |
-| Projects carousel (all projects) | `ProjectCarousel` | Airtable (Consulting + Social Good tables) → `content/projects.json` fallback |
-| Dual CTA (join + partner) | `DualCTA` | hardcoded in `DualCTA.tsx` |
+| Hero: split layout (headline + CTAs left, logo right) over the brand gradient with particles, ending in a decorative partner logo marquee | `Hero` | copy hardcoded in `Hero.tsx`; partners via `getPartners()` (Airtable → `data/partners.json` fallback) |
+| Mission + stats window (group photo one side; mission copy + three static stat numbers the other) | inline in `page.tsx` | copy hardcoded (TODO: finalize); stats filtered from `data/stats.json` by label |
+| Nav-out button row (About / Partners / Committees) | `Button` | — |
 
 ### About — `app/about/page.tsx`
 
@@ -102,7 +98,7 @@ One page per committee (e.g. `/committees/consulting`, `/committees/social-good`
 
 - Page header (icon, name, blurb) from `content/committees.json`
 - Focus areas
-- **Projects carousel** (`ProjectCarousel`) — shown only when `getProjectsByCommittee(committee.id)` returns results. `committee` (`"consulting"` or `"social-good"`) comes from which Airtable table the project was fetched from (see Airtable section below); no `/projects` archive page exists anymore, this carousel plus the homepage carousel are the only places projects are browsable.
+- **Projects carousel** (`ProjectCarousel`) — shown only when `getProjectsByCommittee(committee.id)` returns results. `committee` (`"consulting"` or `"social-good"`) comes from which Airtable table the project was fetched from (see Airtable section below); no `/projects` archive page exists anymore, these committee carousels are the only place projects are browsable.
 - Apply CTA linking to `/join`
 
 ### Partners — `app/partners/page.tsx`
@@ -144,15 +140,15 @@ All components live in `components/`. Server Components by default; only interac
 |---|---|---|
 | `Nav.tsx` | ✓ | Fixed top nav with scroll shadow + mobile hamburger drawer |
 | `Footer.tsx` | — | Site footer with nav links, socials, Berkeley disclaimer |
-| `Hero.tsx` | ✓ | Gradient hero with typewriter animation cycling role names |
+| `Hero.tsx` | — | Split gradient hero (headline/CTAs left, animated logo right, `NodeGraph` particles behind) with a decorative, non-clickable partner logo marquee at the bottom. Takes `partners` from the page via `getPartners()` |
 | `Section.tsx` | — | Standard page section wrapper: eyebrow → heading → subtext → children. Handles container width and vertical rhythm. Use this for all page sections. |
 | `Button.tsx` | — | Polymorphic button/link. Props: `variant` (primary/outline/ghost), `size` (sm/md/lg), `href`, `external` |
 | `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
-| `LogoWall.tsx` | — | CSS marquee of partner name pills (no logos yet — Airtable attachment support is Phase 5) |
+| `LogoWall.tsx` | — | CSS marquee of partner logos/name pills on a light surface. Used on `/partners` only (the homepage hero has its own marquee) |
 | `CommitteeCard.tsx` | — | Card showing committee name, icon, blurb, and focus area tags |
 | `ProjectCard.tsx` | ✓ | Card showing project logo, title, partner, tags, and description clamped to 3 lines. A "See more" button opens `ProjectModal` with the full project |
 | `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |
-| `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on the homepage and committee detail pages |
+| `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on committee detail pages |
 | `OfficerCard.tsx` | — | Officer photo + name + role + optional LinkedIn/GitHub/email links |
 | `DualCTA.tsx` | — | Two-column CTA strip: "Join DSS" (students) + "Partner with us" (industry) |
 | `Gallery.tsx` | ✓ | Horizontally scrollable photo gallery; hides scrollbar |
@@ -182,7 +178,7 @@ Four committees. Fields:
 
 ### `content/projects.json`
 
-**Fallback only.** `getProjects()` fetches live from two Airtable tables (Consulting Projects, Social Good Projects — see Airtable section below) and only falls back to this file if the env vars are missing or the request fails. Shown on the homepage and each committee's detail page (`/committees/[id]`) in a `ProjectCarousel`. Fields:
+**Fallback only.** `getProjects()` fetches live from two Airtable tables (Consulting Projects, Social Good Projects — see Airtable section below) and only falls back to this file if the env vars are missing or the request fails. Shown on each committee's detail page (`/committees/[id]`) in a `ProjectCarousel`. Fields:
 
 ```jsonc
 {
@@ -235,7 +231,7 @@ Partner or member quotes (not yet wired to a page — available via `getTestimon
 
 ### `data/stats.json`
 
-The four numbers in the stats strip on Home and About.
+The headline numbers. About shows all four as animated `StatCounter`s; Home shows three of them (Active members, Industry partners, Years running — matched by `label`) as static numbers in the mission window.
 
 ```jsonc
 [
