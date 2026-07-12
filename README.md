@@ -9,6 +9,8 @@ Two audiences: **prospective student members** and **industry partners**.
 ## Quick start
 
 ```bash
+git checkout rakshan       # switch to this branch (git fetch origin first if you don't have it locally)
+git pull                   # get the latest pushed changes
 nvm use                    # match the Node version in .nvmrc (Node 20 LTS)
 npm install
 cp .env.example .env.local # then fill in Airtable credentials (optional — falls back to local JSON)
