@@ -14,8 +14,9 @@
   --color-primary:        #0C706E;  /* deep teal — OK for body text/links (5.9:1 on white) */
   --color-primary-bright: #1D8C89;  /* teal — large headings/decoration only (4.1:1) */
   --color-accent:         #8FB573;  /* sage green — decorative only, never small text */
+  --color-blossom:        #FFF9EF;  /* warm cream — decorative only (GrowingSapling petals) */
 
-  /* Dark atmospheric canvas — hero only, "Air"-inspired, recolored to brand teal/sage */
+  /* Dark atmospheric canvas — hero + nav, "Air"-inspired, recolored to brand teal/sage */
   --color-hero-canvas:      #061615;
   --color-hero-canvas-deep: #030b0a;
 }
@@ -27,9 +28,13 @@
   --font-mono: var(--font-ibm-plex-mono);
 }
 
-/* Gradient lives in :root because complex values aren't supported in @theme */
+/* Gradients live in :root because complex values aren't supported in @theme */
 :root {
   --gradient-brand: linear-gradient(135deg, #0C706E 0%, #1D8C89 45%, #AAC48E 100%);
+  /* Dark brand wash — deep teal → sage, echoes --gradient-brand (e.g. Social
+     Good "What we do"). Use white text on it; every stop keeps white ≥4.5:1
+     (AA), so don't lighten any stop. */
+  --gradient-surface-green: linear-gradient(135deg, #0A3B39 0%, #0C706E 45%, #4E6B3D 100%);
 }
 
 /* ─── Base Styles ──────────────────────────────────────────────────────────── */
@@ -49,6 +54,16 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.surface-green-gradient {
+  background: var(--gradient-surface-green);
+}
+
+/* Blossom "pop" for GrowingSapling — scale is set inline by JS; only the
+   one-way bloom is transitioned (scroll-scrubbed properties get no transition). */
+.sapling-blossom {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ─── Marquee (LogoWall) ───────────────────────────────────────────────────── */
@@ -104,5 +119,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora-a, .hero-aurora-b, .hero-halo, .hero-logo-breathe, .hero-logo-intro {
     animation: none;
+  }
+  .sapling-blossom {
+    transition: none;
   }
 }

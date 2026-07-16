@@ -3,8 +3,9 @@ import Link from "next/link";
 import NodeGraph from "./NodeGraph";
 
 export default function Hero() {
+  // -mt-16/pt-16 pulls the hero up behind the fixed translucent nav (main has pt-16)
   return (
-    <section className="relative min-h-[62vh] flex items-center justify-center brand-gradient overflow-hidden">
+    <section className="relative -mt-16 pt-16 min-h-[62vh] flex items-center justify-center brand-gradient overflow-hidden">
       <NodeGraph id="particles-home" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
 
       <div className="relative z-10 mx-auto flex max-w-[1200px] w-full flex-col items-center px-6 py-16 text-center">

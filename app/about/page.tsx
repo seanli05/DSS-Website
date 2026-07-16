@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
 import StatCounter from "@/components/StatCounter";
-import OfficerCard from "@/components/OfficerCard";
+import ExecCard from "@/components/ExecCard";
 import Gallery from "@/components/Gallery";
 import NodeGraph from "@/components/NodeGraph";
-import { getStats, getTeam } from "@/lib/content";
+import { getStats, getExecProfiles } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -35,14 +35,14 @@ const VALUES = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
   const stats = getStats();
-  const team = getTeam();
+  const execProfiles = await getExecProfiles();
 
   return (
     <>
-      {/* Page header */}
-      <section className="relative overflow-hidden brand-gradient">
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      <section className="relative -mt-16 pt-16 overflow-hidden brand-gradient">
         <NodeGraph id="particles-about" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
         <div className="relative z-10 mx-auto max-w-[1200px] px-6 py-28">
           <p className="font-mono text-xs uppercase tracking-widest text-white/50 mb-4">
@@ -116,16 +116,18 @@ export default function AboutPage() {
         <Gallery />
       </Section>
 
-      {/* Leadership */}
-      <Section eyebrow="Leadership" heading="The team behind DSS.">
-        {team.length > 0 ? (
+      {/* Executive board */}
+      <Section eyebrow="Leadership" heading="Our Executive Board." surface>
+        {execProfiles.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-            {team.map((member) => (
-              <OfficerCard key={member.id} member={member} />
+            {execProfiles.map((profile) => (
+              <ExecCard key={profile.id} profile={profile} />
             ))}
           </div>
         ) : (
-          <p className="text-muted">TODO: Add team members to content/team.json.</p>
+          <p className="text-muted">
+            Exec board profiles are on their way — check back soon.
+          </p>
         )}
       </Section>
     </>

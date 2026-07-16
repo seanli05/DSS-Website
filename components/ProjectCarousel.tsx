@@ -6,10 +6,16 @@ import ProjectCard from "./ProjectCard";
 
 interface ProjectCarouselProps {
   projects: Project[];
+  dark?: boolean; // white prev/next buttons, for dark section backgrounds
 }
 
-export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
+export default function ProjectCarousel({ projects, dark = false }: ProjectCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const buttonClass = `flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${
+    dark
+      ? "border-white/40 text-white hover:border-accent hover:text-accent"
+      : "border-border text-ink hover:border-primary hover:text-primary"
+  }`;
 
   if (projects.length === 0) return null;
 
@@ -47,7 +53,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
             type="button"
             onClick={() => scroll(-1)}
             aria-label="Previous project"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-ink transition-colors hover:border-primary hover:text-primary"
+            className={buttonClass}
           >
             <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M8 2L4 6l4 4" />
@@ -57,7 +63,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
             type="button"
             onClick={() => scroll(1)}
             aria-label="Next project"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-ink transition-colors hover:border-primary hover:text-primary"
+            className={buttonClass}
           >
             <svg width="14" height="14" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <path d="M4 2l4 4-4 4" />
