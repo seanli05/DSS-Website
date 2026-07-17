@@ -38,9 +38,9 @@ export default async function CommitteePage({
 
   return (
     <>
-      {/* Page header */}
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
       {committee.heroImage ? (
-        <section className="relative flex min-h-[85vh] items-center overflow-hidden">
+        <section className="relative -mt-16 pt-16 flex min-h-[85vh] items-center overflow-hidden">
           <Image
             src={committee.heroImage}
             alt=""
@@ -67,10 +67,10 @@ export default async function CommitteePage({
           </div>
         </section>
       ) : (
-        <section className="bg-surface border-b border-border">
+        <section className="relative -mt-16 pt-16 overflow-hidden brand-gradient">
           <div className="mx-auto max-w-[1200px] px-6 py-24">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
-              <Link href="/committees" className="hover:text-primary transition-colors">
+            <p className="font-mono text-xs uppercase tracking-widest text-white/60 mb-4">
+              <Link href="/committees" className="hover:text-white transition-colors">
                 Committees
               </Link>
               {" / "}
@@ -80,11 +80,11 @@ export default async function CommitteePage({
               <span className="text-5xl" aria-hidden="true">
                 {committee.icon}
               </span>
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink leading-tight">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight">
                 {committee.name}
               </h1>
             </div>
-            <p className="mt-6 text-lg text-muted max-w-lg leading-relaxed">
+            <p className="mt-6 text-lg text-white/70 max-w-lg leading-relaxed">
               {committee.blurb}
             </p>
           </div>
@@ -97,9 +97,7 @@ export default async function CommitteePage({
       <Section
         eyebrow={isSocialGood ? undefined : "Our work"}
         heading={isSocialGood ? undefined : "What we do"}
-        surface={!isSocialGood}
-        dark={isSocialGood}
-        className={isSocialGood ? "surface-green-gradient" : ""}
+        surface
       >
         {committee.description ? (
           isSocialGood ? (
@@ -107,24 +105,14 @@ export default async function CommitteePage({
             <div className="md:grid md:grid-cols-[minmax(0,42rem)_1fr] md:items-start md:gap-12">
               <div>
                 <div className="flex flex-col gap-4 mb-12">
-                  <p className="font-mono text-xs uppercase tracking-widest text-white/70">
+                  <p className="font-mono text-xs uppercase tracking-widest text-muted">
                     Our work
                   </p>
-                  <h2 className="text-3xl font-bold tracking-tight leading-snug text-white">
+                  <h2 className="text-3xl font-bold tracking-tight leading-snug text-ink">
                     What we do
                   </h2>
                 </div>
-                <p className="max-w-2xl text-white/90 leading-relaxed">{committee.description}</p>
-                {/* Projects heading lives in this column so it fills the space
-                    beside the roots instead of leaving a blank band below */}
-                {projects.length > 0 && (
-                  <div className="mt-14">
-                    <h3 className="text-xl font-semibold text-white">Projects</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/85">
-                      A rotating look at what this committee has shipped. Click “See more” for the full story.
-                    </p>
-                  </div>
-                )}
+                <p className="max-w-2xl text-muted leading-relaxed">{committee.description}</p>
               </div>
               <GrowingSapling className="hidden md:block justify-self-center" />
             </div>
@@ -144,19 +132,12 @@ export default async function CommitteePage({
           </ul>
         )}
         {committee.lead && !committee.lead.startsWith("TODO") && (
-          <p className={`mt-8 font-mono text-xs ${isSocialGood ? "text-white/85" : "text-muted"}`}>
+          <p className="mt-8 font-mono text-xs text-muted">
             Committee Lead: {committee.lead}
           </p>
         )}
 
-        {/* Social Good: heading is up in the grid, so only the carousel goes here */}
-        {isSocialGood && projects.length > 0 && (
-          <div className="mt-8">
-            <ProjectCarousel projects={projects} dark />
-          </div>
-        )}
-
-        {!isSocialGood && projects.length > 0 && (
+        {projects.length > 0 && (
           <div className="mt-16">
             <h3 className="text-xl font-semibold text-ink">Projects</h3>
             <p className="mt-2 mb-8 text-sm leading-relaxed text-muted">

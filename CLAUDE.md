@@ -24,7 +24,7 @@ app/
   about/page.tsx  committees/page.tsx  projects/page.tsx
   partners/page.tsx  join/page.tsx  contact/page.tsx
   sitemap.ts
-components/             Nav, Footer, Hero, Section, Button, StatCounter*, LogoWall,
+components/             Nav, Footer, Hero, Section, Button, StatCounter*, LogoCarousel,
                         CommitteeCard, ProjectCard, ExecCard, Testimonial, DualCTA, Gallery*
                         (* = "use client")
 lib/content.ts          the ONLY place that knows where data comes from

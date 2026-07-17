@@ -16,7 +16,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <article
       id={project.id}
-      className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 rounded-2xl border border-border bg-bg p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
+      className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 bg-bg p-6 shadow-card hover:shadow-card-hover transition-shadow duration-200 motion-reduce:transition-none"
     >
       {/* Logo + semester */}
       <div className="flex items-center justify-between gap-3">
@@ -30,7 +30,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           />
         ) : (
           <div
-            className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-surface font-mono text-sm text-muted"
+            className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
             aria-hidden="true"
           >
             {project.partner.slice(0, 2).toUpperCase()}
@@ -39,11 +39,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <span className="font-mono text-xs text-muted">{project.semester}</span>
       </div>
 
-      {/* Title + partner */}
+      {/* Partner (client) leads; project title is the secondary line.
+          Falls back to the title when a project has no partner. */}
       <div>
-        <h3 className="font-semibold text-ink leading-snug">{project.title}</h3>
+        <h3 className="font-semibold text-ink leading-snug">
+          {project.partner || project.title}
+        </h3>
         {project.partner && (
-          <p className="mt-0.5 text-xs text-muted">{project.partner}</p>
+          <p className="mt-0.5 text-xs text-muted">{project.title}</p>
         )}
       </div>
 
@@ -66,7 +69,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-primary/10 px-2.5 py-0.5 font-mono text-xs text-primary"
+            className="bg-primary/10 px-2.5 py-0.5 font-mono text-xs text-primary"
           >
             {tag}
           </span>

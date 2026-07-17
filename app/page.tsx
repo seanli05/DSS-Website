@@ -2,7 +2,6 @@ import Image from "next/image";
 import Hero from "@/components/Hero";
 import Section from "@/components/Section";
 import StatCounter from "@/components/StatCounter";
-import LogoWall from "@/components/LogoWall";
 import CommitteeCard from "@/components/CommitteeCard";
 import ProjectCarousel from "@/components/ProjectCarousel";
 import DualCTA from "@/components/DualCTA";
@@ -21,8 +20,8 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* 1. Hero */}
-      <Hero />
+      {/* 1. Hero (includes the partner logo carousel) */}
+      <Hero partners={partners} />
 
       {/* 2. Mission */}
       <Section centered>
@@ -55,10 +54,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Partner logo wall */}
-      <LogoWall partners={partners} projects={projects} />
-
-      {/* 5. Committees preview */}
+      {/* 4. Committees preview */}
       <Section
         eyebrow="Get involved"
         heading="Find your niche."
@@ -77,7 +73,7 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* 6. Projects */}
+      {/* 5. Projects */}
       <Section
         eyebrow="Our work"
         heading="Real projects, real impact."
@@ -91,7 +87,7 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      {/* 7. Dual CTA */}
+      {/* 6. Dual CTA */}
       <DualCTA />
     </>
   );

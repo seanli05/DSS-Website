@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-
-// Routes whose top section is the full-bleed brand-gradient hero (pulled up
-// under the nav with -mt-16). The nav floats nearly transparent over those
-// heroes until you scroll; every other page starts light, so the nav needs
-// its dark glass immediately for the white text to stay readable.
-const heroRoutes = ["/", "/about"];
+import { useState } from "react";
 
 const links = [
   { label: "About", href: "/about" },
@@ -23,27 +16,11 @@ const committeeLinks = [
 ];
 
 export default function Nav() {
-  const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [committeeOpen, setCommitteeOpen] = useState(false);
 
-  const floating = heroRoutes.includes(pathname) && !scrolled && !menuOpen;
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
   return (
-    <header
-      className={`fixed top-0 inset-x-0 z-50 border-b backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300 ${
-        floating
-          ? "bg-hero-canvas-deep/25 border-transparent"
-          : "bg-hero-canvas-deep/80 border-white/10"
-      }`}
-    >
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-hero-canvas-deep/60 backdrop-blur-xl backdrop-saturate-150">
       <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-white">

@@ -31,7 +31,7 @@ export default function ProjectCarousel({ projects, dark = false }: ProjectCarou
     <div>
       <div
         ref={trackRef}
-        className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-6 px-6"
+        className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-6 pr-6 pl-[15px] scroll-pl-[15px] py-8 -my-8"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
         {projects.map((project) => (

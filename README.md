@@ -71,7 +71,7 @@ The main landing page. Sections in order:
 | Hero (gradient + typing animation) | `Hero` | hardcoded in `Hero.tsx` |
 | Mission one-liner | inline `<Section>` | hardcoded (TODO: finalize copy) |
 | Stats strip | `StatCounter` | `data/stats.json` |
-| Partner logo wall (marquee) | `LogoWall` | Airtable → `data/partners.json` fallback |
+| Partner logo carousel (marquee) | `LogoCarousel` | Airtable → `data/partners.json` fallback |
 | Committee preview (4 cards) | `CommitteeCard` | `content/committees.json` (featured only) |
 | Projects carousel (all projects) | `ProjectCarousel` | Airtable (Consulting + Social Good tables) → `content/projects.json` fallback |
 | Dual CTA (join + partner) | `DualCTA` | hardcoded in `DualCTA.tsx` |
@@ -110,7 +110,7 @@ Industry partnership pitch page. Sections:
 
 - Page header with dual CTAs (contact + how-it-works anchor)
 - Value props grid (3 cards: hardcoded in the page under `VALUE_PROPS`)
-- Logo wall (same component as Home)
+- Logo carousel (same component as Home)
 - How-it-works 5-step timeline (hardcoded in page under `STEPS`)
 - Email CTA (`dss@berkeley.edu` — verify this address)
 
@@ -147,7 +147,7 @@ All components live in `components/`. Server Components by default; only interac
 | `Section.tsx` | — | Standard page section wrapper: eyebrow → heading → subtext → children. Handles container width and vertical rhythm. Use this for all page sections. |
 | `Button.tsx` | — | Polymorphic button/link. Props: `variant` (primary/outline/ghost), `size` (sm/md/lg), `href`, `external` |
 | `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
-| `LogoWall.tsx` | — | CSS marquee of partner name pills (no logos yet — Airtable attachment support is Phase 5) |
+| `LogoCarousel.tsx` | — | Auto-scrolling CSS-keyframe marquee of partner logos. Purely decorative — no links, no hover effects; respects `prefers-reduced-motion`. Handles any partner count/logo shape from Airtable (fixed logo slots, list repeated to cover wide viewports) |
 | `CommitteeCard.tsx` | — | Card showing committee name, icon, blurb, and focus area tags |
 | `ProjectCard.tsx` | ✓ | Card showing project logo, title, partner, tags, and description clamped to 3 lines. A "See more" button opens `ProjectModal` with the full project |
 | `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |

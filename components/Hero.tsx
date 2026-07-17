@@ -1,8 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import NodeGraph from "./NodeGraph";
+import LogoCarousel from "./LogoCarousel";
+import type { Partner } from "@/lib/content";
 
-export default function Hero() {
+interface HeroProps {
+  partners: Partner[];
+}
+
+export default function Hero({ partners }: HeroProps) {
   // -mt-16/pt-16 pulls the hero up behind the fixed translucent nav (main has pt-16)
   return (
     <section className="relative -mt-16 pt-16 min-h-[62vh] flex items-center justify-center brand-gradient overflow-hidden">
@@ -59,6 +65,8 @@ export default function Hero() {
             Partner with us →
           </Link>
         </div>
+
+        <LogoCarousel partners={partners} variant="embedded" />
       </div>
     </section>
   );

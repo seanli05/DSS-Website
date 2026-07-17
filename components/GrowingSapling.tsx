@@ -121,7 +121,7 @@ function BranchPath({ branch, p }: { branch: Branch; p: number }) {
       strokeDasharray={1}
       strokeDashoffset={1 - drawn}
       opacity={drawn === 0 ? 0 : 1}
-      className="stroke-blossom"
+      className="stroke-primary"
     />
   );
 }
@@ -220,8 +220,8 @@ export default function GrowingSapling({ className = "" }: GrowingSaplingProps) 
         strokeWidth={2}
         strokeLinecap="round"
         fill="none"
-        opacity={0.4}
-        className="stroke-blossom"
+        opacity={0.25}
+        className="stroke-primary"
       />
 
       {/* limbs passing behind the taproot — painted first so it covers them */}
@@ -240,7 +240,7 @@ export default function GrowingSapling({ className = "" }: GrowingSaplingProps) 
         strokeDasharray={1}
         strokeDashoffset={1 - trunkDrawn}
         opacity={trunkDrawn === 0 ? 0 : 1}
-        className="stroke-blossom"
+        className="stroke-primary"
       />
 
       {/* remaining limbs — painted over the trunk like the near side of a tree */}
