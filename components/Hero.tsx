@@ -31,20 +31,27 @@ export default function Hero({ partners }: HeroProps) {
 
   return (
     <section className="relative brand-gradient overflow-hidden flex flex-col md:min-h-[calc(100vh-4rem)]">
-      <NodeGraph id="particles-home" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
+      {/* Wrapper confines the particle canvas to the headline area only, so it never repaints
+          behind the partner marquee below — two animated layers sharing the same pixels was
+          what made the marquee (the only continuously-moving element down there) read as laggy. */}
+      <div className="relative flex flex-1 items-center">
+        <NodeGraph id="particles-home" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
 
-      <div className="relative z-10 mx-auto flex flex-1 items-center w-full max-w-[1200px] px-6">
-        <div className="grid items-center gap-12 py-20 w-full md:grid-cols-2">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] px-6">
+          <div className="grid items-center gap-12 py-20 w-full md:grid-cols-2">
           {/* Left: headline + tagline + CTAs */}
           <div className="flex flex-col items-start text-left">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[0.95]">
               DATA SCIENCE SOCIETY
             </h1>
-            <p className="mt-4 font-mono text-lg md:text-xl uppercase tracking-widest text-white/70">
+            <p className="mt-4 text-lg md:text-xl font-bold uppercase tracking-wide text-white/80">
               @ UC Berkeley
             </p>
-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-md leading-relaxed">
-              We turn Berkeley students into data scientists.
+            {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
+            <p className="mt-6 text-base md:text-lg font-semibold text-white/80 max-w-lg leading-relaxed">
+              We turn Berkeley students into data scientists. Through hands-on projects with
+              real industry partners and mentorship from experienced members, we&apos;ll help
+              you build the skills and portfolio to break into the field.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -62,30 +69,44 @@ export default function Hero({ partners }: HeroProps) {
             </div>
           </div>
 
-          {/* Right: logo as the vibrant centerpiece */}
-          <div className="relative flex items-center justify-center">
-            {/* Static glow ring — built as a plain radial-gradient (no mask-image, no rotation).
-                A masked + continuously-rotating element here previously forced the GPU to
-                re-composite the mask every frame, which is expensive; a symmetric ring gains
-                nothing visually from spinning anyway. */}
-            <div
-              className="absolute h-[260px] w-[260px] md:h-[380px] md:w-[380px] rounded-full opacity-50"
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 60%, rgba(255,255,255,0.55) 64%, rgba(255,255,255,0.55) 68%, transparent 72%)",
-              }}
-              aria-hidden="true"
-            />
-            <div className="hero-logo-intro hero-logo-breathe relative h-[190px] w-[190px] md:h-[300px] md:w-[300px] drop-shadow-[0_0_45px_rgba(255,255,255,0.5)]">
-              <Image
-                src="/dss-logo-white.png"
-                alt="Data Science Society logo"
-                fill
-                priority
-                sizes="(min-width: 768px) 300px, 190px"
-                className="object-contain"
+          {/* Right: logo as the vibrant centerpiece.
+              justify-end pins this column's content flush against the column's own right edge —
+              which is the same container right edge the nav's "Join" button sits on — instead of
+              floating centered with empty space on both sides. That's what makes it "align with
+              the top bar" automatically: Nav and Hero already share the identical max-w-[1200px]
+              container, so anything flush against one side of this box lines up with the nav's
+              matching side without touching Nav.tsx at all. */}
+          <div className="relative flex items-center justify-end">
+            <div className="relative h-[260px] w-[260px] md:h-[410px] md:w-[410px]">
+              {/* Static glow ring — built as a plain radial-gradient (no mask-image, no rotation).
+                  A masked + continuously-rotating element here previously forced the GPU to
+                  re-composite the mask every frame, which is expensive; a symmetric ring gains
+                  nothing visually from spinning anyway. */}
+              <div
+                className="absolute inset-0 rounded-full opacity-50"
+                style={{
+                  background:
+                    "radial-gradient(circle, transparent 60%, rgba(255,255,255,0.55) 64%, rgba(255,255,255,0.55) 68%, transparent 72%)",
+                }}
+                aria-hidden="true"
               />
+              {/* Centering wrapper kept separate from the breathe/intro animation below — that
+                  animation sets a raw `transform: scale(...)` in its keyframes, which would
+                  clobber a translate-based centering transform if they were on the same element. */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="hero-logo-intro hero-logo-breathe relative h-[190px] w-[190px] md:h-[325px] md:w-[325px] drop-shadow-[0_0_45px_rgba(255,255,255,0.5)]">
+                  <Image
+                    src="/dss-logo-white.png"
+                    alt="Data Science Society logo"
+                    fill
+                    priority
+                    sizes="(min-width: 768px) 325px, 190px"
+                    className="object-contain"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -93,7 +114,7 @@ export default function Hero({ partners }: HeroProps) {
       {/* Bottom of hero: decorative partner logo marquee (no links) */}
       {partners.length > 0 && (
         <div className="relative z-10 pb-16">
-          <p className="mb-10 text-center font-mono text-xl uppercase tracking-widest text-white/60">
+          <p className="mb-[30px] text-center text-xl font-bold uppercase tracking-wide text-white/80">
             Past partners
           </p>
           <div className="relative overflow-hidden">

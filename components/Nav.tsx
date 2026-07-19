@@ -39,64 +39,66 @@ export default function Nav() {
           <span className="text-xl font-bold tracking-tight">DSS</span>
         </Link>
 
-        {/* Desktop links */}
-        <ul className="hidden md:flex items-center gap-8 text-sm font-medium text-muted">
-          {links.map(({ label, href }) => (
-            <li key={href}>
-              <Link
-                href={href}
-                className="hover:text-primary transition-colors duration-150"
+        {/* Desktop links + Join, grouped together on the right so the logo stands alone on the left */}
+        <div className="hidden md:flex items-center gap-8">
+          <ul className="flex items-center gap-8 text-sm font-semibold text-muted">
+            {links.map(({ label, href }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="hover:text-primary transition-colors duration-150"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+
+            {/* Committees dropdown */}
+            <li className="relative group">
+              <button
+                className="flex items-center gap-1 hover:text-primary transition-colors duration-150 cursor-pointer"
+                aria-haspopup="true"
               >
-                {label}
-              </Link>
+                Committees
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="transition-transform duration-150 group-hover:rotate-180"
+                  aria-hidden="true"
+                >
+                  <path d="M2 4l4 4 4-4" />
+                </svg>
+              </button>
+              {/* Dropdown panel — visible on group hover */}
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
+                <ul className="rounded-xl border border-border bg-bg shadow-lg py-1.5 min-w-[160px]">
+                  {committeeLinks.map(({ label, href }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface transition-colors duration-150"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </li>
-          ))}
+          </ul>
 
-          {/* Committees dropdown */}
-          <li className="relative group">
-            <button
-              className="flex items-center gap-1 hover:text-primary transition-colors duration-150 cursor-pointer"
-              aria-haspopup="true"
-            >
-              Committees
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className="transition-transform duration-150 group-hover:rotate-180"
-                aria-hidden="true"
-              >
-                <path d="M2 4l4 4 4-4" />
-              </svg>
-            </button>
-            {/* Dropdown panel — visible on group hover */}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
-              <ul className="rounded-xl border border-border bg-bg shadow-lg py-1.5 min-w-[160px]">
-                {committeeLinks.map(({ label, href }) => (
-                  <li key={href}>
-                    <Link
-                      href={href}
-                      className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface transition-colors duration-150"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        </ul>
-
-        {/* Join CTA */}
-        <Link
-          href="/join"
-          className="hidden md:inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-        >
-          Join
-        </Link>
+          {/* Join CTA */}
+          <Link
+            href="/join"
+            className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            Join
+          </Link>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -119,7 +121,7 @@ export default function Nav() {
       {/* Mobile drawer */}
       {menuOpen && (
         <div className="md:hidden border-t border-border bg-bg px-6 pb-6 pt-2">
-          <ul className="flex flex-col gap-4 text-sm font-medium text-muted">
+          <ul className="flex flex-col gap-4 text-sm font-semibold text-muted">
             {links.map(({ label, href }) => (
               <li key={href}>
                 <Link
