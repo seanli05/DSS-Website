@@ -38,17 +38,17 @@ export default function Hero({ partners }: HeroProps) {
         <NodeGraph id="particles-home" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1200px] px-6">
-          <div className="grid items-center gap-12 py-20 w-full md:grid-cols-2">
+          <div className="grid items-center gap-12 py-20 mt-6 w-full md:grid-cols-2">
           {/* Left: headline + tagline + CTAs */}
           <div className="flex flex-col items-start text-left">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[0.95]">
+            <h1 className="font-sans text-[32px] md:text-[40px] lg:text-[48px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
               DATA SCIENCE SOCIETY
             </h1>
-            <p className="mt-4 text-lg md:text-xl font-bold uppercase tracking-wide text-white/80">
+            <p className="mt-4 text-lg md:text-xl font-extrabold uppercase tracking-wide text-white/80">
               @ UC Berkeley
             </p>
             {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
-            <p className="mt-6 text-base md:text-lg font-semibold text-white/80 max-w-lg leading-relaxed">
+            <p className="mt-6 text-base md:text-lg font-bold text-white/80 max-w-lg leading-relaxed">
               We turn Berkeley students into data scientists. Through hands-on projects with
               real industry partners and mentorship from experienced members, we&apos;ll help
               you build the skills and portfolio to break into the field.
@@ -56,13 +56,13 @@ export default function Hero({ partners }: HeroProps) {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/join"
-                className="inline-flex items-center rounded-none bg-white px-7 py-3 text-lg font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
+                className="inline-flex items-center rounded-full bg-white px-7 py-3 text-lg font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
               >
                 Join DSS
               </Link>
               <Link
                 href="/about"
-                className="inline-flex items-center rounded-none border border-white/60 px-7 py-3 text-lg font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
+                className="inline-flex items-center rounded-full border border-white/60 px-7 py-3 text-lg font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
               >
                 Learn more →
               </Link>
