@@ -20,7 +20,7 @@ interface NodeGraphProps {
 const PARTICLE_CONFIG: ISourceOptions = {
   fpsLimit: 30,
   particles: {
-    number: { value: 24, density: { enable: true, width: 800 } },
+    number: { value: 50, density: { enable: true, width: 800 } },
     color: { value: "#ffffff" },
     shape: { type: "circle" },
     opacity: { value: 0.6 },

@@ -1,36 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import NodeGraph from "./NodeGraph";
-import type { Partner } from "@/lib/content";
+import type { Partner, Project } from "@/lib/content";
 
 interface HeroProps {
   partners: Partner[];
+  projects: Project[];
 }
 
-// These two read fine at the marquee's original size; every other logo is scaled down to match.
-const FULL_SIZE_LOGOS = new Set(["Arc'teryx", "WWF"]);
-
-// Each logo's real width/height (scaled down, same aspect ratio as the source file). Passing the
-// true ratio here — instead of one generic box for every logo — avoids Next.js's "width or height
-// modified but not the other" dev warning, since object-contain then never has to reconcile a
-// mismatched intrinsic ratio against the rendered box.
-const LOGO_DIMENSIONS: Record<string, { width: number; height: number }> = {
-  "Analog Devices": { width: 169, height: 48 },
-  "Arc'teryx": { width: 80, height: 48 },
-  Boeing: { width: 180, height: 48 },
-  "National Geographic": { width: 163, height: 48 },
-  Databricks: { width: 269, height: 48 },
-  Oracle: { width: 322, height: 48 },
-  "Stanford Medicine": { width: 302, height: 48 },
-  WWF: { width: 81, height: 48 },
-};
-
-export default function Hero({ partners }: HeroProps) {
+export default function Hero({ partners, projects }: HeroProps) {
   const marqueeItems = [...partners, ...partners, ...partners];
   const marqueeDuration = `${partners.length * 3}s`;
 
+  // Only Consulting and Social Good projects are tracked in Airtable (see
+  // getProjects), so a match here is always one of those two committees —
+  // matches the "social good or consulting" ask without extra filtering.
+  const projectForPartner = (partnerName: string) =>
+    projects.find((p) => p.partner.trim().toLowerCase() === partnerName.trim().toLowerCase());
+
   return (
-    <section className="relative brand-gradient overflow-hidden flex flex-col md:min-h-[calc(100vh-4rem)]">
+    <section className="relative -mt-16 pt-16 surface-green-gradient overflow-hidden flex flex-col md:min-h-screen">
       {/* Wrapper confines the particle canvas to the headline area only, so it never repaints
           behind the partner marquee below — two animated layers sharing the same pixels was
           what made the marquee (the only continuously-moving element down there) read as laggy. */}
@@ -38,17 +27,17 @@ export default function Hero({ partners }: HeroProps) {
         <NodeGraph id="particles-home" className="absolute inset-0 w-full h-full pointer-events-none" opacity={0.25} />
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1200px] px-6">
-          <div className="grid items-center gap-12 py-20 mt-6 w-full md:grid-cols-2">
+          <div className="grid items-center gap-12 py-16 mt-2 w-full md:grid-cols-2">
           {/* Left: headline + tagline + CTAs */}
-          <div className="flex flex-col items-start text-left">
+          <div className="flex flex-col items-start text-left md:self-center md:mt-6">
             <h1 className="font-sans text-[32px] md:text-[40px] lg:text-[48px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
-              DATA SCIENCE SOCIETY
+              Data Science Society
             </h1>
-            <p className="mt-4 text-lg md:text-xl font-extrabold uppercase tracking-wide text-white/80">
+            <p className="mt-4 text-lg md:text-xl font-semibold uppercase tracking-wide text-white/80">
               @ UC Berkeley
             </p>
             {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
-            <p className="mt-6 text-base md:text-lg font-bold text-white/80 max-w-lg leading-relaxed">
+            <p className="mt-6 text-base md:text-lg text-white/70 max-w-lg leading-relaxed">
               We turn Berkeley students into data scientists. Through hands-on projects with
               real industry partners and mentorship from experienced members, we&apos;ll help
               you build the skills and portfolio to break into the field.
@@ -78,15 +67,14 @@ export default function Hero({ partners }: HeroProps) {
               matching side without touching Nav.tsx at all. */}
           <div className="relative flex items-center justify-end">
             <div className="relative h-[260px] w-[260px] md:h-[410px] md:w-[410px]">
-              {/* Static glow ring — built as a plain radial-gradient (no mask-image, no rotation).
-                  A masked + continuously-rotating element here previously forced the GPU to
-                  re-composite the mask every frame, which is expensive; a symmetric ring gains
-                  nothing visually from spinning anyway. */}
+              {/* Spinning conic-gradient halo, masked down to a thin ring — matches the sean branch's homepage. */}
               <div
-                className="absolute inset-0 rounded-full opacity-50"
+                className="hero-halo absolute inset-0 rounded-full opacity-50"
                 style={{
                   background:
-                    "radial-gradient(circle, transparent 60%, rgba(255,255,255,0.55) 64%, rgba(255,255,255,0.55) 68%, transparent 72%)",
+                    "conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.9) 15%, transparent 30%, transparent 60%, rgba(255,255,255,0.6) 75%, transparent 90%)",
+                  maskImage: "radial-gradient(circle, transparent 62%, black 64%, black 68%, transparent 70%)",
+                  WebkitMaskImage: "radial-gradient(circle, transparent 62%, black 64%, black 68%, transparent 70%)",
                 }}
                 aria-hidden="true"
               />
@@ -111,10 +99,12 @@ export default function Hero({ partners }: HeroProps) {
         </div>
       </div>
 
-      {/* Bottom of hero: decorative partner logo marquee (no links) */}
+      {/* Bottom of hero: partner logo marquee. Logos with a matching Consulting/Social
+          Good project link to that project's card on the committee page; the rest
+          (no project on file) stay decorative, unlinked divs. */}
       {partners.length > 0 && (
-        <div className="relative z-10 pb-16">
-          <p className="mb-[30px] text-center text-xl font-bold uppercase tracking-wide text-white/80">
+        <div className="relative z-10 pb-8 mt-4">
+          <p className="mb-1.5 text-center font-mono text-sm uppercase tracking-widest text-white/50">
             Past partners
           </p>
           <div className="relative overflow-hidden">
@@ -127,23 +117,43 @@ export default function Hero({ partners }: HeroProps) {
               style={{ background: "linear-gradient(to left, var(--color-accent), transparent)" }}
             />
             <div className="marquee-track" style={{ animationDuration: marqueeDuration }}>
-              {marqueeItems.map((partner, i) => (
-                <div key={`${partner.id}-${i}`} className="flex-shrink-0 px-10 flex items-center h-16">
-                  {partner.logoUrl ? (
+              {marqueeItems.map((partner, i) => {
+                const project = projectForPartner(partner.name);
+                const itemClass = "group flex-shrink-0 mx-10 px-10 flex items-center justify-center h-36 w-56";
+
+                const content = partner.logoUrl ? (
+                  <div className="relative h-full w-full">
                     <Image
                       src={partner.logoUrl}
                       alt={partner.name}
-                      width={LOGO_DIMENSIONS[partner.name]?.width ?? 160}
-                      height={LOGO_DIMENSIONS[partner.name]?.height ?? 48}
-                      className={`w-auto object-contain ${FULL_SIZE_LOGOS.has(partner.name) ? "h-full" : "h-1/2"}`}
+                      fill
+                      // Same-size box for every partner regardless of their logo's native
+                      // aspect ratio (object-contain fits without distorting or cropping).
+                      // brightness-0 + invert forces any-colored logo to solid white; hover
+                      // removes both to reveal the real logo colors, plus a small scale bump.
+                      className="object-contain brightness-0 invert transition-all duration-300 group-hover:brightness-100 group-hover:invert-0 group-hover:scale-110"
                     />
-                  ) : (
-                    <span className="text-lg font-semibold text-white/75 whitespace-nowrap">
-                      {partner.name}
-                    </span>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ) : (
+                  <span className="text-lg font-semibold text-white/75 whitespace-nowrap">
+                    {partner.name}
+                  </span>
+                );
+
+                return project ? (
+                  <Link
+                    key={`${partner.id}-${i}`}
+                    href={`/committees/${project.committee}#${project.id}`}
+                    className={itemClass}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={`${partner.id}-${i}`} className={itemClass}>
+                    {content}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

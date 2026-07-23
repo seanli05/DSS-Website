@@ -2,13 +2,13 @@ import Image from "next/image";
 import Hero from "@/components/Hero";
 import Button from "@/components/Button";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import { getStats, getPartners } from "@/lib/content";
+import { getStats, getPartners, getProjects } from "@/lib/content";
 
 // Which stats.json entries appear in the mission window, in this order.
 const HOME_STAT_LABELS = ["Active members", "Industry partners", "Years running"];
 
 export default async function HomePage() {
-  const partners = await getPartners();
+  const [partners, projects] = await Promise.all([getPartners(), getProjects()]);
   const stats = HOME_STAT_LABELS.map(
     (label) => getStats().find((s) => s.label === label)
   ).filter((s) => s !== undefined);
@@ -16,20 +16,11 @@ export default async function HomePage() {
   return (
     <>
       {/* 1. Hero (headline + logo + partner marquee) */}
-      <Hero partners={partners} />
+      <Hero partners={partners} projects={projects} />
 
       {/* 2. Mission + stats window */}
-      <section className="relative bg-gradient-to-b from-accent/20 via-surface to-bg">
-        {/* Soft color bleed from the hero gradient, most vivid at the seam.
-            Kept deliberately small/few: large CSS blur() layers are expensive for Chrome to
-            re-rasterize while scrolling, and this page was measured to be GPU-compositor bound. */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
-          <div className="absolute left-[12%] -top-32 h-56 w-56 rounded-full bg-primary-bright/30 blur-[60px]" />
-          <div className="absolute right-[12%] -top-24 h-64 w-64 rounded-full bg-accent/40 blur-[60px]" />
-          <div className="absolute left-[55%] top-[30%] h-56 w-56 rounded-full bg-accent/25 blur-[60px]" />
-        </div>
-
-        <div className="relative z-10 mx-auto max-w-[1200px] px-6 pt-20 pb-1.5">
+      <section className="relative mission-fade-gradient">
+        <div className="relative z-10 mx-auto max-w-[1200px] px-6 pt-20 pb-20">
           {/* Staggered in three waves (0/150/300ms) rather than one block, matching the
               cascading reveal on product.studentorg.berkeley.edu. */}
           <RevealOnScroll delayMs={0} className="max-w-2xl">

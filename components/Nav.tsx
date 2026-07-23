@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const links = [
   { label: "About", href: "/about" },
@@ -16,37 +16,26 @@ const committeeLinks = [
 ];
 
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [committeeOpen, setCommitteeOpen] = useState(false);
 
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 8);
-    window.addEventListener("scroll", handler, { passive: true });
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
-
   return (
-    <header
-      className={`fixed top-0 inset-x-0 z-50 transition-shadow duration-200 bg-bg ${
-        scrolled ? "shadow-sm" : ""
-      }`}
-    >
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-hero-canvas/50 backdrop-blur-xl backdrop-saturate-150">
       <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-semibold text-ink">
-          <Image src="/dss-logo-black.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
+        <Link href="/" className="flex items-center gap-2 font-semibold text-white">
+          <Image src="/dss-logo-white.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
           <span className="text-xl font-bold tracking-tight">DSS</span>
         </Link>
 
         {/* Desktop links + Join, grouped together on the right so the logo stands alone on the left */}
         <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-8 text-sm font-semibold text-muted">
+          <ul className="flex items-center gap-8 text-sm font-medium text-white/70">
             {links.map(({ label, href }) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className="hover:text-primary transition-colors duration-150"
+                  className="hover:text-white transition-colors duration-150"
                 >
                   {label}
                 </Link>
@@ -56,7 +45,7 @@ export default function Nav() {
             {/* Committees dropdown */}
             <li className="relative group">
               <button
-                className="flex items-center gap-1 hover:text-primary transition-colors duration-150 cursor-pointer"
+                className="flex items-center gap-1 hover:text-white transition-colors duration-150 cursor-pointer"
                 aria-haspopup="true"
               >
                 Committees
@@ -75,12 +64,12 @@ export default function Nav() {
               </button>
               {/* Dropdown panel — visible on group hover */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
-                <ul className="rounded-xl border border-border bg-bg shadow-lg py-1.5 min-w-[160px]">
+                <ul className="rounded-xl border border-white/10 bg-hero-canvas-deep/85 backdrop-blur-xl shadow-lg py-1.5 min-w-[160px]">
                   {committeeLinks.map(({ label, href }) => (
                     <li key={href}>
                       <Link
                         href={href}
-                        className="block px-4 py-2 text-sm text-muted hover:text-primary hover:bg-surface transition-colors duration-150"
+                        className="block px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors duration-150"
                       >
                         {label}
                       </Link>
@@ -102,7 +91,7 @@ export default function Nav() {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden p-2 text-ink"
+          className="md:hidden p-2 text-white"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           onClick={() => setMenuOpen((o) => !o)}
         >
@@ -120,13 +109,13 @@ export default function Nav() {
 
       {/* Mobile drawer */}
       {menuOpen && (
-        <div className="md:hidden border-t border-border bg-bg px-6 pb-6 pt-2">
-          <ul className="flex flex-col gap-4 text-sm font-semibold text-muted">
+        <div className="md:hidden border-t border-white/10 bg-hero-canvas-deep/85 backdrop-blur-xl px-6 pb-6 pt-2">
+          <ul className="flex flex-col gap-4 text-sm font-medium text-white/70">
             {links.map(({ label, href }) => (
               <li key={href}>
                 <Link
                   href={href}
-                  className="block hover:text-primary transition-colors"
+                  className="block hover:text-white transition-colors"
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
@@ -137,7 +126,7 @@ export default function Nav() {
             {/* Committees expandable in mobile */}
             <li>
               <button
-                className="flex w-full items-center justify-between hover:text-primary transition-colors"
+                className="flex w-full items-center justify-between hover:text-white transition-colors"
                 onClick={() => setCommitteeOpen((o) => !o)}
               >
                 Committees
@@ -160,7 +149,7 @@ export default function Nav() {
                     <li key={href}>
                       <Link
                         href={href}
-                        className="block hover:text-primary transition-colors"
+                        className="block hover:text-white transition-colors"
                         onClick={() => setMenuOpen(false)}
                       >
                         {label}

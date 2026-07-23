@@ -15,17 +15,16 @@ export default function CommitteesPage() {
 
   return (
     <>
-      {/* Page header */}
-      <section className="bg-surface border-b border-border">
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      <section className="relative -mt-16 pt-16 overflow-hidden brand-gradient">
         <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
+          <p className="font-mono text-xs uppercase tracking-widest text-white/50 mb-4">
             Committees
           </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink max-w-xl leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white max-w-xl leading-tight">
             Find your niche.
           </h1>
-          <p className="mt-6 text-lg text-muted max-w-lg leading-relaxed">
-            {/* TODO: finalize copy */}
+          <p className="mt-6 text-lg text-white/70 max-w-lg leading-relaxed">
             {/* TODO: finalize copy */}
             DSS is organized into three committees — Acadev, Consulting, and
             Social Good. Every member picks a home and grows fast.
