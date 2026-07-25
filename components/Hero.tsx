@@ -33,8 +33,8 @@ export default function Hero({ partners, projects }: HeroProps) {
             <h1 className="font-sans text-[32px] md:text-[40px] lg:text-[48px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
               Data Science Society
             </h1>
-            <p className="mt-4 text-lg md:text-xl font-semibold uppercase tracking-wide text-white/80">
-              @ UC Berkeley
+            <p className="mt-4 text-lg md:text-xl font-semibold tracking-wide text-white/80">
+              @ Berkeley
             </p>
             {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-lg leading-relaxed">
