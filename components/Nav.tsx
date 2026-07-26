@@ -20,7 +20,7 @@ export default function Nav() {
   const [committeeOpen, setCommitteeOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-hero-canvas/50 backdrop-blur-xl backdrop-saturate-150">
+    <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-hero-canvas/60 backdrop-blur-md">
       <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-white">
