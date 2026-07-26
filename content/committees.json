@@ -6,7 +6,9 @@
     "blurb": "TODO: Acadev (Academic Development) committee description — workshops, bootcamps, and skill-building for the DSS community.",
     "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
     "lead": "TODO: Committee Lead",
-    "featured": true
+    "featured": true,
+    "heroImage": null,
+    "description": null
   },
   {
     "id": "consulting",
@@ -15,7 +17,9 @@
     "blurb": "TODO: Consulting committee description — partner with companies to solve real data problems and deliver insights.",
     "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
     "lead": "TODO: Committee Lead",
-    "featured": true
+    "featured": true,
+    "heroImage": "/committees/consulting-hero.JPG",
+    "description": "TODO: finalize with committee leadership. We partner with companies ranging from early-stage startups to Fortune 500s to tackle real, high-stakes data problems — from building predictive models to designing dashboards that shape executive decisions. Each semester-long engagement pairs a small team of students with a client stakeholder, mirroring the cadence and rigor of a real consulting relationship. Members leave with a portfolio of shipped work, direct client-facing experience, and a technical toolkit spanning the full analytics stack, from data cleaning to communicating insights that actually get acted on."
   },
   {
     "id": "social-good",
@@ -24,6 +28,8 @@
     "blurb": "TODO: Social Good committee description — apply data science to nonprofits and community organizations.",
     "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
     "lead": "TODO: Committee Lead",
-    "featured": true
+    "featured": true,
+    "heroImage": "/committees/social-good-hero.jpg",
+    "description": "We provide pro-bono support for non-profit organizations through developing advanced analytical insights to recognize uplifting initiatives around the globe. By using ‘tech for social good’, our diverse team of talented individuals pride on the impact they make working on meaningful projects in the societal, healthcare, and environmental domain. We focus our efforts in not only providing effective solutions to real world issues, but also in addressing ethical challenges within the tech landscape. This has become increasingly evident with the rapid advancement of technology along with the prevalence of data in today’s world. In our committee, we strive to instill a passion for ethical commitment within our members as they prepare to pursue their professional endeavors."
   }
 ]

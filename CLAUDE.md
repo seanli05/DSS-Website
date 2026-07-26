@@ -24,11 +24,11 @@ app/
   about/page.tsx  committees/page.tsx  projects/page.tsx
   partners/page.tsx  join/page.tsx  contact/page.tsx
   sitemap.ts
-components/             Nav, Footer, Hero, Section, Button, StatCounter*, LogoWall,
-                        CommitteeCard, ProjectCard, OfficerCard, Testimonial, DualCTA, Gallery*
+components/             Nav, Footer, Hero, Section, Button, StatCounter*, LogoCarousel,
+                        CommitteeCard, ProjectCard, ExecCard, Testimonial, DualCTA, Gallery*
                         (* = "use client")
 lib/content.ts          the ONLY place that knows where data comes from
-content/                committees.json, projects.json, team.json, testimonials.json
+content/                committees.json, projects.json, testimonials.json
 data/                   stats.json, partners.json (Airtable fallback)
 public/                 images, logos, favicon
 .nvmrc                  pinned Node version (e.g. 20)

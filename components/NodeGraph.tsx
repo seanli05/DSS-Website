@@ -18,15 +18,19 @@ interface NodeGraphProps {
 }
 
 const PARTICLE_CONFIG: ISourceOptions = {
+  fpsLimit: 30,
   particles: {
-    number: { value: 50, density: { enable: true, width: 800 } },
+    // Link rendering is O(n²) pairwise distance checks per frame — 36 keeps the
+    // denser, more-connected look over the original 24, without paying for the
+    // ~2x link-cost jump that going all the way to 50 (sean's count) costs.
+    number: { value: 36, density: { enable: true, width: 800 } },
     color: { value: "#ffffff" },
     shape: { type: "circle" },
     opacity: { value: 0.6 },
     size: { value: 3 },
     links: {
       enable: true,
-      distance: 150,
+      distance: 220,
       color: "#ffffff",
       opacity: 0.4,
       width: 1,
@@ -41,10 +45,15 @@ const PARTICLE_CONFIG: ISourceOptions = {
       repulse: { distance: 120, duration: 0.4 },
     },
   },
-  detectRetina: true,
+  // false is intentional: on a Retina/HiDPI screen this canvas covers the entire hero, so
+  // detectRetina would quadruple (2x²) the pixels the GPU has to raster/composite every frame
+  // for background decoration that doesn't need pixel-sharp edges. This was the dominant cost
+  // in a real trace (GPU compositor thread was blocked ~80ms/frame — a 3-8fps hero).
+  detectRetina: false,
   fullScreen: { enable: false },
   resize: { enable: false, delay: 0 },
-  pauseOnOutsideViewport: false,
+  // Stop the animation loop (and its CPU cost) once the hero scrolls out of view.
+  pauseOnOutsideViewport: true,
 };
 
 export default function NodeGraph({ id = "tsparticles", className = "", opacity = 0.12 }: NodeGraphProps) {

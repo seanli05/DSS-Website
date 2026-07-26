@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Section from "@/components/Section";
-import LogoWall from "@/components/LogoWall";
+import LogoCarousel from "@/components/LogoCarousel";
 import Button from "@/components/Button";
-import { getPartners, getProjects } from "@/lib/content";
+import { getPartners } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -57,34 +58,41 @@ const STEPS = [
 ];
 
 export default async function PartnersPage() {
-  const [partners, projects] = await Promise.all([getPartners(), getProjects()]);
+  const partners = await getPartners();
 
   return (
     <>
-      {/* Page header */}
-      <section className="bg-surface border-b border-border">
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      <section className="relative -mt-16 pt-16 overflow-hidden brand-gradient">
         <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
+          <p className="font-mono text-xs uppercase tracking-widest text-white/50 mb-4">
             Industry partners
           </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink max-w-xl leading-tight">
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white max-w-xl leading-tight">
             Access Berkeley&apos;s
             <br />
             data science talent.
           </h1>
-          <p className="mt-6 text-lg text-muted max-w-lg leading-relaxed">
+          <p className="mt-6 text-lg text-white/70 max-w-lg leading-relaxed">
             {/* TODO: verify copy with DSS leadership */}
             Partner with DSS for semester-long consulting engagements,
             recruiting pipelines, and sponsored research. Trusted by companies
             across tech, finance, and healthcare.
           </p>
+          {/* White CTAs on the gradient — same styles as the home Hero buttons */}
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button href="/contact" size="lg">
+            <Link
+              href="/contact"
+              className="inline-flex items-center rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
+            >
               Get in touch →
-            </Button>
-            <Button href="#how-it-works" variant="outline" size="lg">
+            </Link>
+            <Link
+              href="#how-it-works"
+              className="inline-flex items-center rounded-full border border-white/60 px-7 py-3 text-base font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
+            >
               How it works
-            </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -105,8 +113,8 @@ export default async function PartnersPage() {
         </div>
       </Section>
 
-      {/* Logo wall */}
-      <LogoWall partners={partners} projects={projects} />
+      {/* Logo carousel */}
+      <LogoCarousel partners={partners} />
 
       {/* How it works */}
       <Section

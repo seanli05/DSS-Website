@@ -14,10 +14,16 @@
   --color-primary:        #0C706E;  /* deep teal — OK for body text/links (5.9:1 on white) */
   --color-primary-bright: #1D8C89;  /* teal — large headings/decoration only (4.1:1) */
   --color-accent:         #8FB573;  /* sage green — decorative only, never small text */
+  --color-blossom:        #FFF9EF;  /* warm cream — decorative only (GrowingSapling petals) */
 
-  /* Dark atmospheric canvas — hero only, "Air"-inspired, recolored to brand teal/sage */
+  /* Dark atmospheric canvas — hero + nav, "Air"-inspired, recolored to brand teal/sage */
   --color-hero-canvas:      #061615;
   --color-hero-canvas-deep: #030b0a;
+
+  /* Card shadows — even on all edges (0 offset) so cards read clearly against
+     a pure-white background. Color is ink at low alpha. */
+  --shadow-card:       0 0 20px rgba(11, 29, 28, 0.16);
+  --shadow-card-hover: 0 0 30px rgba(11, 29, 28, 0.26);
 }
 
 /* Font references — uses @theme inline because the values are runtime CSS vars  */
@@ -27,9 +33,13 @@
   --font-mono: var(--font-ibm-plex-mono);
 }
 
-/* Gradient lives in :root because complex values aren't supported in @theme */
+/* Gradients live in :root because complex values aren't supported in @theme */
 :root {
   --gradient-brand: linear-gradient(135deg, #0C706E 0%, #1D8C89 45%, #AAC48E 100%);
+  /* Dark brand wash — deep teal → sage, echoes --gradient-brand (e.g. Social
+     Good "What we do"). Use white text on it; every stop keeps white ≥4.5:1
+     (AA), so don't lighten any stop. */
+  --gradient-surface-green: linear-gradient(135deg, #1B6E68 0%, #2E9690 45%, #7CA85F 100%);
 }
 
 /* ─── Base Styles ──────────────────────────────────────────────────────────── */
@@ -51,7 +61,43 @@ body {
   background-clip: text;
 }
 
-/* ─── Marquee (LogoWall) ───────────────────────────────────────────────────── */
+.surface-green-gradient {
+  background: var(--gradient-surface-green);
+}
+
+/* Homepage Mission section: a soft, even fade in from the hero's green at the
+   top (subtler than before — no decorative blur blobs, just this gradient, so
+   it reads as one smooth handoff rather than patches of color), plain white
+   through where the actual content sits, then fades back toward that green at
+   the very bottom so the handoff into the footer isn't a flat-white-to-green
+   hard cut either. */
+.mission-fade-gradient {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-accent) 45%, transparent) 0%,
+    color-mix(in srgb, var(--color-accent) 15%, transparent) 8%,
+    var(--color-surface) 15%,
+    var(--color-bg) 28%,
+    var(--color-bg) 85%,
+    color-mix(in srgb, var(--color-primary) 18%, transparent) 100%
+  );
+}
+
+/* Blossom "pop" for GrowingSapling — scale is set inline by JS; only the
+   one-way bloom is transitioned (scroll-scrubbed properties get no transition). */
+.sapling-blossom {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Final "pulse" for GrowingNetwork once the graph fully connects — only opacity
+   and glow are transitioned here, deliberately never transform (that's already
+   doing scroll-scrubbed grow-in via inline style; transitioning it too would
+   fight the scrub, same pitfall .sapling-blossom's comment calls out). */
+.network-pulse {
+  transition: opacity 0.5s ease-out, filter 0.5s ease-out;
+}
+
+/* ─── Marquee (LogoWall, homepage hero) ────────────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(calc(-100% / 3)); }
@@ -63,6 +109,42 @@ body {
   min-width: max-content;
   will-change: transform;
   animation: marquee 30s linear infinite;
+}
+
+/* ─── Marquee (LogoCarousel, other pages) ──────────────────────────────────── */
+/* Named marquee-carousel (not marquee) to avoid colliding with the keyframe
+   above — same animation name with two different bodies would be ambiguous,
+   since CSS keyframe names aren't scoped and the later declaration wins.
+   The track renders its logo list twice, so -50% lands the second copy exactly
+   where the first began — an invisible loop. LogoCarousel overrides the 60s
+   with an inline animation-duration so pace stays constant at any partner
+   count. (A var() here wouldn't work: it would resolve at :root, not on the
+   element, so per-element values could never reach it.) */
+@theme {
+  --animate-marquee: marquee-carousel 60s linear infinite;
+
+  @keyframes marquee-carousel {
+    to { transform: translateX(-50%); }
+  }
+}
+
+/* Fades the strip's edges. A mask works over any background (unlike overlay divs
+   painted with a bg color); clamp() shrinks the fade on narrow phone viewports. */
+@utility marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black clamp(2rem, 12vw, 10rem),
+    black calc(100% - clamp(2rem, 12vw, 10rem)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black clamp(2rem, 12vw, 10rem),
+    black calc(100% - clamp(2rem, 12vw, 10rem)),
+    transparent
+  );
 }
 
 /* Hide scrollbar while keeping scroll behavior (used in Gallery) */
@@ -104,5 +186,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora-a, .hero-aurora-b, .hero-halo, .hero-logo-breathe, .hero-logo-intro {
     animation: none;
+  }
+  .sapling-blossom {
+    transition: none;
+  }
+  .network-pulse {
+    transition: none;
   }
 }
