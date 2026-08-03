@@ -11,14 +11,20 @@ interface LogoCarouselProps {
    * a small light-on-dark label, for dropping into a dark host like Hero.
    */
   variant?: "standalone" | "embedded";
+  /**
+   * Standalone only: replaces the section's default `bg-surface`. Pass a
+   * transparent/gradient class when the section needs to sit inside a page-level
+   * gradient instead of painting its own background over it.
+   */
+  className?: string;
 }
 
-// Every logo sits in a fixed 160×48 slot with an 80px gap → 240px per slot.
+// Every logo sits in a fixed 192×56 slot with an 80px gap → 272px per slot.
 // Fixed slots keep the track width identical before and after images load,
 // whatever shape of logo an officer uploads to Airtable.
-const SECONDS_PER_SLOT = 3; // 240px slot ÷ 3s ≈ 80px/s
+const SECONDS_PER_SLOT = 3.4; // 272px slot ÷ 3.4s ≈ 80px/s — same pace as before the resize
 
-export default function LogoCarousel({ partners, duration, variant = "standalone" }: LogoCarouselProps) {
+export default function LogoCarousel({ partners, duration, variant = "standalone", className }: LogoCarouselProps) {
   if (partners.length === 0) return null;
 
   // The track holds two identical halves and animates translateX(0 → -50%),
@@ -36,18 +42,18 @@ export default function LogoCarousel({ partners, duration, variant = "standalone
       {half.map((partner, i) => (
         <li
           key={`${partner.id}-${i}`}
-          className="flex h-12 w-40 flex-none items-center justify-center"
+          className="flex h-14 w-48 flex-none items-center justify-center"
         >
           {partner.logoUrl ? (
             <Image
               src={partner.logoUrl}
               alt="" // decorative: partner names live in the sr-only list
-              width={160}
-              height={48}
+              width={192}
+              height={56}
               className={
                 embedded
-                  ? "h-12 w-40 object-contain brightness-0 invert opacity-70"
-                  : "h-12 w-40 object-contain grayscale opacity-60"
+                  ? "h-14 w-48 object-contain brightness-0 invert opacity-70"
+                  : "h-14 w-48 object-contain"
               }
             />
           ) : (
@@ -99,7 +105,7 @@ export default function LogoCarousel({ partners, duration, variant = "standalone
   }
 
   return (
-    <section className="py-16 bg-surface">
+    <section className={`py-16 ${className ?? "bg-surface"}`}>
       <div className="mx-auto max-w-[1200px] px-6 flex flex-col items-center text-center mb-12">
         <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
           Our partners

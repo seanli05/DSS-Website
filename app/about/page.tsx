@@ -115,7 +115,7 @@ export default async function AboutPage() {
       </Section>
 
       {/* 3. Committees — modeled on the "Our Programs" treatment */}
-      <Section eyebrow="Get involved" heading="Find your committee.">
+      <Section id="committees" eyebrow="Get involved" heading="Find your committee.">
         <div className="grid sm:grid-cols-3 gap-6">
           {committees.map((c) => (
             <div key={c.id} className="flex flex-col gap-4">

@@ -19,7 +19,7 @@ export default function Hero({ partners, projects }: HeroProps) {
     projects.find((p) => p.partner.trim().toLowerCase() === partnerName.trim().toLowerCase());
 
   return (
-    <section className="relative -mt-16 pt-16 surface-green-gradient overflow-hidden flex flex-col md:min-h-screen">
+    <section className="font-poppins relative -mt-16 pt-16 surface-green-gradient overflow-hidden flex flex-col md:min-h-screen">
       {/* Wrapper confines the particle canvas to the headline area only, so it never repaints
           behind the partner marquee below — two animated layers sharing the same pixels was
           what made the marquee (the only continuously-moving element down there) read as laggy. */}
@@ -30,7 +30,9 @@ export default function Hero({ partners, projects }: HeroProps) {
           <div className="grid items-center gap-12 py-16 mt-2 w-full md:grid-cols-2">
           {/* Left: headline + tagline + CTAs */}
           <div className="flex flex-col items-start text-left md:self-center md:mt-6">
-            <h1 className="font-sans text-[32px] md:text-[40px] lg:text-[48px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
+            {/* nowrap from lg up keeps the wordmark on a single line at desktop; below
+                that the column is too narrow and it wraps, which is fine. */}
+            <h1 className="text-[32px] md:text-[40px] lg:text-[44px] xl:text-[52px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
               Data Science Society
             </h1>
             <p className="mt-4 text-lg md:text-xl font-semibold tracking-wide text-white/80">
@@ -45,15 +47,21 @@ export default function Hero({ partners, projects }: HeroProps) {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/join"
-                className="inline-flex items-center rounded-full bg-white px-7 py-3 text-lg font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
+                className="inline-flex items-center rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
               >
                 Join DSS
               </Link>
               <Link
                 href="/about"
-                className="inline-flex items-center rounded-full border border-white/60 px-7 py-3 text-lg font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
+                className="group inline-flex items-center gap-2 rounded-full border border-white/60 px-7 py-3 text-base font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
               >
-                Learn more →
+                Learn more
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-150 group-hover:translate-x-1 motion-reduce:transition-none"
+                >
+                  →
+                </span>
               </Link>
             </div>
           </div>
@@ -104,18 +112,10 @@ export default function Hero({ partners, projects }: HeroProps) {
           (no project on file) stay decorative, unlinked divs. */}
       {partners.length > 0 && (
         <div className="relative z-10 pb-8 mt-4">
-          <p className="mb-1.5 text-center font-mono text-sm uppercase tracking-widest text-white/50">
+          <p className="mb-1.5 text-center text-sm uppercase tracking-widest text-white/50">
             Past partners
           </p>
-          <div className="relative overflow-hidden">
-            <div
-              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 md:w-40"
-              style={{ background: "linear-gradient(to right, var(--color-primary-bright), transparent)" }}
-            />
-            <div
-              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 md:w-40"
-              style={{ background: "linear-gradient(to left, var(--color-accent), transparent)" }}
-            />
+          <div className="relative overflow-hidden marquee-mask">
             <div className="marquee-track" style={{ animationDuration: marqueeDuration }}>
               {marqueeItems.map((partner, i) => {
                 const project = projectForPartner(partner.name);

@@ -6,9 +6,15 @@ interface StatCounterProps {
   value: number;
   label: string;
   suffix: string;
+  /**
+   * "default" — centered dark-on-light, for the stat grids on About/inner pages.
+   * "editorial" — oversized left-aligned teal numeral with a mono label, for the
+   * homepage's ruled stats band.
+   */
+  variant?: "default" | "editorial";
 }
 
-export default function StatCounter({ value, label, suffix }: StatCounterProps) {
+export default function StatCounter({ value, label, suffix, variant = "default" }: StatCounterProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -45,6 +51,22 @@ export default function StatCounter({ value, label, suffix }: StatCounterProps) 
     observer.observe(el);
     return () => observer.disconnect();
   }, [value]);
+
+  if (variant === "editorial") {
+    // Inherits the section's typeface. tabular-nums matters here: without it the
+    // numeral's width changes on every frame of the count-up and the label jitters.
+    return (
+      <div ref={ref} className="flex flex-col items-start gap-3 text-left">
+        <span className="text-4xl font-bold leading-none tabular-nums text-primary md:text-5xl">
+          {count.toLocaleString()}
+          {suffix}
+        </span>
+        <span className="text-[11px] uppercase tracking-[0.18em] text-muted">
+          {label}
+        </span>
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="flex flex-col items-center gap-2 text-center">

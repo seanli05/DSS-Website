@@ -31,6 +31,9 @@
 @theme inline {
   --font-sans: var(--font-inter);
   --font-mono: var(--font-ibm-plex-mono);
+  /* Homepage typeface. Applied per-section there rather than swapping --font-sans,
+     so the rest of the site (and the shared Nav/Footer) stays on Inter. */
+  --font-poppins: var(--font-poppins-src);
 }
 
 /* Gradients live in :root because complex values aren't supported in @theme */
@@ -65,21 +68,45 @@ body {
   background: var(--gradient-surface-green);
 }
 
-/* Homepage Mission section: a soft, even fade in from the hero's green at the
-   top (subtler than before — no decorative blur blobs, just this gradient, so
-   it reads as one smooth handoff rather than patches of color), plain white
-   through where the actual content sits, then fades back toward that green at
-   the very bottom so the handoff into the footer isn't a flat-white-to-green
-   hard cut either. */
-.mission-fade-gradient {
+/* Homepage: eases the hero's green into the white editorial sections below it,
+   so the first seam reads as a fade rather than a hard cut. */
+.home-hero-fade {
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-accent) 45%, transparent) 0%,
-    color-mix(in srgb, var(--color-accent) 15%, transparent) 8%,
-    var(--color-surface) 15%,
-    var(--color-bg) 28%,
-    var(--color-bg) 85%,
-    color-mix(in srgb, var(--color-primary) 18%, transparent) 100%
+    color-mix(in srgb, var(--color-accent) 30%, transparent) 0%,
+    color-mix(in srgb, var(--color-accent) 8%, transparent) 6%,
+    var(--color-bg) 16%,
+    var(--color-bg) 100%
+  );
+}
+
+/* Mirror of the above at the other end: the last editorial section eases from
+   white back toward the footer's green, so the page closes on a fade rather
+   than a white-into-gradient cut. */
+.home-footer-fade {
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 0%,
+    var(--color-bg) 62%,
+    color-mix(in srgb, var(--color-primary) 10%, transparent) 84%,
+    color-mix(in srgb, var(--color-primary) 26%, transparent) 100%
+  );
+}
+
+/* Both of the above in one pass, for pages whose middle is a single short
+   stretch between the hero and the footer (e.g. Partners). Splitting it across
+   two sections the way the homepage does would compress each fade into a few
+   dozen pixels there and read as a hard edge; one gradient over the whole
+   middle keeps both transitions gradual regardless of section heights. */
+.fade-between-gradients {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-accent) 30%, transparent) 0%,
+    color-mix(in srgb, var(--color-accent) 8%, transparent) 5%,
+    var(--color-bg) 14%,
+    var(--color-bg) 78%,
+    color-mix(in srgb, var(--color-primary) 10%, transparent) 91%,
+    color-mix(in srgb, var(--color-primary) 26%, transparent) 100%
   );
 }
 
@@ -95,6 +122,17 @@ body {
    fight the scrub, same pitfall .sapling-blossom's comment calls out). */
 .network-pulse {
   transition: opacity 0.5s ease-out, filter 0.5s ease-out;
+}
+
+/* ProjectTimeline's detail panel: a small rise-in on every stage swap, so
+   switching stages reads as a change rather than the text silently updating
+   in place. Re-keyed (key={selected}) on every click to restart the animation. */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.timeline-detail-in {
+  animation: fadeIn 0.25s ease;
 }
 
 /* ─── Marquee (LogoWall, homepage hero) ────────────────────────────────────── */
@@ -192,5 +230,8 @@ body {
   }
   .network-pulse {
     transition: none;
+  }
+  .timeline-detail-in {
+    animation: none;
   }
 }

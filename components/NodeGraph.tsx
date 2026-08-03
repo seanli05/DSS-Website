@@ -20,17 +20,17 @@ interface NodeGraphProps {
 const PARTICLE_CONFIG: ISourceOptions = {
   fpsLimit: 30,
   particles: {
-    // Link rendering is O(n²) pairwise distance checks per frame — 36 keeps the
-    // denser, more-connected look over the original 24, without paying for the
-    // ~2x link-cost jump that going all the way to 50 (sean's count) costs.
-    number: { value: 36, density: { enable: true, width: 800 } },
+    // Link rendering is O(n²) pairwise distance checks per frame — more particles
+    // is the "more links, denser web" lever (not link distance, which just makes
+    // the same links longer without adding more of them).
+    number: { value: 44, density: { enable: true, width: 800 } },
     color: { value: "#ffffff" },
     shape: { type: "circle" },
     opacity: { value: 0.6 },
     size: { value: 3 },
     links: {
       enable: true,
-      distance: 220,
+      distance: 150,
       color: "#ffffff",
       opacity: 0.4,
       width: 1,
