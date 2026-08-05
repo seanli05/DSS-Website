@@ -168,10 +168,32 @@ export default async function CommitteePage({
             section instead of a separate section below — kept minimal (no
             heading/paragraph) since it's now sharing a section with everything above. */}
         {useGreenSection && (
-          <div className="mt-16 flex flex-col items-center text-center gap-4">
-            <p className="font-mono text-xs uppercase tracking-widest text-white/70">
-              Interested?
-            </p>
+          <div className="mt-16 flex flex-col items-center text-center gap-4"> 
+       <div className="flex gap-4 my-6">
+          <div className="flex flex-col items-center gap-2">
+            <Image
+              src="/social-good/dss_image_1.jpeg"
+              alt="Social Good team"
+              width={400}
+              height={300}
+              className="rounded-lg object-cover"
+            />
+            <p className="text-sm text-white/80">Last Social Good meeting of Spring 2026 :(</p>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <Image
+              src="/social-good/dss_image_2.png"
+              alt="Social Good project"
+              width={400}
+              height={300}
+              className="rounded-lg object-cover"
+            />
+            <p className="text-sm text-white/80">Social Good Social at Laser Tag!</p>
+          </div>
+        </div>
+        <p className="font-mono text-xs uppercase tracking-widest text-white/70">
+          Interested?
+        </p>     
             <Button href="/join" size="lg" className="!bg-white !text-primary hover:!bg-white/90">
               Apply to {committee.name} →
             </Button>
