@@ -78,6 +78,15 @@ export default function Nav() {
                 </ul>
               </div>
             </li>
+
+            <li>
+              <Link
+                href="/decal"
+                className="hover:text-white transition-colors duration-150"
+              >
+                Decal
+              </Link>
+            </li>
           </ul>
 
           {/* Join CTA */}
@@ -158,6 +167,16 @@ export default function Nav() {
                   ))}
                 </ul>
               )}
+            </li>
+
+            <li>
+              <Link
+                href="/decal"
+                className="block hover:text-white transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                Decal
+              </Link>
             </li>
 
             <li>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Section from "@/components/Section";
 import LogoCarousel from "@/components/LogoCarousel";
-import Button from "@/components/Button";
+import PartnerInquiryCard from "@/components/PartnerInquiryCard";
+import ProjectTimeline from "@/components/ProjectTimeline";
+import RevealOnScroll from "@/components/RevealOnScroll";
+import NodeGraph from "@/components/NodeGraph";
 import { getPartners } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -11,159 +12,240 @@ export const metadata: Metadata = {
     "Partner with DSS — access Berkeley's top data science talent for consulting, research, and recruiting.",
 };
 
-const VALUE_PROPS = [
-  {
-    icon: "🎓",
-    title: "Top-tier talent",
-    body: "DSS members are among Berkeley's most rigorous students — many go on to data science and ML roles at the best companies in the world. Engage them early.",
-  },
-  {
-    icon: "📊",
-    title: "Consulting projects",
-    body: "Bring us a real data problem and we'll build a dedicated student team to solve it. Our teams deliver production-quality work within a semester.",
-  },
-  {
-    icon: "🔬",
-    title: "Sponsored research",
-    body: "Interested in longer-horizon collaboration? Partner with us on research initiatives, share proprietary datasets, and co-publish results.",
-  },
+// Inline SVGs rather than an icon dependency: three icons don't justify a package,
+// and these match the thin-stroke, node-graph language of the DSS mark.
+const iconProps = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.5,
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+  className: "h-6 w-6",
+  "aria-hidden": true,
+};
+
+const TeamIcon = () => (
+  <svg {...iconProps}>
+    <circle cx="12" cy="5" r="2.5" />
+    <circle cx="5" cy="18" r="2.5" />
+    <circle cx="19" cy="18" r="2.5" />
+    <path d="M10.6 7.2 6.5 15.7M13.4 7.2l4.1 8.5M7.5 18h9" />
+  </svg>
+);
+
+const ScopeIcon = () => (
+  <svg {...iconProps}>
+    <path d="M12 3 3 7.5 12 12l9-4.5L12 3Z" />
+    <path d="m3 12.5 9 4.5 9-4.5" />
+    <path d="m3 17.5 9 4.5 9-4.5" />
+  </svg>
+);
+
+const StudentIcon = () => (
+  <svg {...iconProps}>
+    <path d="M12 4 2 9l10 5 10-5-10-5Z" />
+    <path d="M6 11.5V17c0 1.4 2.7 3 6 3s6-1.6 6-3v-5.5" />
+  </svg>
+);
+
+// TODO: confirm scopes and placements with DSS leadership. Company names are the
+// ones already cited elsewhere on the site plus those given by leadership — do not
+// extend this list without confirming it.
+const SCOPES = [
+  "Data analysis & visualisation",
+  "Predictive modelling & ML",
+  "Dashboards & internal tools",
+  "Research & experimentation",
 ];
 
-const STEPS = [
-  {
-    step: "01",
-    title: "Reach out",
-    body: "Email us or fill out the form below. We'll schedule a call within a week.",
-  },
-  {
-    step: "02",
-    title: "Define the scope",
-    body: "We work with you to size the problem and scope a deliverable that fits within one semester.",
-  },
-  {
-    step: "03",
-    title: "Meet your team",
-    body: "We match your project with a hand-picked team of students and a faculty or alumni advisor.",
-  },
-  {
-    step: "04",
-    title: "Build together",
-    body: "Weekly check-ins keep everyone aligned. You get visibility without managing the day-to-day.",
-  },
-  {
-    step: "05",
-    title: "Receive the results",
-    body: "Teams present findings and ship code, models, or dashboards at the end of the semester.",
-  },
-];
+const PLACEMENTS = ["Meta", "Tesla", "Amazon", "Google", "McKinsey"];
 
 export default async function PartnersPage() {
   const partners = await getPartners();
 
   return (
     <>
-      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
-      <section className="relative -mt-16 pt-16 overflow-hidden brand-gradient">
-        <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <p className="font-mono text-xs uppercase tracking-widest text-white/50 mb-4">
-            Industry partners
-          </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-white max-w-xl leading-tight">
-            Access Berkeley&apos;s
-            <br />
-            data science talent.
-          </h1>
-          <p className="mt-6 text-lg text-white/70 max-w-lg leading-relaxed">
-            {/* TODO: verify copy with DSS leadership */}
-            Partner with DSS for semester-long consulting engagements,
-            recruiting pipelines, and sponsored research. Trusted by companies
-            across tech, finance, and healthcare.
-          </p>
-          {/* White CTAs on the gradient — same styles as the home Hero buttons */}
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
-            >
-              Get in touch →
-            </Link>
-            <Link
-              href="#how-it-works"
-              className="inline-flex items-center rounded-full border border-white/60 px-7 py-3 text-base font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
-            >
-              How it works
-            </Link>
+      {/* Hero — headline left, enquiry form right. The form leads the page rather
+          than closing it: this is the single action we want from this audience, so
+          it should not be gated behind a scroll. */}
+      <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
+        <NodeGraph
+          id="particles-partners"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          opacity={0.25}
+        />
+
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <div>
+              <p className="inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80">
+                Industry partners
+              </p>
+
+              <h1 className="mt-8 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
+                Let&apos;s work together.
+              </h1>
+
+              <p className="mt-6 max-w-md text-base leading-relaxed text-white/75 md:text-lg">
+                {/* TODO: verify copy with DSS leadership */}
+                We partner with companies on semester-long data science engagements —
+                pairing real deliverables with a pipeline to Berkeley&apos;s strongest
+                technical students.
+              </p>
+            </div>
+
+            {/* The form sits on white so the fields read as an interactive surface
+                against the gradient rather than blending into it. */}
+            <PartnerInquiryCard />
           </div>
         </div>
       </section>
 
-      {/* Value props */}
-      <Section eyebrow="Why partner with us" heading="What we offer.">
-        <div className="grid sm:grid-cols-3 gap-6">
-          {VALUE_PROPS.map((v) => (
-            <div
-              key={v.title}
-              className="rounded-2xl border border-border bg-bg p-8 flex flex-col gap-4"
-            >
-              <span className="text-3xl">{v.icon}</span>
-              <h3 className="font-semibold text-ink text-lg">{v.title}</h3>
-              <p className="text-sm text-muted leading-relaxed">{v.body}</p>
+      {/* Everything between the hero and the footer shares one gradient, so the
+          page eases out of the hero's green and back into the footer's rather
+          than cutting to white at both seams. Children stay transparent. */}
+      <div className="fade-between-gradients">
+        <LogoCarousel partners={partners} className="bg-transparent" />
+
+        {/* How it works — three tall cards */}
+        <section className="font-poppins">
+          <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20 lg:px-12">
+            <RevealOnScroll delayMs={0} className="mx-auto max-w-2xl text-center">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-primary">
+                (01) — Process
+              </p>
+              <h2 className="mt-6 text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1.05] tracking-tight text-ink">
+                How it works.
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
+                We partner with companies to ship focused data science work through student
+                teams, pairing real execution with meaningful student experience.
+              </p>
+            </RevealOnScroll>
+
+            <div className="mt-14 grid gap-6 md:grid-cols-3 md:gap-7">
+              {/* 01 — Team structure */}
+              <RevealOnScroll delayMs={100}>
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                    <TeamIcon />
+                  </span>
+                  <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">01</span>
+                  <h3 className="mt-3 text-xl font-semibold tracking-tight text-ink">
+                    Team structure
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    Each engagement gets a hand-picked team of students paired with a faculty
+                    or alumni advisor — a clear owner for the work, and a senior voice
+                    reviewing it before anything reaches you.
+                  </p>
+                  <p className="mt-5 text-sm leading-relaxed text-muted">
+                    Weekly check-ins keep you visible on progress without managing the
+                    day-to-day.
+                  </p>
+                </article>
+              </RevealOnScroll>
+
+              {/* 02 — Project scopes */}
+              <RevealOnScroll delayMs={175}>
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                    <ScopeIcon />
+                  </span>
+                  <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">02</span>
+                  <h3 className="mt-3 text-xl font-semibold tracking-tight text-ink">
+                    Project scopes
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    We size the problem with you up front. Common scopes include:
+                  </p>
+                  <ul className="mt-5 flex flex-col gap-3">
+                    {SCOPES.map((scope) => (
+                      <li key={scope} className="flex gap-3 text-sm leading-snug text-ink">
+                        <span
+                          aria-hidden="true"
+                          className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-primary"
+                        />
+                        {scope}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </RevealOnScroll>
+
+              {/* 03 — Why student teams */}
+              <RevealOnScroll delayMs={250}>
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                    <StudentIcon />
+                  </span>
+                  <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">03</span>
+                  <h3 className="mt-3 text-xl font-semibold tracking-tight text-ink">
+                    Why student teams
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    DSS members are among Berkeley&apos;s most rigorous students. Partnering
+                    is also the earliest way to meet them — well before they reach the
+                    recruiting market.
+                  </p>
+
+                  {/* mt-auto pins this to the card's bottom edge whatever the copy above does. */}
+                  <div className="mt-auto pt-7">
+                    <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
+                      Members go on to
+                    </p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {PLACEMENTS.map((company) => (
+                        <li
+                          key={company}
+                          className="border border-border px-3 py-1 text-xs text-ink transition-colors duration-200 group-hover:border-primary/40"
+                        >
+                          {company}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              </RevealOnScroll>
             </div>
-          ))}
-        </div>
-      </Section>
 
-      {/* Logo carousel */}
-      <LogoCarousel partners={partners} />
-
-      {/* How it works */}
-      <Section
-        id="how-it-works"
-        eyebrow="Process"
-        heading="How it works."
-        subtext="We've run this process dozens of times. Here's what to expect."
-        surface
-      >
-        <ol className="flex flex-col gap-0 max-w-2xl">
-          {STEPS.map((s, i) => (
-            <li key={s.step} className="flex gap-6">
-              {/* Connector line */}
-              <div className="flex flex-col items-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 flex-none">
-                  <span className="font-mono text-xs font-bold text-primary">{s.step}</span>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className="w-px flex-1 bg-border my-2" />
-                )}
+            {/* Timeline — a continuation of "How it works" rather than a chapter
+                of its own: same section, no second numbered eyebrow. A hairline
+                rule and a bold label are enough to separate it from the cards
+                above without the full heading treatment other sections use. */}
+            <RevealOnScroll delayMs={300} className="mt-16 border-t border-border pt-14 md:mt-20 md:pt-16">
+              <p className="text-center text-xl font-semibold tracking-tight text-ink">
+                Project Timeline
+              </p>
+              <p className="mt-3 text-center text-sm leading-relaxed text-muted">
+                Engagements run on a semester cadence — click a stage to see what it
+                involves.
+              </p>
+              <div className="mt-10">
+                <ProjectTimeline />
               </div>
-              {/* Content */}
-              <div className={`pb-${i < STEPS.length - 1 ? "8" : "0"} pt-1.5`}>
-                <h3 className="font-semibold text-ink">{s.title}</h3>
-                <p className="mt-1 text-sm text-muted leading-relaxed">{s.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Section>
+            </RevealOnScroll>
 
-      {/* Contact CTA */}
-      <section className="bg-bg">
-        <div className="mx-auto max-w-[1200px] px-6 py-20 flex flex-col items-center text-center gap-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            Start a conversation
-          </p>
-          <h2 className="text-3xl font-bold tracking-tight text-ink max-w-md leading-snug">
-            Ready to work with Berkeley&apos;s best?
-          </h2>
-          <p className="text-muted max-w-sm leading-relaxed">
-            {/* TODO: verify email address */}
-            Drop us a line and we&apos;ll be in touch within 48 hours.
-          </p>
-          <Button href="mailto:dss@berkeley.edu" external size="lg">
-            Email us →
-          </Button>
-        </div>
-      </section>
+            {/* Closing panel — same continuation pattern as the timeline above:
+                a bold label under a hairline rule, not a new section. Reuses the
+                hero's form card, stacked vertically as its own standalone CTA. */}
+            <RevealOnScroll delayMs={0} className="mt-16 border-t border-border pt-14 md:mt-20 md:pt-16">
+              <p className="text-center text-xl font-semibold tracking-tight text-ink">
+                Interested in an engagement?
+              </p>
+              <p className="mt-3 text-center text-sm leading-relaxed text-muted">
+                Reach out and we&apos;ll get back to you within a few days.
+              </p>
+              {/* Wider than the card was originally: max-w-md left the new
+                  Email/Company row too cramped for two comfortable fields. */}
+              <div className="mx-auto mt-10 max-w-xl">
+                <PartnerInquiryCard headingLevel="h3" />
+              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
+      </div>
     </>
   );
 }

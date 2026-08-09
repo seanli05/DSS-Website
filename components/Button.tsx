@@ -13,6 +13,12 @@ interface ButtonProps {
   className?: string;
   children: ReactNode;
   onClick?: () => void;
+  /**
+   * Renders a trailing arrow that slides right on hover. Use this instead of
+   * typing "→" into the label — an arrow inside the string can't be animated
+   * on its own. Existing call sites that still pass a literal → keep working.
+   */
+  arrow?: boolean;
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -30,8 +36,10 @@ const sizeClasses: Record<Size, string> = {
   lg: "px-7 py-3 text-base",
 };
 
+// rounded-full is the one radius across the whole button system — don't override
+// it per-instance, or the page ends up with several competing button shapes.
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  "group inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
 
 export default function Button({
   variant = "primary",
@@ -42,27 +50,42 @@ export default function Button({
   className = "",
   children,
   onClick,
+  arrow = false,
 }: ButtonProps) {
   const classes = `${base} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+
+  const content = (
+    <>
+      {children}
+      {arrow && (
+        <span
+          aria-hidden="true"
+          className="transition-transform duration-150 group-hover:translate-x-1 motion-reduce:transition-none"
+        >
+          →
+        </span>
+      )}
+    </>
+  );
 
   if (href) {
     if (external) {
       return (
         <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
-          {children}
+          {content}
         </a>
       );
     }
     return (
       <Link href={href} className={classes}>
-        {children}
+        {content}
       </Link>
     );
   }
 
   return (
     <button disabled={disabled} onClick={onClick} className={classes}>
-      {children}
+      {content}
     </button>
   );
 }
