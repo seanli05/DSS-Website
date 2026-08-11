@@ -14,6 +14,18 @@
     "workImage": null,
     "workImageAlt": null,
     "workCaption": null,
+    "workImages": [
+      {
+        "src": "/committees/acadev/decal-lecture-wide.jpg",
+        "alt": "Students attending an Acadev lecture on data visualization in a UC Berkeley classroom",
+        "caption": "Inside Introduction to Real World Data Science"
+      },
+      {
+        "src": "/committees/acadev/decal-lecture-xgboost.jpg",
+        "alt": "Acadev instructors teaching students about XGBoost during a DeCal lecture",
+        "caption": "Acadev instructors teaching machine learning"
+      }
+    ],
     "activities": null
   },
   {

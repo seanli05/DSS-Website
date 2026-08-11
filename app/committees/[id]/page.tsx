@@ -170,6 +170,7 @@ export default async function CommitteePage({
                 src={committee.workImage}
                 alt={committee.workImageAlt}
                 caption={committee.workCaption}
+                images={committee.workImages}
                 figure="01"
               />
             </RevealOnScroll>

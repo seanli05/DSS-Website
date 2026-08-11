@@ -35,6 +35,12 @@ export interface CommitteeActivity {
   imageAlt: string | null; // required whenever image is set
 }
 
+export interface CommitteeWorkImage {
+  src: string;
+  alt: string;
+  caption: string | null;
+}
+
 export interface Committee {
   id: string;
   name: string;
@@ -50,6 +56,7 @@ export interface Committee {
   workImage: string | null; // path under /public — the vertical (2:3) photo beside the "What we do" copy. null renders the "photo to come" placeholder frame.
   workImageAlt: string | null; // alt text for workImage; required whenever workImage is set
   workCaption: string | null; // caption under the frame, e.g. "Social Good, Spring 2026" (rendered as "Fig. 02 — …")
+  workImages?: CommitteeWorkImage[] | null; // optional 4:3 carousel; when populated it takes precedence over the legacy single-image fields above
   activities: CommitteeActivity[] | null; // the "How we spend our time" tiles. null or empty → that section doesn't render
 }
 
