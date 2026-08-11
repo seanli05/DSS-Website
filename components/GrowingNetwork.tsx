@@ -77,7 +77,7 @@ function EdgeLine({ edge, p }: { edge: Edge; p: number }) {
       strokeDasharray={1}
       strokeDashoffset={1 - drawn}
       opacity={drawn === 0 ? 0 : 1}
-      className="stroke-white/70"
+      className="stroke-primary/45"
     />
   );
 }
@@ -93,13 +93,15 @@ function NodeDot({ node, p, pulsing, pulseEnabled, index }: { node: Node; p: num
       cx={node.x}
       cy={node.y}
       r={node.r}
-      className={`fill-white ${pulseEnabled ? "network-pulse" : ""}`}
+      className={`fill-primary ${pulseEnabled ? "network-pulse" : ""}`}
       style={{
         transform: `scale(${shown})`,
         transformBox: "fill-box",
         transformOrigin: "center",
         opacity: pulsing ? 1 : 0.85,
-        filter: pulsing ? "drop-shadow(0 0 3px rgba(255,255,255,0.8))" : "none",
+        // Teal glow, not white — this graphic sits on the white editorial field,
+        // where a white halo is invisible.
+        filter: pulsing ? "drop-shadow(0 0 3px rgba(12,112,110,0.55))" : "none",
         transitionDelay: pulseEnabled ? `${index * 40}ms` : "0ms",
       }}
     />

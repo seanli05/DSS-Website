@@ -1,0 +1,27 @@
+[
+  {
+    "step": "01",
+    "title": "Reach out",
+    "body": "Send us an inquiry through the form below. We'll schedule a scoping call within a week."
+  },
+  {
+    "step": "02",
+    "title": "Define the scope",
+    "body": "We work with you to size the problem and scope a deliverable that fits within one semester."
+  },
+  {
+    "step": "03",
+    "title": "Meet your team",
+    "body": "We match your project with a hand-picked team of students and a faculty or alumni advisor."
+  },
+  {
+    "step": "04",
+    "title": "Build together",
+    "body": "Weekly check-ins keep everyone aligned. You get visibility without managing the day-to-day."
+  },
+  {
+    "step": "05",
+    "title": "Receive the results",
+    "body": "Teams present findings and ship code, models, or dashboards at the end of the semester."
+  }
+]

@@ -2,6 +2,11 @@ import Airtable from "airtable";
 import statsData from "@/data/stats.json";
 import partnersData from "@/data/partners.json";
 import committeesData from "@/content/committees.json";
+import communityData from "@/content/community.json";
+import communityPhotosData from "@/content/community-photos.json";
+import offeringsData from "@/content/offerings.json";
+import consultingProcessData from "@/content/consulting-process.json";
+import externalEventsData from "@/content/external-events.json";
 import projectsData from "@/content/projects.json";
 import testimonialsData from "@/content/testimonials.json";
 
@@ -22,16 +27,46 @@ export interface Partner {
   order: number;
 }
 
+export interface CommitteeActivity {
+  id: string; // slug — keep stable
+  title: string;
+  body: string; // one short paragraph; a leading "TODO: …" note is stripped before rendering
+  image: string | null; // path under /public — null renders the "photo to come" placeholder
+  imageAlt: string | null; // required whenever image is set
+}
+
 export interface Committee {
   id: string;
   name: string;
+  fullName: string | null; // spelled-out name shown alongside the abbreviation on CommitteeCard (e.g. "Academic Development" next to "Acadev"); null when name is already the full name
+  kicker: string; // one-word category shown above the name on CommitteeCard (e.g. "Learn", "Build", "Serve")
   icon: string;
   blurb: string;
   focusAreas: string[];
   lead: string;
   featured: boolean;
   heroImage: string | null; // path under /public — when set, the committee page header uses this as a full-bleed photo background instead of the plain surface header
-  description: string | null; // longer write-up shown in the "What we do" section; when set, replaces the focus-area chips
+  description: string | null; // longer write-up shown in the "What we do" section; when set, replaces the focus-area chips. Blank lines split it into paragraphs — the first is the lead, set larger and darker.
+  workImage: string | null; // path under /public — the vertical (2:3) photo beside the "What we do" copy. null renders the "photo to come" placeholder frame.
+  workImageAlt: string | null; // alt text for workImage; required whenever workImage is set
+  workCaption: string | null; // caption under the frame, e.g. "Social Good, Spring 2026" (rendered as "Fig. 02 — …")
+  activities: CommitteeActivity[] | null; // the "How we spend our time" tiles. null or empty → that section doesn't render
+}
+
+export interface CommunityTradition {
+  id: string;
+  icon: string;
+  title: string;
+  body: string;
+  tags: string[] | null; // e.g. Socials' sub-events, shown as chips; null for traditions without them
+  image: string | null; // path under /public — hero photo shown in the tradition's bento card; null falls back to the icon-on-gradient placeholder
+}
+
+export interface CommunityPhoto {
+  id: string;
+  src: string; // path under /public
+  alt: string;
+  category: string; // display label shown as the filmstrip caption, e.g. "Big Little", "Retreat"
 }
 
 export interface Project {
@@ -56,12 +91,42 @@ export interface ExecProfile {
   gradYear: string | null; // normalized to string — the Airtable column may be number or text
 }
 
+export interface ExternalEvent {
+  id: string;
+  name: string;
+  image: string | null; // attachment URL (Airtable) or null — falls back to a gradient placeholder tile
+}
+
 export interface Testimonial {
   id: string;
   quote: string;
   name: string;
   org: string;
   role: string;
+}
+
+export interface Offering {
+  id: string;
+  icon: string; // icon key resolved by <OfferingIcon> — NOT an emoji
+  title: string;
+  summary: string;
+  bullets: string[];
+  featured: boolean; // the flagship offering, rendered larger on the Partners page
+}
+
+export interface ConsultingStep {
+  step: string; // zero-padded ordinal shown in the node, e.g. "01"
+  title: string;
+  body: string;
+}
+
+export interface RecruitmentEvent {
+  id: string;
+  event: string; // event name — the card title
+  date: string; // human-readable date label, e.g. "Sep 3" or "Week 1" (shown as the card eyebrow)
+  description: string;
+  time: string | null; // start/end time, e.g. "6:00–7:30 PM" — null when not yet scheduled
+  room: string | null; // location, e.g. "Soda 306" — null when TBD or virtual
 }
 
 // ─── Getters ─────────────────────────────────────────────────────────────────
@@ -75,8 +140,48 @@ export function getCommittees(): Committee[] {
   return committeesData as Committee[];
 }
 
+/**
+ * Drops a leading `TODO: …` sentence from a string of copy.
+ *
+ * Draft copy in committees.json is marked with a leading TODO sentence per the
+ * placeholder rule, but that marker is a note to officers editing the JSON — it
+ * should never reach a visitor.
+ */
+export function stripTodo(text: string): string {
+  return text.replace(/^TODO:[^.]*\.\s*/i, "");
+}
+
+/**
+ * Splits a committee description into paragraphs (blank line = new paragraph),
+ * dropping any leading TODO note. Returns [] for null so callers can fall back
+ * to the focus-area chips.
+ */
+export function getDescriptionParagraphs(description: string | null): string[] {
+  if (!description) return [];
+  return stripTodo(description)
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+}
+
 export function getFeaturedCommittees(): Committee[] {
   return getCommittees().filter((c) => c.featured);
+}
+
+export function getCommunityTraditions(): CommunityTradition[] {
+  return communityData as CommunityTradition[];
+}
+
+export function getCommunityPhotos(): CommunityPhoto[] {
+  return communityPhotosData as CommunityPhoto[];
+}
+
+export function getOfferings(): Offering[] {
+  return offeringsData as Offering[];
+}
+
+export function getConsultingProcess(): ConsultingStep[] {
+  return consultingProcessData as ConsultingStep[];
 }
 
 // Airtable multi-select fields come back as string[]; plain text fields (or a
@@ -197,9 +302,128 @@ export async function getProjectsByCommittee(committeeId: string): Promise<Proje
   return (await getProjects()).filter((p) => p.committee === committeeId);
 }
 
+// Runs server-side only — never import into client components.
+// Falls back to external-events.json if env vars are missing or the request fails.
+export const getExternalEvents = memoizeOnce(async (): Promise<ExternalEvent[]> => {
+  try {
+    const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID, EXTERNAL_EVENTS_TABLE } = process.env;
+    if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID || !EXTERNAL_EVENTS_TABLE) {
+      throw new Error("Airtable env vars not configured");
+    }
+
+    const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
+
+    const records = await base(EXTERNAL_EVENTS_TABLE).select({ view: AIRTABLE_VIEW }).all();
+
+    return records.map((r) => ({
+      id: r.id,
+      name: (r.fields["Event Name"] as string) ?? "",
+      image: attachmentUrls(r.fields["Image"])[0] ?? null,
+    }));
+  } catch (err) {
+    console.error("getExternalEvents(): Airtable fetch failed, falling back to content/external-events.json", err);
+  }
+
+  return externalEventsData as ExternalEvent[];
+});
+
 export function getTestimonials(): Testimonial[] {
   return testimonialsData as Testimonial[];
 }
+
+// A blank/whitespace cell should read as "not set" (null), not an empty chip.
+function normalizeText(value: unknown): string | null {
+  if (typeof value === "number") return String(value);
+  if (typeof value === "string" && value.trim()) return value.trim();
+  return null;
+}
+
+// The recruitment timeline has no local JSON file, but the Join page's horizontal
+// timeline should still render something in dev without Airtable configured — so
+// this generic fallback stands in when the fetch is unavailable, fails, or the
+// table is empty. Content lives here (not in the component) per the "no hardcoded
+// content in components" rule.
+const RECRUITMENT_TIMELINE_FALLBACK: RecruitmentEvent[] = [
+  {
+    id: "fallback-info-session",
+    event: "Info Session",
+    date: "Week 1",
+    description:
+      "Meet the exec board, learn what DSS does, and hear about every committee. Open to everyone — no application needed.",
+    time: "6:00–7:30 PM",
+    room: "Soda 306",
+  },
+  {
+    id: "fallback-workshop",
+    event: "Skills Workshop",
+    date: "Week 1",
+    description:
+      "A hands-on intro to the tools our members use — Python, pandas, and the data science lifecycle. Come build something.",
+    time: "6:00–8:00 PM",
+    room: "Cory 540",
+  },
+  {
+    id: "fallback-coffee-chats",
+    event: "Coffee Chats",
+    date: "Week 2",
+    description:
+      "Casual 1:1 conversations with current members. Ask anything about projects, committees, and life in DSS.",
+    time: "Various",
+    room: "Free Speech Movement Café",
+  },
+  {
+    id: "fallback-apps-due",
+    event: "Applications Due",
+    date: "Week 2",
+    description:
+      "Submit your written application by 11:59 PM. We review on a rolling basis, so earlier is better.",
+    time: "11:59 PM",
+    room: null,
+  },
+  {
+    id: "fallback-decisions",
+    event: "Decisions & Onboarding",
+    date: "Week 3",
+    description:
+      "Offers go out by email, followed by our kickoff social and committee placement. Welcome to DSS.",
+    time: "TBA",
+    room: null,
+  },
+];
+
+// Runs server-side only — never import into client components.
+// Falls back to RECRUITMENT_TIMELINE_FALLBACK if env vars are missing or the request fails.
+export const getRecruitmentTimeline = memoizeOnce(async (): Promise<RecruitmentEvent[]> => {
+  try {
+    const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID, RECRUITMENT_TIMELINE_TABLE } = process.env;
+    if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID || !RECRUITMENT_TIMELINE_TABLE) {
+      throw new Error("Airtable env vars not configured");
+    }
+
+    const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
+
+    const records = await base(RECRUITMENT_TIMELINE_TABLE).select({ view: AIRTABLE_VIEW }).all();
+
+    const events = records
+      .map((r) => ({
+        id: r.id,
+        event: (r.fields["Event"] as string) ?? "",
+        date: (r.fields["Date"] as string) ?? "",
+        description: (r.fields["Description"] as string) ?? "",
+        time: normalizeText(r.fields["Time"]),
+        room: normalizeText(r.fields["Room"]),
+      }))
+      .filter((e) => e.event); // skip blank/half-created Airtable rows
+
+    // An empty table shouldn't leave the Join page with a headerless void —
+    // fall back to the sample timeline just as a failed fetch would.
+    if (events.length > 0) return events;
+  } catch (err) {
+    console.error("getRecruitmentTimeline(): Airtable fetch failed, falling back to sample timeline", err);
+  }
+
+  return RECRUITMENT_TIMELINE_FALLBACK;
+});
 
 // Runs server-side only — never import into client components.
 // Falls back to partners.json if env vars are missing or the request fails.

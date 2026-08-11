@@ -1,4 +1,9 @@
+import { getOfferings } from "@/lib/content";
 import PartnerInquiryForm from "./PartnerInquiryForm";
+
+// TODO: confirm the inquiry inbox with DSS leadership — matches the "Email us"
+// link in the footer.
+const CONTACT_EMAIL = "dss@berkeley.edu";
 
 interface PartnerInquiryCardProps {
   className?: string;
@@ -21,13 +26,16 @@ export default function PartnerInquiryCard({
   headingLevel = "h2",
 }: PartnerInquiryCardProps) {
   const Heading = headingLevel;
+  // Server Component: the offerings are read here rather than at each call site,
+  // so the two usages on the Partners page stay a plain <PartnerInquiryCard />.
+  const interests = getOfferings().map((offering) => offering.title);
   return (
     <div className={`bg-bg p-6 shadow-card md:p-8 ${className}`}>
       <Heading className="text-xl font-semibold tracking-tight text-ink">Get in touch</Heading>
       <p className="mt-2 mb-6 text-sm leading-relaxed text-muted">
         Tell us a little about your company and what you&apos;d like to work on.
       </p>
-      <PartnerInquiryForm />
+      <PartnerInquiryForm interests={interests} contactEmail={CONTACT_EMAIL} />
     </div>
   );
 }
