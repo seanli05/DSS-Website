@@ -10,7 +10,7 @@
     "lead": "TODO: Committee Lead",
     "featured": true,
     "heroImage": "/committees/acadev-hero.jpg",
-    "description": null,
+    "description": "We lead and teach the DeCal course, “Introduction to Real World Data Science,” helping students of all experience levels build practical data science skills beyond the classroom.\n\nThrough a project-based curriculum, mentorship from our committee members, and an end-to-end team project using a real-world dataset, students gain the hands-on experience needed to tackle real data science and machine learning problems.\n\nOur mission is to bridge the gap between classroom learning and industry practice, empowering students to build confidence and thrive in the rapidly evolving world of data science.",
     "workImage": null,
     "workImageAlt": null,
     "workCaption": null,
