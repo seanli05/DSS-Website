@@ -1,0 +1,42 @@
+[
+  {
+    "id": "big-little",
+    "icon": "🧑‍🤝‍🧑",
+    "title": "Big Little",
+    "body": "Every new member is paired with an older member for mentorship, advice, and a built in best friend. Big-little lineages span many generations of DSS.",
+    "tags": null,
+    "image": "/community/big-little/cover.jpg"
+  },
+  {
+    "id": "house-system",
+    "icon": "🏰",
+    "title": "House System",
+    "body": "Members are sorted into one of DSS's Houses and compete all year for the House Cup at socials, trivia nights, and more.",
+    "tags": null,
+    "image": "/community/house/cover.jpg"
+  },
+  {
+    "id": "chummings",
+    "icon": "☕",
+    "title": "Chummings",
+    "body": "Small friend groups meet weekly for casual, no-agenda hangouts — a standing excuse to catch up outside of committee meetings.",
+    "tags": null,
+    "image": "/community/chumming/cover.jpg"
+  },
+  {
+    "id": "retreats",
+    "icon": "🏕️",
+    "title": "Retreats",
+    "body": "Each semester the club heads off-campus for an exciting weekend retreat packed with games, bonding, and nature.",
+    "tags": null,
+    "image": "/community/retreat/cover.jpg"
+  },
+  {
+    "id": "socials",
+    "icon": "🎉",
+    "title": "Socials",
+    "body": "From climbing nights at Mosaic to a San Francisco scavenger hunts to House Olympics, socials are how we celebrate our hard work.",
+    "tags": null,
+    "image": "/community/socials/cover.jpg"
+  }
+]

@@ -14,6 +14,7 @@
   --color-primary:        #0C706E;  /* deep teal — OK for body text/links (5.9:1 on white) */
   --color-primary-bright: #1D8C89;  /* teal — large headings/decoration only (4.1:1) */
   --color-accent:         #8FB573;  /* sage green — decorative only, never small text */
+  --color-accent-ink:     #5F8A46;  /* darkened sage — the AA-legible variant of --color-accent, for text/icons that need the sage identity (e.g. Social Good's card accent) */
   --color-blossom:        #FFF9EF;  /* warm cream — decorative only (GrowingSapling petals) */
 
   /* Dark atmospheric canvas — hero + nav, "Air"-inspired, recolored to brand teal/sage */
@@ -185,7 +186,59 @@ body {
   );
 }
 
-/* Hide scrollbar while keeping scroll behavior (used in Gallery) */
+/* ─── Recruitment timeline (Join page) ─────────────────────────────────────── */
+/* The continuous horizontal spine, drawn once across the whole track. Fades out
+   at both ends so it reads as "more to scroll" rather than a hard-cut line. */
+.timeline-spine {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-accent) 55%, transparent) 6%,
+    color-mix(in srgb, var(--color-accent) 55%, transparent) 94%,
+    transparent
+  );
+}
+
+/* Green glow ring around each node — echoes the hero's teal→sage signature. */
+.timeline-node {
+  background: var(--gradient-surface-green);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--color-accent) 14%, transparent),
+    0 0 26px color-mix(in srgb, var(--color-primary-bright) 55%, transparent);
+}
+
+/* Scroll-in reveal: as each item scrolls into the track's window (data-revealed
+   flips true, set by an IntersectionObserver rooted to the scroll track), its
+   node pops, its connector extends from the spine outward, then its card pops up.
+   The spring cubic-bezier overshoots for the "pop"; the connector uses a plain
+   ease so it reads as a clean line drawing outward. Sequenced via delays:
+   node → connector extends → card pops. */
+.tl-node {
+  transform: scale(0);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tl-connector {
+  transform: scaleY(0);
+  transition: transform 0.35s ease 0.12s;
+}
+.tl-connector-top    { transform-origin: bottom; } /* card above spine — grow up toward card */
+.tl-connector-bottom { transform-origin: top; }    /* card below spine — grow down toward card */
+.tl-card {
+  opacity: 0;
+  transform: translateY(14px) scale(0.94);
+  transition:
+    opacity 0.5s ease 0.28s,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s;
+}
+.tl-item[data-revealed="true"] .tl-node      { transform: scale(1); }
+.tl-item[data-revealed="true"] .tl-connector { transform: scaleY(1); }
+.tl-item[data-revealed="true"] .tl-card {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hide scrollbar while keeping scroll behavior
+   (EventCarousel, ProjectCarousel, RecruitmentTimeline) */
 .scrollbar-none {
   scrollbar-width: none;
 }
@@ -233,5 +286,13 @@ body {
   }
   .timeline-detail-in {
     animation: none;
+  }
+  /* Timeline reveal: no motion, everything at its resting state. The observer
+     also marks all items revealed under reduced-motion, but zero out the
+     transforms/transitions here too so there's no first-paint flicker. */
+  .tl-node, .tl-connector, .tl-card {
+    transition: none;
+    transform: none;
+    opacity: 1;
   }
 }

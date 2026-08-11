@@ -1,0 +1,62 @@
+[
+  {
+    "id": "consulting",
+    "icon": "consulting",
+    "title": "Consulting projects",
+    "summary": "Our flagship. Bring us a real data problem and we build a dedicated student team to solve it — shipping production-quality models, pipelines, and dashboards within a single semester.",
+    "bullets": [
+      "Hand-picked team of 4–6 vetted members plus a faculty or alumni advisor",
+      "A scoped, semester-long deliverable with weekly check-ins",
+      "You keep the code, models, and findings"
+    ],
+    "featured": true
+  },
+  {
+    "id": "recruiting-career-fairs",
+    "icon": "recruiting",
+    "title": "Recruiting & career fairs",
+    "summary": "Get in front of Berkeley's most rigorous data science students before graduation. From career-fair booths to targeted info sessions, we connect you with members actively looking for internships and full-time roles.",
+    "bullets": [
+      "Booth presence at our data-focused career fair",
+      "Resume book and targeted candidate referrals",
+      "Company info sessions and coffee chats"
+    ],
+    "featured": false
+  },
+  {
+    "id": "speaker-events",
+    "icon": "speaker",
+    "title": "Speaker events & tech talks",
+    "summary": "Put your engineers, researchers, and recruiters in front of an engaged technical audience. Share what your team is building, run a workshop, or host a fireside chat with our members.",
+    "bullets": [
+      "Tech talks, workshops, and fireside chats",
+      "An engaged, technically fluent audience",
+      "Brand exposure across our member channels"
+    ],
+    "featured": false
+  },
+  {
+    "id": "hackathon-sponsorship",
+    "icon": "hackathon",
+    "title": "Hackathon sponsorship",
+    "summary": "Sponsor a challenge track, judge student projects, and recruit directly from the room. Hackathon sponsorship pairs strong brand visibility with a hands-on look at how students tackle your problems.",
+    "bullets": [
+      "Branded challenge tracks and prizes",
+      "Judging and mentorship slots for your team",
+      "Direct recruiting from a room of builders"
+    ],
+    "featured": false
+  },
+  {
+    "id": "sponsored-research",
+    "icon": "research",
+    "title": "Sponsored research",
+    "summary": "Interested in a longer-horizon collaboration? Partner with us on research initiatives, share proprietary datasets, and co-publish results with a team that treats the problem with academic rigor.",
+    "bullets": [
+      "Multi-semester research collaborations",
+      "Work with proprietary or novel datasets",
+      "Co-authored write-ups and published results"
+    ],
+    "featured": false
+  }
+]

@@ -2,34 +2,74 @@
   {
     "id": "acadev",
     "name": "Acadev",
+    "fullName": "Academic Development",
+    "kicker": "Teach",
     "icon": "🎓",
-    "blurb": "TODO: Acadev (Academic Development) committee description — workshops, bootcamps, and skill-building for the DSS community.",
-    "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
+    "blurb": "Workshops, bootcamps, and hands-on curriculum that take members from their first notebook to production-ready skills.",
+    "focusAreas": ["Workshops", "Bootcamps", "Curriculum"],
     "lead": "TODO: Committee Lead",
     "featured": true,
-    "heroImage": null,
-    "description": null
+    "heroImage": "/committees/acadev-hero.jpg",
+    "description": null,
+    "workImage": null,
+    "workImageAlt": null,
+    "workCaption": null,
+    "activities": null
   },
   {
     "id": "consulting",
     "name": "Consulting",
+    "fullName": null,
+    "kicker": "Build",
     "icon": "📊",
-    "blurb": "TODO: Consulting committee description — partner with companies to solve real data problems and deliver insights.",
-    "focusAreas": ["TODO: Focus Area 1", "TODO: Focus Area 2", "TODO: Focus Area 3"],
+    "blurb": "Semester-long engagements where teams partner with real companies to ship data solutions and deliver insights.",
+    "focusAreas": ["Client Projects", "Analytics", "Industry"],
     "lead": "TODO: Committee Lead",
     "featured": true,
     "heroImage": "/committees/consulting-hero.JPG",
-    "description": "TODO: finalize with committee leadership. We partner with companies ranging from early-stage startups to Fortune 500s to tackle real, high-stakes data problems — from building predictive models to designing dashboards that shape executive decisions. Each semester-long engagement pairs a small team of students with a client stakeholder, mirroring the cadence and rigor of a real consulting relationship. Members leave with a portfolio of shipped work, direct client-facing experience, and a technical toolkit spanning the full analytics stack, from data cleaning to communicating insights that actually get acted on."
+    "description": "TODO: finalize with committee leadership. We partner with companies ranging from early-stage startups to Fortune 500s to tackle real, high-stakes data problems — from building predictive models to designing dashboards that shape executive decisions.\n\nEach semester-long engagement pairs a small team of students with a client stakeholder, mirroring the cadence and rigor of a real consulting relationship.\n\nMembers leave with a portfolio of shipped work, direct client-facing experience, and a technical toolkit spanning the full analytics stack, from data cleaning to communicating insights that actually get acted on.",
+    "workImage": null,
+    "workImageAlt": null,
+    "workCaption": null,
+    "activities": null
   },
   {
     "id": "social-good",
     "name": "Social Good",
+    "fullName": null,
+    "kicker": "Serve",
     "icon": "🌱",
-    "blurb": "The Social Good committee is focused on data done right. We care deeply about modern issues the rapid pace of technology comes with and how to tackle them. In addition to our dedication to work with non-profits, we are dedicated to raising and fostering a coalition of young minds that are able to critically think, express those thoughts, and use them to change the world for the better.",
+    "blurb": "The Social Good committee is focused on data done right. We care deeply about modern issues the rapid pace of technology comes with and how to tackle them.",
     "focusAreas": ["Data", "Ethics", "Passion"],
     "lead": "Manav Kumar",
     "featured": true,
     "heroImage": "/committees/social-good-hero.jpg",
-    "description": "We provide pro-bono support for non-profit organizations through developing advanced analytical insights to recognize uplifting initiatives around the globe. By using ‘tech for social good’, our diverse team of talented individuals pride on the impact they make working on meaningful projects in the societal, healthcare, and environmental domain. We focus our efforts in not only providing effective solutions to real world issues, but also in addressing ethical challenges within the tech landscape. This has become increasingly evident with the rapid advancement of technology along with the prevalence of data in today’s world. In our committee, we strive to instill a passion for ethical commitment within our members as they prepare to pursue their professional endeavors."
+    "description": "We provide pro-bono support for non-profit organizations, developing advanced analytical insights to recognize uplifting initiatives around the globe.\n\nBy using ‘tech for social good’, our diverse team of talented individuals prides itself on the impact it makes working on meaningful projects across the societal, healthcare, and environmental domains.\n\nWe focus our efforts not only on providing effective solutions to real-world issues, but also on addressing ethical challenges within the tech landscape — a need made increasingly evident by the rapid advancement of technology and the prevalence of data in today’s world. In our committee, we strive to instill a passion for ethical commitment within our members as they prepare to pursue their professional endeavors.",
+    "workImage": "/committees/social-good-work.jpg",
+    "workImageAlt": "Social Good committee members cheering as they lift one member up, outside a campus building at UC Berkeley",
+    "workCaption": "The Social Good committee",
+    "activities": [
+      {
+        "id": "discussions",
+        "title": "Discussions on political issues",
+        "body": "TODO: confirm with committee leadership. Members meet to talk through the ethical and political questions behind the data they work with, and to practice making a case they can defend.",
+        "image": null,
+        "imageAlt": null
+      },
+      {
+        "id": "skill-workshops",
+        "title": "Skill workshops",
+        "body": "TODO: confirm with committee leadership. Hands-on sessions on the skills the committee leans on most — including decking, where members build and critique the slides that carry a project's findings.",
+        "image": null,
+        "imageAlt": null
+      },
+      {
+        "id": "bonding-games",
+        "title": "Bonding games",
+        "body": "TODO: confirm with committee leadership. Games and socials that give the committee a reason to spend time together away from the work itself.",
+        "image": null,
+        "imageAlt": null
+      }
+    ]
   }
 ]

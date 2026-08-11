@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
-import Button from "@/components/Button";
+import EditorialButton from "@/components/EditorialButton";
+import RevealOnScroll from "@/components/RevealOnScroll";
+import RecruitmentTimeline from "@/components/RecruitmentTimeline";
+import { getRecruitmentTimeline } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Join",
@@ -31,29 +34,6 @@ const BENEFITS = [
   },
 ];
 
-const TIMELINE = [
-  {
-    period: "Week 1",
-    title: "Applications open",
-    body: "Fill out the short application form — takes about 10 minutes. We review on a rolling basis.",
-  },
-  {
-    period: "Week 1–2",
-    title: "Coffee chats",
-    body: "We invite applicants for a casual 20-minute conversation so we can learn more about you.",
-  },
-  {
-    period: "Week 2",
-    title: "Decisions sent",
-    body: "We send decisions by email. Successful applicants receive committee placement and onboarding details.",
-  },
-  {
-    period: "Week 3+",
-    title: "Onboarding",
-    body: "Kickoff event, committee introductions, and your first project assignment. Welcome to DSS.",
-  },
-];
-
 const FAQ = [
   {
     q: "Do I need prior data science experience?",
@@ -77,112 +57,97 @@ const FAQ = [
   },
 ];
 
-export default function JoinPage() {
+export default async function JoinPage() {
+  const timeline = await getRecruitmentTimeline();
+
   return (
     <>
-      {/* Page header */}
-      <section className="bg-surface border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
+          <p className="inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80">
             Join DSS
           </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink max-w-xl leading-tight">
+          <h1 className="mt-8 text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
             Become a member.
           </h1>
-          <p className="mt-6 text-lg text-muted max-w-lg leading-relaxed">
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
             {/* TODO: update with current semester and application link */}
             Applications for Fall 2025 open in the first week of classes. Here&apos;s
             everything you need to know.
           </p>
-          <div className="mt-8">
-            <Button href="#apply" size="lg">
-              Apply now →
-            </Button>
+          <div className="mt-10">
+            <EditorialButton href="#apply" variant="inverse">
+              Apply now
+            </EditorialButton>
           </div>
         </div>
       </section>
 
-      {/* Why join */}
-      <Section eyebrow="Why DSS" heading="What you'll get.">
-        <div className="grid sm:grid-cols-2 gap-6">
-          {BENEFITS.map((b) => (
-            <div
-              key={b.title}
-              className="rounded-2xl border border-border bg-bg p-7 flex gap-5"
-            >
-              <span className="text-2xl mt-0.5 flex-none">{b.icon}</span>
-              <div>
-                <h3 className="font-semibold text-ink">{b.title}</h3>
-                <p className="mt-1 text-sm text-muted leading-relaxed">{b.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
+      {/* One continuous gradient from the hero's green down into the footer's,
+          so both seams read as fades. Sections inside must stay transparent. */}
+      <div className="fade-between-gradients">
+        {/* Recruitment timeline — horizontal, Airtable-driven */}
+        <Section
+          index={1}
+          eyebrow="Recruitment"
+          heading="Recruitment timeline"
+          subtext="Every event in our recruitment cycle, start to finish. Come to as many as you can — most are open to everyone, no application needed."
+          divider
+          centered
+        >
+          <RecruitmentTimeline events={timeline} />
+        </Section>
 
-      {/* Recruitment timeline */}
-      <Section
-        eyebrow="Recruitment"
-        heading="How the process works."
-        subtext="We keep it simple. The whole process takes two weeks."
-        surface
-      >
-        <ol className="flex flex-col gap-0 max-w-2xl">
-          {TIMELINE.map((t, i) => (
-            <li key={t.period} className="flex gap-6">
-              <div className="flex flex-col items-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 flex-none">
-                  <span className="font-mono text-[10px] font-bold text-primary leading-none text-center">
-                    {t.period}
-                  </span>
+        {/* Why join */}
+        <Section index={2} eyebrow="Why DSS" heading="What you'll get">
+          <div className="grid gap-8 sm:grid-cols-2">
+            {BENEFITS.map((b, i) => (
+              <RevealOnScroll
+                key={b.title}
+                delayMs={100 + i * 100}
+                className="flex h-full gap-5 border border-border bg-bg p-7 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8"
+              >
+                <span className="mt-0.5 flex-none text-2xl">{b.icon}</span>
+                <div>
+                  <h3 className="font-semibold text-ink">{b.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{b.body}</p>
                 </div>
-                {i < TIMELINE.length - 1 && (
-                  <div className="w-px flex-1 bg-border my-2" />
-                )}
-              </div>
-              <div className={`${i < TIMELINE.length - 1 ? "pb-8" : ""} pt-1.5`}>
-                <h3 className="font-semibold text-ink">{t.title}</h3>
-                <p className="mt-1 text-sm text-muted leading-relaxed">{t.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Section>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </Section>
 
-      {/* Apply CTA */}
-      <section id="apply" className="brand-gradient">
-        <div className="mx-auto max-w-[1200px] px-6 py-24 flex flex-col items-center text-center gap-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-white/50">
-            Applications
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight max-w-md leading-snug">
-            Ready to build something real?
-          </h2>
-          <p className="text-white/70 max-w-sm leading-relaxed">
-            {/* TODO: replace with actual application link when live */}
-            The Fall 2025 application will be linked here when it opens.
-            Check back in August or follow us on Instagram for the announcement.
-          </p>
-          <a
-            href="#" // TODO: replace with real application URL
-            className="inline-flex items-center rounded-full bg-white px-8 py-3 text-base font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
-          >
-            Open application →
-          </a>
-        </div>
-      </section>
+        {/* Apply CTA — unnumbered, matching how Partners closes. */}
+        <Section
+          id="apply"
+          eyebrow="Applications"
+          heading="Ready to build something real?"
+          subtext="The Fall 2025 application will be linked here when it opens. Check back in August or follow us on Instagram for the announcement."
+          centered
+        >
+          {/* TODO: replace with actual application link when live */}
+          <RevealOnScroll delayMs={100}>
+            <EditorialButton href="#">Open application</EditorialButton>
+          </RevealOnScroll>
+        </Section>
 
-      {/* FAQ */}
-      <Section eyebrow="FAQ" heading="Common questions.">
-        <dl className="flex flex-col gap-8 max-w-2xl">
-          {FAQ.map((item) => (
-            <div key={item.q} className="flex flex-col gap-2">
-              <dt className="font-semibold text-ink">{item.q}</dt>
-              <dd className="text-sm text-muted leading-relaxed">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </Section>
+        {/* FAQ */}
+        <Section index={3} eyebrow="FAQ" heading="Common questions">
+          <dl className="flex max-w-2xl flex-col gap-8">
+            {FAQ.map((item, i) => (
+              <RevealOnScroll
+                key={item.q}
+                delayMs={100 + i * 75}
+                className="flex flex-col gap-2"
+              >
+                <dt className="font-semibold text-ink">{item.q}</dt>
+                <dd className="text-sm leading-relaxed text-muted">{item.a}</dd>
+              </RevealOnScroll>
+            ))}
+          </dl>
+        </Section>
+      </div>
     </>
   );
 }

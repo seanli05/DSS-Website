@@ -58,7 +58,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className={`relative max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-bg p-8 shadow-lg transition-[opacity,transform] motion-reduce:transition-none duration-200 ease-out ${
+        className={`relative max-h-[85vh] w-full max-w-2xl overflow-y-auto bg-bg p-8 shadow-card transition-[opacity,transform] motion-reduce:transition-none duration-200 ease-out ${
           visible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-3"
         }`}
       >
@@ -87,7 +87,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             />
           ) : (
             <div
-              className="flex h-16 w-16 items-center justify-center rounded-lg border border-border bg-surface font-mono text-base text-muted"
+              className="flex h-16 w-16 items-center justify-center border border-border bg-surface font-mono text-base text-muted"
               aria-hidden="true"
             >
               {project.partner.slice(0, 2).toUpperCase()}
@@ -110,7 +110,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         {/* Image / gif mini carousel */}
         {project.images.length > 0 && (
           <div className="mt-6 flex flex-col gap-2">
-            <div className="relative overflow-hidden rounded-xl border border-border bg-surface">
+            <div className="relative overflow-hidden border border-border bg-surface">
               <Image
                 src={project.images[imageIndex]}
                 alt={`${project.title} — image ${imageIndex + 1} of ${project.images.length}`}
@@ -165,7 +165,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-primary/10 px-2.5 py-0.5 font-mono text-xs text-primary"
+                className="bg-primary/10 px-2.5 py-0.5 text-[10px] uppercase tracking-[0.18em] text-primary"
               >
                 {tag}
               </span>

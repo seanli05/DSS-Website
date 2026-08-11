@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
-import Button from "@/components/Button";
+import EditorialButton from "@/components/EditorialButton";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 export const metadata: Metadata = {
   title: "DeCal",
@@ -34,80 +35,85 @@ const LIFECYCLE = [
 export default function DecalPage() {
   return (
     <>
-      {/* Page header */}
-      <section className="bg-surface border-b border-border">
-        <div className="mx-auto max-w-[1200px] px-6 py-24">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted mb-4">
+      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
+          <p className="inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80">
             DSS DeCal
           </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-ink max-w-2xl leading-tight">
+          <h1 className="mt-8 max-w-3xl text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
             Introduction to Real-World Data Science.
           </h1>
-          <p className="mt-6 text-lg text-muted max-w-lg leading-relaxed">
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
             New to Berkeley and still deciding if data science is right for you? This
             semester-long DeCal is a hands-on, project-based way to find out — no prior
             experience required.
           </p>
           {/* TODO: replace with real enrollment/application link and info */}
-          <div className="mt-8">
-            <Button href="/join" size="lg">
-              Get in touch →
-            </Button>
+          <div className="mt-10">
+            <EditorialButton href="/join" variant="inverse">
+              Get in touch
+            </EditorialButton>
           </div>
         </div>
       </section>
 
-      {/* About the course */}
-      <Section eyebrow="About the course" heading="Full creative control, real mentorship.">
-        <p className="max-w-2xl text-muted leading-relaxed">
-          The Introduction to Real-World Data Science DeCal, offered by the Data Science
-          Society at Berkeley, is a semester-long course focused on hands-on, project-based
-          learning. Unlike traditional classes, this course gives students full creative
-          control over a data science project of their choosing, allowing them to
-          collaborate and apply key concepts in real-world scenarios. Guided by mentorship
-          from committee members, students will navigate the entire data science
-          lifecycle — from crafting a project proposal and performing exploratory data
-          analysis, to engineering and evaluating machine learning models.
-        </p>
-      </Section>
+      {/* One continuous gradient from the hero's green down into the footer's,
+          so both seams read as fades. Sections inside must stay transparent. */}
+      <div className="fade-between-gradients">
+        {/* About the course */}
+        <Section
+          index={1}
+          eyebrow="About the course"
+          heading="Full creative control, real mentorship."
+          divider
+        >
+          <RevealOnScroll delayMs={100}>
+            <p className="max-w-2xl text-base leading-relaxed text-muted md:text-lg">
+              The Introduction to Real-World Data Science DeCal, offered by the Data Science
+              Society at Berkeley, is a semester-long course focused on hands-on, project-based
+              learning. Unlike traditional classes, this course gives students full creative
+              control over a data science project of their choosing, allowing them to
+              collaborate and apply key concepts in real-world scenarios. Guided by mentorship
+              from committee members, students will navigate the entire data science
+              lifecycle — from crafting a project proposal and performing exploratory data
+              analysis, to engineering and evaluating machine learning models.
+            </p>
+          </RevealOnScroll>
+        </Section>
 
-      {/* Lifecycle breakdown */}
-      <Section eyebrow="What you'll do" heading="The data science lifecycle." surface>
-        <div className="grid sm:grid-cols-2 gap-6">
-          {LIFECYCLE.map((l) => (
-            <div
-              key={l.title}
-              className="rounded-2xl border border-border bg-bg p-7 flex gap-5"
-            >
-              <span className="text-2xl mt-0.5 flex-none">{l.icon}</span>
-              <div>
-                <h3 className="font-semibold text-ink">{l.title}</h3>
-                <p className="mt-1 text-sm text-muted leading-relaxed">{l.body}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
+        {/* Lifecycle breakdown */}
+        <Section index={2} eyebrow="What you'll do" heading="The data science lifecycle.">
+          <div className="grid gap-8 sm:grid-cols-2">
+            {LIFECYCLE.map((l, i) => (
+              <RevealOnScroll
+                key={l.title}
+                delayMs={100 + i * 100}
+                className="flex h-full gap-5 border border-border bg-bg p-7 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8"
+              >
+                <span className="mt-0.5 flex-none text-2xl">{l.icon}</span>
+                <div>
+                  <h3 className="font-semibold text-ink">{l.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{l.body}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </Section>
 
-      {/* CTA */}
-      <section className="brand-gradient">
-        <div className="mx-auto max-w-[1200px] px-6 py-24 flex flex-col items-center text-center gap-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-white/50">
-            Interested?
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight max-w-md leading-snug">
-            Come see if data science is right for you.
-          </h2>
-          <p className="text-white/70 max-w-sm leading-relaxed">
-            {/* TODO: replace with real units, semester offered, and enrollment details */}
-            Units, prerequisites, and enrollment details are on their way — check back
-            soon or reach out to DSS directly.
-          </p>
-          <Button href="/join" size="lg" className="!bg-white !text-primary hover:!bg-white/90">
-            Apply to DSS →
-          </Button>
-        </div>
-      </section>
+        {/* CTA — unnumbered, matching how Partners closes. */}
+        <Section
+          eyebrow="Interested?"
+          heading="Come see if data science is right for you."
+          subtext="Units, prerequisites, and enrollment details are on their way — check back soon or reach out to DSS directly."
+          centered
+        >
+          {/* TODO: replace with real units, semester offered, and enrollment details */}
+          <RevealOnScroll delayMs={100}>
+            <EditorialButton href="/join">Apply to DSS</EditorialButton>
+          </RevealOnScroll>
+        </Section>
+      </div>
     </>
   );
 }

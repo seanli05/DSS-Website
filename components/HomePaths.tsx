@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import RevealOnScroll from "./RevealOnScroll";
 
@@ -13,7 +14,19 @@ import RevealOnScroll from "./RevealOnScroll";
  * colours, so the whole panel inverts in one move on hover with nothing left
  * behind in the old palette.
  */
-const PATHS = [
+interface Path {
+  index: string;
+  title: string;
+  body: string;
+  href: string;
+  cta: string;
+  /** Shown in the frame until a real photo exists for this path. */
+  imageLabel: string;
+  /** Optional photo; when set it replaces the placeholder label. */
+  image?: { src: string; alt: string };
+}
+
+const PATHS: Path[] = [
   {
     index: "01",
     title: "Find your committee.",
@@ -22,6 +35,11 @@ const PATHS = [
     href: "/about#committees",
     cta: "Explore committees",
     imageLabel: "Committee photo",
+    image: {
+      // Shared with the Social Good committee page's header — one asset, two uses.
+      src: "/committees/social-good-hero.jpg",
+      alt: "Members of the DSS Social Good committee on the UC Berkeley campus",
+    },
   },
   {
     index: "02",
@@ -31,6 +49,10 @@ const PATHS = [
     href: "/decal",
     cta: "About the DeCal",
     imageLabel: "DeCal photo",
+    image: {
+      src: "/decal-class.jpg",
+      alt: "DeCal students presenting their final project to the class in a Berkeley lecture hall",
+    },
   },
 ];
 
@@ -63,12 +85,22 @@ export default function HomePaths() {
                   <span className="h-2 w-2 border border-current opacity-40" aria-hidden="true" />
                 </div>
 
-                {/* TODO: swap in a real photo once one is picked.
-                    border-current so the frame inverts with the panel on hover. */}
-                <div className="mt-6 flex aspect-[4/3] items-center justify-center border border-current opacity-100">
-                  <span className="px-4 text-center text-[10px] uppercase tracking-[0.18em] opacity-50">
-                    {path.imageLabel}
-                  </span>
+                {/* border-current so the frame inverts with the panel on hover.
+                    Falls back to the label if a path has no photo yet. */}
+                <div className="relative mt-6 flex aspect-[4/3] items-center justify-center overflow-hidden border border-current opacity-100">
+                  {path.image ? (
+                    <Image
+                      src={path.image.src}
+                      alt={path.image.alt}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="px-4 text-center text-[10px] uppercase tracking-[0.18em] opacity-50">
+                      {path.imageLabel}
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="mt-8 text-2xl leading-[1.15] tracking-tight md:text-3xl">

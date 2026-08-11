@@ -19,17 +19,21 @@ const colors = [
 
 export default function StyleguidePage() {
   return (
-    <div className="min-h-screen bg-bg pb-32">
+    <div className="font-poppins min-h-screen bg-bg pb-32">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16 pb-8 border-b border-border">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-2">DSS Berkeley</p>
-        <h1 className="text-4xl font-bold tracking-tight text-ink">Design System</h1>
-        <p className="mt-2 text-muted">Primitives for Phase 1+. Not linked in the public nav.</p>
+      <div className="mx-auto max-w-6xl border-b border-border px-6 pb-8 pt-16 md:px-8 lg:px-12">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-primary">DSS Berkeley</p>
+        <h1 className="mt-6 text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1.05] tracking-tight text-ink">
+          Design System
+        </h1>
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
+          Primitives for Phase 1+. Not linked in the public nav.
+        </p>
       </div>
 
       {/* ── Colors ─────────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Color tokens</p>
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Color tokens</p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {colors.map(({ name, hex, label }) => (
             <div key={name} className="flex flex-col gap-2">
@@ -51,8 +55,8 @@ export default function StyleguidePage() {
       </div>
 
       {/* ── Typography ─────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Typography</p>
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Typography</p>
         <div className="flex flex-col gap-6 border border-border rounded-xl p-8">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">Eyebrow label — mono, xs, widest</p>
           <h1 className="text-5xl font-bold tracking-tight text-ink">Heading 1 — 5xl bold</h1>
@@ -75,8 +79,8 @@ export default function StyleguidePage() {
       </div>
 
       {/* ── Buttons ────────────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Buttons</p>
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Buttons</p>
         <div className="flex flex-col gap-6 border border-border rounded-xl p-8">
           {/* Variants */}
           <div className="flex flex-wrap items-center gap-4">
@@ -100,8 +104,8 @@ export default function StyleguidePage() {
       </div>
 
       {/* ── Section component ──────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Section component</p>
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Section component</p>
       </div>
 
       <Section
@@ -120,18 +124,17 @@ export default function StyleguidePage() {
       </Section>
 
       <Section
-        eyebrow="Surface variant"
-        heading="This section uses bg-surface."
-        subtext="Alternate sections use --color-surface to create visual rhythm without borders."
-        surface
+        eyebrow="Centered variant"
+        heading="This section is centered."
+        subtext="Sections are transparent so a page-long .fade-between-gradients wrapper can run behind them; use `centered` for closing CTAs."
         centered
       >
         <Button href="/join" size="lg" className="mt-2">Join DSS</Button>
       </Section>
 
       {/* ── Node-graph motif ───────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Node-graph motif</p>
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Node-graph motif</p>
         <div className="relative flex items-center justify-center rounded-xl border border-border bg-surface overflow-hidden h-64">
           <NodeGraph className="absolute inset-0 w-full h-full" opacity={0.25} />
           <p className="relative z-10 font-mono text-sm text-muted">NodeGraph at opacity 0.25</p>
@@ -143,11 +146,11 @@ export default function StyleguidePage() {
       </div>
 
       {/* ── Gradient hero strip ────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-[1200px] px-6 pt-16">
-        <p className="font-mono text-xs uppercase tracking-widest text-muted mb-6">Gradient hero strip</p>
-        <div className="relative rounded-2xl overflow-hidden brand-gradient px-10 py-16 flex flex-col items-start gap-6">
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
+        <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Gradient hero strip</p>
+        <div className="relative flex flex-col items-start gap-6 overflow-hidden brand-gradient px-10 py-16">
           <NodeGraph className="absolute right-0 top-0 h-full w-1/2" opacity={0.15} />
-          <p className="font-mono text-xs uppercase tracking-widest text-white/60">Data Science Society</p>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-white/80">Data Science Society</p>
           <h2 className="text-4xl font-bold text-white tracking-tight max-w-xl">
             We turn Berkeley students into data scientists.
           </h2>

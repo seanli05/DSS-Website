@@ -37,7 +37,7 @@ export default function ExecCard({ profile }: ExecCardProps) {
             aria-hidden="true"
             className="absolute inset-0 flex items-center justify-center bg-ink/60 opacity-0 transition-opacity duration-200 motion-reduce:transition-none group-hover:opacity-100 group-focus-visible:opacity-100"
           >
-            <span className="font-mono text-xs uppercase tracking-widest text-white">
+            <span className="text-[11px] uppercase tracking-[0.18em] text-white">
               View LinkedIn ↗
             </span>
           </div>
@@ -48,7 +48,9 @@ export default function ExecCard({ profile }: ExecCardProps) {
         <p className="font-semibold text-ink leading-snug">{profile.name}</p>
         <p className="text-sm text-muted">{profile.position}</p>
         {profile.gradYear && (
-          <p className="mt-1 font-mono text-xs text-muted">Class of {profile.gradYear}</p>
+          <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-muted">
+            Class of {profile.gradYear}
+          </p>
         )}
       </div>
     </article>
