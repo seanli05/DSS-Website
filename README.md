@@ -190,7 +190,7 @@ All components live in `components/`. Server Components by default; only interac
 | `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
 | `LogoCarousel.tsx` | — | Auto-scrolling CSS-keyframe marquee of partner logos. Purely decorative — no links, no hover effects; respects `prefers-reduced-motion`. Handles any partner count/logo shape from Airtable (fixed logo slots, list repeated to cover wide viewports) |
 | `CommitteeCard.tsx` | — | Committee card linking to `/committees/[id]`: `kicker` category, name (plus `fullName` when set), custom line-art glyph, blurb, and focus area tags. Per-committee accent colors are a presentation-only map in the file, all referencing existing tokens — Social Good uses `--color-accent-ink` because sage isn't AA-legible at small sizes |
-| `ProjectCard.tsx` | ✓ | Card showing project logo, title, partner, tags, and description clamped to 3 lines. A "See more" button opens `ProjectModal` with the full project |
+| `ProjectCard.tsx` | ✓ | Rounded, centered card: logo, bold partner name, semester, and a one-sentence hook (`firstSentence` in `lib/content.ts`), clamped to 2 lines. Background is a radial gradient tinted with `getProjectAccentColor()` — the partner's own brand color when known, else the site's teal. The whole card is a button that opens `ProjectModal` with the full project |
 | `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |
 | `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on the homepage and committee detail pages |
 | `ExecCard.tsx` | — | Exec board card: square headshot (centered crop), name, position, grad year. When the member has a LinkedIn URL the whole card is a link and a "View LinkedIn" overlay appears on hover/focus; initials tile when no headshot |
@@ -261,7 +261,8 @@ Four committees. Fields:
   "description": "...",       // the card always clamps this to 3 lines; "See more" opens the full text in a popup
   "logo": null,                // path under /public, or a hosted URL, or null for a placeholder
   "images": [],                 // extra image/gif URLs shown as a mini carousel in the "See more" popup
-  "link": null                 // external URL or null
+  "link": null,                // external URL or null
+  "brandColor": null           // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
 }
 ```
 
@@ -402,6 +403,7 @@ If any of a function's required env vars are missing, it silently falls back to 
 | `Logo` | attachment | `logo` (first attachment's URL) |
 | `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
 | `Additional Images/GIFS` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup) |
+| `Brand Color` | text (hex, e.g. `#FF3621`) | `brandColor` — optional; tints the `ProjectCard` background. Leave blank to use the built-in lookup by partner name (`getProjectAccentColor` in `lib/content.ts`), which falls back to the site's teal for unlisted partners |
 
 **Exec Profiles table** (`EXEC_PROFILES_TABLE`) — fetched by `getExecProfiles()` in `lib/content.ts`, shown as the executive board grid on `/about`. Rows with a blank `Name` are skipped. Records render in the table's Grid-view row order (see **Row ordering** above).
 

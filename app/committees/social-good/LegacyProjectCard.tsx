@@ -1,0 +1,100 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Button from "@/components/Button";
+import ProjectModal from "@/components/ProjectModal";
+import type { Project } from "@/lib/content";
+
+interface LegacyProjectCardProps {
+  project: Project;
+}
+
+/**
+ * A frozen copy of `components/ProjectCard.tsx` as it stood before the
+ * rounded, brand-tinted redesign — see the note in `./LegacySection.tsx` for
+ * why this duplicate exists. Kept intentionally un-synced with the real
+ * `ProjectCard`.
+ */
+export default function LegacyProjectCard({ project }: LegacyProjectCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <article
+      id={project.id}
+      className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 bg-bg p-6 shadow-card hover:shadow-card-hover transition-shadow duration-200 motion-reduce:transition-none"
+    >
+      {/* Logo + semester */}
+      <div className="flex items-center justify-between gap-3">
+        {project.logo ? (
+          <Image
+            src={project.logo}
+            alt={`${project.partner} logo`}
+            width={160}
+            height={64}
+            className="h-14 w-auto max-w-[40%] object-contain object-left"
+          />
+        ) : (
+          <div
+            className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
+            aria-hidden="true"
+          >
+            {project.partner.slice(0, 2).toUpperCase()}
+          </div>
+        )}
+        <span className="font-mono text-xs text-muted">{project.semester}</span>
+      </div>
+
+      {/* Partner (client) leads; project title is the secondary line.
+          Falls back to the title when a project has no partner. */}
+      <div>
+        <h3 className="font-semibold text-ink leading-snug">
+          {project.partner || project.title}
+        </h3>
+        {project.partner && (
+          <p className="mt-0.5 text-xs text-muted">{project.title}</p>
+        )}
+      </div>
+
+      {/* Description — always clamped to 3 lines; full text lives in the popup */}
+      <p className="text-sm text-muted leading-relaxed line-clamp-3">
+        {project.description}
+      </p>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        className="self-start"
+        onClick={() => setIsOpen(true)}
+      >
+        See more →
+      </Button>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
+        {project.tags.map((tag) => (
+          <span
+            key={tag}
+            className="bg-primary/10 px-2.5 py-0.5 font-mono text-xs text-primary"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Optional link */}
+      {project.link && (
+        <a
+          href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 text-sm font-medium text-primary hover:underline underline-offset-2"
+        >
+          View project →
+        </a>
+      )}
+
+      {isOpen && <ProjectModal project={project} onClose={() => setIsOpen(false)} />}
+    </article>
+  );
+}
