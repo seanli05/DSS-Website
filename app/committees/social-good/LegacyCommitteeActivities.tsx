@@ -1,6 +1,6 @@
 import Image from "next/image";
-import PhotoPlaceholder from "./PhotoPlaceholder";
-import RevealOnScroll from "./RevealOnScroll";
+import PhotoPlaceholder from "@/components/PhotoPlaceholder";
+import RevealOnScroll from "@/components/RevealOnScroll";
 import { stripTodo, type CommitteeActivity } from "@/lib/content";
 
 // Tile treatment lifted from the About page's tradition grid: the tile lifts and
@@ -11,22 +11,16 @@ const TILE =
 const TILE_IMAGE_ZOOM =
   "object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
 
-interface CommitteeActivitiesProps {
+interface LegacyCommitteeActivitiesProps {
   activities: CommitteeActivity[];
 }
 
 /**
- * The "How we spend our time" tiles — three across, each a landscape photo over a
- * numbered title and a short description.
- *
- * `sm:auto-rows-fr` is load-bearing: it holds all three tiles to the same height
- * when their descriptions differ in length, which is what keeps the row of photos
- * on one line rather than stepping.
- *
- * Activities without a photo yet render the shared placeholder frame, so the
- * layout is already right and going live is one image plus two JSON fields.
+ * A frozen copy of `components/CommitteeActivities.tsx` as it stood before
+ * the numbered badge was swapped for a gradient circle — see the note in
+ * `./LegacySection.tsx` for why this duplicate exists.
  */
-export default function CommitteeActivities({ activities }: CommitteeActivitiesProps) {
+export default function LegacyCommitteeActivities({ activities }: LegacyCommitteeActivitiesProps) {
   return (
     <div className="grid gap-6 sm:auto-rows-fr sm:grid-cols-3">
       {activities.map((activity, i) => (
@@ -46,10 +40,10 @@ export default function CommitteeActivities({ activities }: CommitteeActivitiesP
               )}
             </div>
             <div className="flex flex-1 flex-col p-6">
-              <span className="surface-green-gradient ring-primary/10 flex h-9 w-9 items-center justify-center rounded-full font-mono text-[11px] font-semibold text-white ring-4">
+              <span className="text-[11px] uppercase tracking-[0.18em] text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-4 text-lg font-semibold tracking-tight text-ink">
+              <h3 className="mt-3 text-lg font-semibold tracking-tight text-ink">
                 {activity.title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">

@@ -24,14 +24,36 @@
     "icon": "📊",
     "blurb": "Semester-long engagements where teams partner with real companies to ship data solutions and deliver insights.",
     "focusAreas": ["Client Projects", "Analytics", "Industry"],
-    "lead": "TODO: Committee Lead",
+    "lead": "Rakshan Reddy",
     "featured": true,
     "heroImage": "/committees/consulting-hero.JPG",
     "description": "TODO: finalize with committee leadership. We partner with companies ranging from early-stage startups to Fortune 500s to tackle real, high-stakes data problems — from building predictive models to designing dashboards that shape executive decisions.\n\nEach semester-long engagement pairs a small team of students with a client stakeholder, mirroring the cadence and rigor of a real consulting relationship.\n\nMembers leave with a portfolio of shipped work, direct client-facing experience, and a technical toolkit spanning the full analytics stack, from data cleaning to communicating insights that actually get acted on.",
     "workImage": null,
     "workImageAlt": null,
     "workCaption": null,
-    "activities": null
+    "activities": [
+      {
+        "id": "case-practice",
+        "title": "Case study practice",
+        "body": "TODO: confirm with committee leadership. Members work through real-world case interviews and past client engagements to build the instincts behind every project.",
+        "image": null,
+        "imageAlt": null
+      },
+      {
+        "id": "alumni-chats",
+        "title": "Alumni & industry chats",
+        "body": "TODO: confirm with committee leadership. Alumni now working in data roles come back to share how they broke in and what the job actually looks like day to day.",
+        "image": null,
+        "imageAlt": null
+      },
+      {
+        "id": "committee-socials",
+        "title": "Committee socials",
+        "body": "TODO: confirm with committee leadership. Dinners and hangouts that give the committee a reason to know each other outside of client deadlines.",
+        "image": null,
+        "imageAlt": null
+      }
+    ]
   },
   {
     "id": "social-good",

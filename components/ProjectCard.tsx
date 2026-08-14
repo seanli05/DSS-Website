@@ -2,93 +2,87 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Button from "@/components/Button";
 import ProjectModal from "@/components/ProjectModal";
-import type { Project } from "@/lib/content";
+import { firstSentence, getProjectAccentColor, type Project } from "@/lib/content";
 
 interface ProjectCardProps {
   project: Project;
 }
 
+/**
+ * A soft color-tinted tile rather than a white card on a white page — that
+ * flat fill (not a border, not a shadow) is what was making these read as
+ * bland. The tint is the partner's own brand color when we know it (see
+ * `getProjectAccentColor`), so each card carries a bit of that company's
+ * identity rather than every card looking identical; unknown partners fall
+ * back to the site's own teal. It's a radial wash anchored above the card
+ * (`at 50% -15%`) rather than a flat fill, kept nearly transparent right
+ * where the logo sits and only building up color toward the edges — so a
+ * partner whose own logo is close in hue to their brand color (e.g. a yellow
+ * mark on a yellow tint) never loses contrast against its own card.
+ *
+ * Deliberately rounded (`rounded-3xl`) — a scoped, intentional break from the
+ * site's square-corner editorial system, reserved for this component because
+ * it's meant to read like a company showcase, not another editorial block.
+ * The whole face is one button (not a small link at the bottom) so the card
+ * itself invites the click.
+ */
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const hook = firstSentence(project.description);
+  const name = project.partner || project.title;
+  const accent = getProjectAccentColor(project) ?? "var(--color-primary)";
 
   return (
-    <article
-      id={project.id}
-      className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 bg-bg p-6 shadow-card hover:shadow-card-hover transition-shadow duration-200 motion-reduce:transition-none"
-    >
-      {/* Logo + semester */}
-      <div className="flex items-center justify-between gap-3">
-        {project.logo ? (
-          <Image
-            src={project.logo}
-            alt={`${project.partner} logo`}
-            width={160}
-            height={64}
-            className="h-14 w-auto max-w-[40%] object-contain object-left"
-          />
-        ) : (
-          <div
-            className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
-            aria-hidden="true"
-          >
-            {project.partner.slice(0, 2).toUpperCase()}
-          </div>
-        )}
-        <span className="font-mono text-xs text-muted">{project.semester}</span>
-      </div>
-
-      {/* Partner (client) leads; project title is the secondary line.
-          Falls back to the title when a project has no partner. */}
-      <div>
-        <h3 className="font-semibold text-ink leading-snug">
-          {project.partner || project.title}
-        </h3>
-        {project.partner && (
-          <p className="mt-0.5 text-xs text-muted">{project.title}</p>
-        )}
-      </div>
-
-      {/* Description — always clamped to 3 lines; full text lives in the popup */}
-      <p className="text-sm text-muted leading-relaxed line-clamp-3">
-        {project.description}
-      </p>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        className="self-start"
+    <>
+      <button
+        type="button"
+        id={project.id}
         onClick={() => setIsOpen(true)}
+        aria-label={`Read more about the ${name} project`}
+        style={{
+          background: `radial-gradient(130% 140% at 50% -15%, transparent 0%, color-mix(in srgb, ${accent} 16%, transparent) 55%, color-mix(in srgb, ${accent} 30%, transparent) 100%)`,
+        }}
+        className="group flex h-full w-full scroll-mt-28 flex-col items-center gap-5 rounded-3xl p-8 text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-card-hover focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] focus-visible:outline-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
-        See more →
-      </Button>
+        <div className="relative mt-2 h-16 w-full max-w-[170px]">
+          {project.logo ? (
+            <Image
+              src={project.logo}
+              alt=""
+              fill
+              sizes="170px"
+              className="object-contain transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center" aria-hidden="true">
+              <span className="text-2xl font-semibold tracking-tight text-primary/40">
+                {project.partner.slice(0, 2).toUpperCase()}
+              </span>
+            </div>
+          )}
+        </div>
 
-      {/* Tags */}
-      <div className="flex flex-wrap gap-1.5 mt-auto pt-1">
-        {project.tags.map((tag) => (
+        <div className="flex flex-1 flex-col items-center justify-center">
+          {/* The one-sentence hook — the rest of the write-up lives behind "Read more".
+              No name/semester line here: the logo above already says who this is. */}
+          <p className="max-w-[28ch] text-sm leading-relaxed text-muted line-clamp-2">
+            {hook}
+          </p>
+        </div>
+
+        <span className="mt-auto flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+          Read more
           <span
-            key={tag}
-            className="bg-primary/10 px-2.5 py-0.5 font-mono text-xs text-primary"
+            aria-hidden="true"
+            className="transition-transform duration-150 group-hover:translate-x-1 motion-reduce:transition-none"
           >
-            {tag}
+            →
           </span>
-        ))}
-      </div>
-
-      {/* Optional link */}
-      {project.link && (
-        <a
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-1 text-sm font-medium text-primary hover:underline underline-offset-2"
-        >
-          View project →
-        </a>
-      )}
+        </span>
+      </button>
 
       {isOpen && <ProjectModal project={project} onClose={() => setIsOpen(false)} />}
-    </article>
+    </>
   );
 }

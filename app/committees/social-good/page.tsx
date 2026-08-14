@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import Section from "@/components/Section";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import ProjectCarousel from "@/components/ProjectCarousel";
 import CommitteePhoto from "@/components/CommitteePhoto";
-import CommitteeActivities from "@/components/CommitteeActivities";
+import LegacySection from "./LegacySection";
+import LegacyProjectCarousel from "./LegacyProjectCarousel";
+import LegacyCommitteeActivities from "./LegacyCommitteeActivities";
 import {
   getCommittees,
   getDescriptionParagraphs,
@@ -23,44 +23,32 @@ const HERO_BLURB = "mt-6 max-w-lg text-base leading-relaxed text-white/75 md:tex
 const HERO_CONTAINER =
   "relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12";
 
-export function generateStaticParams() {
-  // "social-good" has its own static route (app/committees/social-good/page.tsx),
-  // frozen on its pre-redesign look — see the note in that route's
-  // LegacySection.tsx. Excluding it here avoids a route conflict at build time.
-  return getCommittees()
-    .filter((c) => c.id !== "social-good")
-    .map((c) => ({ id: c.id }));
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-  const { id } = await params;
-  const committee = getCommittees().find((c) => c.id === id);
+export function generateMetadata(): Metadata {
+  const committee = getCommittees().find((c) => c.id === "social-good");
   if (!committee) return {};
   return { title: committee.name, description: committee.blurb };
 }
 
-export default async function CommitteePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const committee = getCommittees().find((c) => c.id === id);
+/**
+ * Social Good, frozen on its pre-redesign look — see the note in
+ * `./LegacySection.tsx`. Every other committee (Consulting, Acadev, ...)
+ * renders from the shared `app/committees/[id]/page.tsx` template; this
+ * static route at the same URL shape takes precedence over that dynamic one
+ * for exactly this one path, so nothing elsewhere needs to change.
+ *
+ * This file is otherwise a direct copy of the pre-redesign
+ * `app/committees/[id]/page.tsx`, with the `[id]` param resolved to
+ * "social-good" ahead of time.
+ */
+export default async function SocialGoodCommitteePage() {
+  const committee = getCommittees().find((c) => c.id === "social-good");
   if (!committee) notFound();
   const projects = await getProjectsByCommittee(committee.id);
   const paragraphs = getDescriptionParagraphs(committee.description);
+  // Only some committees have activity tiles, so the section numbers after them
+  // have to be derived rather than hardcoded.
   const activities = committee.activities ?? [];
-  // "What we do" is always 1. Projects and the activities tiles are each
-  // optional and rendered in that order, so their numbers have to be derived
-  // rather than hardcoded — a committee with only one of the two shouldn't
-  // skip straight to "(03)".
-  let sectionIndex = 1;
-  const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
-  const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
+  const projectsIndex = activities.length > 0 ? 3 : 2;
 
   const breadcrumb = (
     <p className={HERO_EYEBROW}>
@@ -116,7 +104,7 @@ export default async function CommitteePage({
             ~90 characters per line, well past a comfortable measure. Committees
             without a photo yet render CommitteePhoto's placeholder frame, so the
             layout is already right and going live is one file plus one JSON field. */}
-        <Section index={1} eyebrow="Our work" heading="What we do" divider>
+        <LegacySection index={1} eyebrow="Our work" heading="What we do" divider>
           {/* Proportional columns, not fixed widths: 1.4fr/1fr always sums to the
               container, so the pair fills the section rather than leaving dead space
               to the right of the photo.
@@ -162,7 +150,9 @@ export default async function CommitteePage({
                 </RevealOnScroll>
               )}
               {committee.lead && !committee.lead.startsWith("TODO") && (
-                <RevealOnScroll delayMs={150} className="mt-10">
+                /* mt-auto pins the byline to the bottom of the column, so it meets the
+                   photo's caption on the same line even when the copy above is short. */
+                <RevealOnScroll delayMs={150} className="mt-10 lg:mt-auto lg:pt-10">
                   <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
                     Committee Lead: {committee.lead}
                   </p>
@@ -182,55 +172,50 @@ export default async function CommitteePage({
             </RevealOnScroll>
           </div>
 
-        </Section>
+        </LegacySection>
 
-        {/* Projects — the portfolio comes right after "What we do", so the
-            evidence for that claim is the next thing a visitor sees. Same
-            continuous white field as everything else on the page — the
-            rounded, shadowed cards themselves are what set this section apart,
-            not a background-color switch. */}
+        {/* How we spend our time — what the committee's weeks actually look like,
+            as opposed to what it produces. Only committees with activities in
+            committees.json render this at all. */}
+        {activities.length > 0 && (
+          <LegacySection
+            index={2}
+            eyebrow="Committee life"
+            heading="How we spend our time"
+            subtext="Beyond the client work, this is what a semester in the committee looks like."
+          >
+            <LegacyCommitteeActivities activities={activities} />
+          </LegacySection>
+        )}
+
+        {/* Projects — its own section rather than a subheading inside "What we do",
+            so the activities section above can sit between the two. */}
         {projects.length > 0 && (
-          <Section
+          <LegacySection
             index={projectsIndex}
             eyebrow="Portfolio"
             heading="Projects"
-            subtext="A rotating look at what this committee has shipped. Click “Read more” for the full story."
+            subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
           >
             <RevealOnScroll delayMs={100}>
-              <ProjectCarousel projects={projects} />
+              <LegacyProjectCarousel projects={projects} />
             </RevealOnScroll>
-          </Section>
-        )}
-
-        {/* Outside of projects — what the committee's weeks look like beyond the
-            client work itself. Only committees with activities in
-            committees.json render this at all. */}
-        {activities.length > 0 && (
-          <Section
-            index={activitiesIndex}
-            eyebrow="Committee life"
-            heading="Outside of projects"
-            subtext="Client work is the core of what we do — this is everything else that makes up a semester."
-          >
-            <CommitteeActivities activities={activities} />
-          </Section>
+          </LegacySection>
         )}
 
         {/* Apply CTA — closes every committee page. Unnumbered, matching how
-            Partners closes. size="sm" keeps this from competing with the real
-            section headings above it. */}
-        <Section
+            Partners closes. */}
+        <LegacySection
           eyebrow="Interested?"
           heading={`Join ${committee.name} this semester.`}
           subtext="We recruit in the first two weeks of Fall and Spring semester. Check the Join page for dates, timelines, and how to apply."
           centered
-          size="sm"
         >
           {/* TODO: update with current recruitment dates */}
           <RevealOnScroll delayMs={100}>
             <EditorialButton href="/join">Apply to {committee.name}</EditorialButton>
           </RevealOnScroll>
-        </Section>
+        </LegacySection>
       </div>
     </>
   );

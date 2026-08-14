@@ -95,6 +95,7 @@ export interface Project {
   logo: string | null; // path under /public, or a hosted URL from Airtable's Logo attachment
   images: string[]; // additional images/gifs shown in the "See more" popup
   link: string | null;
+  brandColor: string | null; // hex from Airtable's "Brand Color" column — tints the ProjectCard background. null falls back to a best-effort lookup (see getProjectAccentColor), then to the site's own teal.
 }
 
 export interface ExecProfile {
@@ -181,6 +182,43 @@ export function getDescriptionParagraphs(description: string | null): string[] {
 
 export function getFeaturedCommittees(): Committee[] {
   return getCommittees().filter((c) => c.featured);
+}
+
+/**
+ * Returns the first sentence of a block of text — the one-line hook ProjectCard
+ * shows before "Read more" opens the full write-up in ProjectModal. Falls back
+ * to the whole string when there's no sentence break to find, so a project
+ * never renders a blank card while its summary is still being drafted.
+ */
+export function firstSentence(text: string): string {
+  const trimmed = text.trim();
+  const match = trimmed.match(/^.*?[.!?](?=\s|$)/);
+  return match ? match[0] : trimmed;
+}
+
+// Best-effort decorative accent for partners without a "Brand Color" set in
+// Airtable yet — a small set of well-known public brand colors for common
+// industry partners, purely for the ProjectCard background tint. Extend as
+// new recurring partners show up; anyone not listed here just falls back to
+// the site's own teal (handled by the caller), which is always correct.
+const KNOWN_PARTNER_COLORS: Record<string, string> = {
+  databricks: "#FF3621",
+  "analog devices": "#0057B8",
+  boeing: "#0039A6",
+  "national geographic": "#FFCC00",
+  unicef: "#1CABE2",
+  wwf: "#5A8F29",
+  "world wildlife fund": "#5A8F29",
+};
+
+/**
+ * The color ProjectCard tints its background with: the project's own
+ * `brandColor` from Airtable if set, else a lookup by partner name, else
+ * null (the caller falls back to the site's teal via `var(--color-primary)`).
+ */
+export function getProjectAccentColor(project: Project): string | null {
+  if (project.brandColor) return project.brandColor;
+  return KNOWN_PARTNER_COLORS[project.partner.trim().toLowerCase()] ?? null;
 }
 
 export function getCommunityTraditions(): CommunityTradition[] {
@@ -299,6 +337,7 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
         logo: attachmentUrls(r.fields["Logo"])[0] ?? null,
         images: attachmentUrls(r.fields["Additional Images/GIFS"]),
         link: null,
+        brandColor: (r.fields["Brand Color"] as string) ?? null,
       }));
     };
 
