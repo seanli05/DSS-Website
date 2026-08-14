@@ -4,6 +4,7 @@ import partnersData from "@/data/partners.json";
 import committeesData from "@/content/committees.json";
 import communityData from "@/content/community.json";
 import communityPhotosData from "@/content/community-photos.json";
+import newbieExperienceData from "@/content/newbie-experience.json";
 import offeringsData from "@/content/offerings.json";
 import consultingProcessData from "@/content/consulting-process.json";
 import externalEventsData from "@/content/external-events.json";
@@ -28,6 +29,20 @@ export interface Partner {
 }
 
 export interface CommitteeActivity {
+  id: string; // slug — keep stable
+  title: string;
+  body: string; // one short paragraph; a leading "TODO: …" note is stripped before rendering
+  image: string | null; // path under /public — null renders the "photo to come" placeholder
+  imageAlt: string | null; // required whenever image is set
+}
+
+/**
+ * One pillar of the Join page's "The Newbie Experience" section. Deliberately
+ * the same shape as CommitteeActivity (a photo tile over a numbered title and a
+ * short paragraph) rather than sharing the type — the two sections are edited by
+ * different people and are free to drift, per CLAUDE.md rule 8.
+ */
+export interface NewbieExperiencePillar {
   id: string; // slug — keep stable
   title: string;
   body: string; // one short paragraph; a leading "TODO: …" note is stripped before rendering
@@ -170,6 +185,10 @@ export function getFeaturedCommittees(): Committee[] {
 
 export function getCommunityTraditions(): CommunityTradition[] {
   return communityData as CommunityTradition[];
+}
+
+export function getNewbieExperience(): NewbieExperiencePillar[] {
+  return newbieExperienceData as NewbieExperiencePillar[];
 }
 
 export function getCommunityPhotos(): CommunityPhoto[] {

@@ -52,6 +52,7 @@ content/                   JSON files editors update to change site content
   community-photos.json    About page Gallery photos. `category` is retained for
                            grouping/ordering but is no longer shown on the tiles
   external-events.json     Airtable fallback for the About page events carousel
+  newbie-experience.json   The four Join-page pillars (title, body, photo)
   offerings.json           What DSS offers partners — also fills the inquiry
                            form's "I'm interested in" dropdown
   consulting-process.json  Read by getConsultingProcess(); not yet rendered
@@ -141,7 +142,8 @@ Industry partnership pitch page. Sections:
 
 - Gradient hero ("Let's work together.") with the inquiry form card beside the headline
 - Logo carousel (same component as Home)
-- How-it-works section (3 cards)
+- **Ways to partner** `(01)` — the full menu of partnership types from `content/offerings.json` via `getOfferings()`. The `featured` offering (consulting) renders as a filled-teal flagship card; the other four sit in a 2-col grid in the same card language as How-it-works. Icons come from `components/OfferingIcon.tsx`, keyed by each offering's `icon`. This is the same list that fills the inquiry form's dropdown, so the page and form can't drift apart
+- How-it-works section `(02)` (3 cards) — the deep-dive on the consulting flagship
 - Project timeline (`ProjectTimeline`)
 - Closing panel repeating the inquiry form card
 
@@ -159,8 +161,13 @@ Industry partnership pitch page. Sections:
 Member recruitment page. Sections:
 
 - Page header with "Apply now" anchor link
-- **Recruitment timeline** (`RecruitmentTimeline`) — events come from the Airtable `Recruitment Timeline` table via `getRecruitmentTimeline()`, no longer hardcoded. A horizontal scroll track with a continuous spine; cards alternate above/below it and reveal as they scroll into view (an `IntersectionObserver` flips `data-revealed`, driving the `.tl-*` / `.timeline-*` transitions in `app/globals.css`). All motion is disabled under `prefers-reduced-motion`.
-- Why-join grid (4 benefit cards — hardcoded under `BENEFITS`)
+- **Recruitment timeline** (`RecruitmentTimeline`) — events come from the Airtable `Recruitment Timeline` table via `getRecruitmentTimeline()`, no longer hardcoded. A horizontal scroll track with a continuous spine; cards alternate above/below it and reveal as they scroll into view (an `IntersectionObserver` flips `data-revealed`, driving the `.tl-*` / `.timeline-*` transitions in `app/globals.css`). All motion is disabled under `prefers-reduced-motion`. The track is full-bleed — `.timeline-track` escapes the section's `max-w-6xl` container and spans the viewport, which is why the page body is wrapped in `overflow-x-clip`.
+  - **Sizing lives in CSS, not the component.** `.timeline-track` in `app/globals.css` defines `--tl-col`, `--tl-card`, `--tl-rail` (the gradient date rail), and `--tl-slot` (the fixed height of the card slot above and below the spine); a `max-width: 30rem` media query shrinks them for phones. Note `--tl-col` is the spacing between consecutive **nodes**, not the visible gap between cards — since cards alternate above/below, two cards on the same side sit two columns apart, so the gap you see is `(2 × --tl-col) − --tl-card`. It's deliberately smaller than the card width (neighbouring cards overlap horizontally but sit on opposite sides of the spine); keep it comfortably above `--tl-card / 2` or a card will start covering its neighbour's node. The two slots must stay the same height or the spine stops lining up with the nodes, and a card taller than `--tl-slot` minus its 32px connector would push the spine off-centre — hence the `line-clamp` on the description plus a `max-h` backstop on the card.
+  - **Dates**: the Airtable `Date` field is split into weekday / day / month for the rail when it's an ISO date (`2026-08-31`); any other value (`Week 1`) is printed as typed.
+  - **Color encodes progression.** Events are spread evenly across a six-stop ramp (`--tl-ramp-0`…`--tl-ramp-5` in `globals.css`, deep teal → ochre): the component writes a `data-step` (0–4) on each column, and the card rail, the node, the connector, and the meta icons all read their color from that step. The spine runs the same ramp end to end. Adding or removing events reflows the ramp automatically — no per-event color to maintain. **Every ramp stop must stay dark enough for white text (≥4.5:1); the rails print the date in white, so don't lighten them.**
+- **The Newbie Experience** (`NewbieExperience`) — four pillars (Bootcamp, Professional Development, Networking, Community), each a landscape 4:3 photo over a numbered title and a short paragraph. Content lives in `content/newbie-experience.json` via `getNewbieExperience()`; it replaced the old hardcoded `BENEFITS` array. Four across from `lg`, 2x2 in the `sm`-`md` band, stacked on phones. Pillars with `image: null` render the shared `PhotoPlaceholder` frame, so the layout is already right and going live is one image plus two JSON fields. All four have photos today.
+  - **Adding a photo:** drop it into `Newbie Experience/<Pillar>/` (that source folder lives in the repo's *parent* directory, alongside `DSS-Website/`, and is not committed), derive it into `public/newbie-experience/<slug>.jpg` at **1200x720 (5:3)**, then set that pillar's `image` and `imageAlt`. To derive: `sharp(src).rotate().resize({ width: 1200, height: 720, fit: "cover", position }).jpeg({ quality: 82, mozjpeg: true })` — `sharp` ships with Next, so no extra install. The frame is 5:3 rather than the 4:3 `CommitteeActivities` uses because these tiles are half the container wide, where 4:3 came out ~390px tall and swamped the copy. Every source so far has been 4:3, so a fifth of the height goes — all four use `position: "bottom"`, which **keeps** the bottom of the frame and therefore crops from the top. That suits photos with sky or ceiling above and people below, which is all of them today; a shot composed the other way needs `"top"`. Always eyeball the result, since this trim is large enough to decapitate someone
+  - **Editing the copy — watch the TODO marker.** `stripTodo()` removes a leading `TODO: ... .` note before rendering, and its regex (`/^TODO:[^.]*\.\s*/i`) stops at the **first period in the string**. So a TODO note must be a single sentence, must end in a period, and must contain no internal periods — no `e.g.`, no abbreviations. Get that wrong and the regex runs past the note and silently eats the real copy instead (an `e.g.` in the Professional Development note did exactly that during authoring). Same rule applies to `content/committees.json`
 - Gradient apply CTA section (application link currently `#` — **must be updated each semester**)
 - FAQ accordion-style list (hardcoded under `FAQ`)
 
@@ -197,7 +204,8 @@ All components live in `components/`. Server Components by default; only interac
 | `DualCTA.tsx` | — | Two-column CTA strip: "Join DSS" (students) + "Partner with us" (industry) |
 | `Gallery.tsx` | — | About page photo strip: **two decorative rows** looping forever in opposite directions. Reuses the `animate-marquee` / `marquee-mask` pattern from `LogoCarousel` (track rendered twice, `translateX(0 → -50%)`), so it is pure CSS with no scroll handlers — hence no `"use client"`. Photos alternate between rows so both carry every category. `aria-hidden` and `pointer-events-none`: nothing to click or scroll. Static under `prefers-reduced-motion` |
 | `EventCarousel.tsx` | ✓ | About page "Campus involvement" strip of large photo tiles from `getExternalEvents()`. Hover/focus darkens the photo and overlays the event name; prev/next arrows scroll the track |
-| `RecruitmentTimeline.tsx` | ✓ | Join page horizontal timeline: a continuous spine with cards alternating above/below. An IntersectionObserver rooted to the scroll track flips `data-revealed`, driving the `.tl-*` transitions in `globals.css`; all items render revealed under `prefers-reduced-motion` |
+| `NewbieExperience.tsx` | | Join page "The Newbie Experience" — four photo tiles over numbered titles, from `content/newbie-experience.json`. Falls back to `PhotoPlaceholder` per pillar. Same tile treatment as `CommitteeActivities` |
+| `RecruitmentTimeline.tsx` | ✓ | Join page horizontal timeline: a full-bleed spine with cards alternating above/below, each card led by a gradient date rail. Column/card/rail/slot sizing comes from the `--tl-*` custom properties on `.timeline-track` in `globals.css`. An IntersectionObserver rooted to the scroll track flips `data-revealed`, driving the `.tl-*` transitions; all items render revealed under `prefers-reduced-motion` |
 | `OfferingIcon.tsx` | — | Line-icon set keyed by `Offering.icon`. **Not currently rendered** — kept for a future Partners offerings menu |
 | `NodeGraph.tsx` | — | Decorative SVG node-graph used in the Hero and About page header |
 | `CommitteeActivities.tsx` | — | The "How we spend our time" grid: three tiles across, each a 4:3 photo over a numbered title and description. `sm:auto-rows-fr` is load-bearing — it holds all three to the same height when descriptions differ in length, keeping the row of photos on one line |
@@ -319,6 +327,7 @@ Single source of truth for all data access. Key functions:
 | `getConsultingProcess()` | `ConsultingStep[]` | `content/consulting-process.json` — **not currently rendered by any page** |
 | `getProjects()` | `Promise<Project[]>` | Airtable REST API (Consulting + Social Good tables) → `content/projects.json` fallback |
 | `getExternalEvents()` | `Promise<ExternalEvent[]>` | Airtable (External Events table) → `content/external-events.json` fallback; About page carousel |
+| `getNewbieExperience()` | `NewbieExperiencePillar[]` | `content/newbie-experience.json`; Join page pillars |
 | `getRecruitmentTimeline()` | `Promise<RecruitmentEvent[]>` | Airtable (Recruitment Timeline table); Join page timeline |
 | `getProjectsByCommittee(id)` | `Promise<Project[]>` | `getProjects()` filtered by `committee === id`; powers the carousel on `/committees/[id]` |
 | `getTestimonials()` | `Testimonial[]` | `content/testimonials.json` |

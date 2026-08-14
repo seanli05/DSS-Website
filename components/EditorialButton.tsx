@@ -2,10 +2,13 @@ import Link from "next/link";
 import { type ReactNode } from "react";
 
 type Variant = "solid" | "outline" | "inverse";
+type Size = "default" | "large";
 
 interface EditorialButtonProps {
   href: string;
   variant?: Variant;
+  /** "large" for a page's single primary CTA (e.g. the Join hero). */
+  size?: Size;
   /** Render a plain <a target="_blank"> instead of a <Link>. Also the right
    *  choice for mailto: hrefs, which aren't client-side routes. */
   external?: boolean;
@@ -34,14 +37,25 @@ const variantClasses: Record<Variant, string> = {
     "border-2 border-white bg-white text-primary hover:bg-transparent hover:text-white focus-visible:outline-white",
 };
 
+// Size lives here rather than being passed through `className` because the
+// caller's className is appended to the same class string — a `px-9` there would
+// collide with the base `px-7` and the winner would come down to Tailwind's
+// internal utility ordering, not the order written. Swapping the whole set keeps
+// it unambiguous.
+const sizeClasses: Record<Size, string> = {
+  default: "gap-3 px-7 py-3.5 text-[11px]",
+  large: "gap-4 px-9 py-4.5 text-[13px]",
+};
+
 export default function EditorialButton({
   href,
   variant = "solid",
+  size = "default",
   external = false,
   children,
   className = "",
 }: EditorialButtonProps) {
-  const classes = `group inline-flex items-center gap-3 px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-150 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] ${variantClasses[variant]} ${className}`;
+  const classes = `group inline-flex items-center font-medium uppercase tracking-[0.18em] transition-colors duration-150 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] ${sizeClasses[size]} ${variantClasses[variant]} ${className}`;
 
   const inner = (
     <>

@@ -228,7 +228,7 @@ export default async function AboutPage() {
             <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {/* Big Little — horizontal split */}
               <RevealOnScroll delayMs={0} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden border border-border bg-bg sm:flex-row ${TILE_HOVER}`}>
+                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg sm:flex-row ${TILE_HOVER}`}>
                   <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/25 via-primary-bright/15 to-transparent sm:aspect-auto sm:w-1/2 sm:shrink-0">
                     {bigLittle.image ? (
                       <Image
@@ -251,7 +251,7 @@ export default async function AboutPage() {
 
               {/* House System — vertical split */}
               <RevealOnScroll delayMs={80} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden border border-border bg-bg ${TILE_HOVER}`}>
+                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
                   {/* This tile sets the height of the whole top row, so its aspect
                       drives Big Little alongside it. NOTE: 5/2 is much wider than the
                       collage's own 16:9, so object-cover crops ~29% of its height. */}
@@ -277,7 +277,7 @@ export default async function AboutPage() {
 
               {/* Chummings — compact */}
               <RevealOnScroll delayMs={160}>
-                <div className={`flex h-full flex-col overflow-hidden border border-border bg-bg ${TILE_HOVER}`}>
+                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
                   <div className="relative flex grow aspect-[12/7] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-transparent">
                     {chummings.image ? (
                       <Image
@@ -300,7 +300,7 @@ export default async function AboutPage() {
 
               {/* Retreats — compact */}
               <RevealOnScroll delayMs={240}>
-                <div className={`flex h-full flex-col overflow-hidden border border-border bg-bg ${TILE_HOVER}`}>
+                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
                   <div className="relative flex grow aspect-[12/7] items-center justify-center overflow-hidden bg-gradient-to-br from-accent/25 to-transparent">
                     {retreats.image ? (
                       <Image
@@ -323,7 +323,7 @@ export default async function AboutPage() {
 
               {/* Socials — vertical split: cover photo above the caption, same as House System */}
               <RevealOnScroll delayMs={320} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden border border-border bg-bg ${TILE_HOVER}`}>
+                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
                   <div className="relative flex grow aspect-[7/3] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                     {socials.image ? (
                       <Image

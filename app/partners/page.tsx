@@ -3,8 +3,8 @@ import LogoCarousel from "@/components/LogoCarousel";
 import PartnerInquiryCard from "@/components/PartnerInquiryCard";
 import ProjectTimeline from "@/components/ProjectTimeline";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import NodeGraph from "@/components/NodeGraph";
-import { getPartners } from "@/lib/content";
+import OfferingIcon from "@/components/OfferingIcon";
+import { getPartners, getOfferings } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -64,18 +64,17 @@ const PLACEMENTS = ["Meta", "Tesla", "Amazon", "Google", "McKinsey"];
 export default async function PartnersPage() {
   const partners = await getPartners();
 
+  // Consulting is the flagship (featured); the rest are the other ways to partner.
+  const offerings = getOfferings();
+  const flagship = offerings.find((offering) => offering.featured);
+  const otherOfferings = offerings.filter((offering) => !offering.featured);
+
   return (
     <>
       {/* Hero — headline left, enquiry form right. The form leads the page rather
           than closing it: this is the single action we want from this audience, so
           it should not be gated behind a scroll. */}
       <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
-        <NodeGraph
-          id="particles-partners"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          opacity={0.25}
-        />
-
         <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
@@ -108,27 +107,118 @@ export default async function PartnersPage() {
       <div className="fade-between-gradients">
         <LogoCarousel partners={partners} className="bg-transparent" />
 
+        {/* Ways to partner — the full menu of partnership types, consulting
+            featured as the flagship. Content is content/offerings.json via
+            getOfferings(); the same list also fills the inquiry form's dropdown,
+            so the page and the form can never drift apart. */}
+        <section className="font-poppins">
+          <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20 lg:px-12">
+            <RevealOnScroll delayMs={0} className="mx-auto max-w-2xl text-center">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-primary">
+                (01) — Ways to partner
+              </p>
+              <h2 className="mt-6 text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1.05] tracking-tight text-ink">
+                More than one way to work together.
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
+                {/* TODO: verify the partnership types with DSS leadership */}
+                Consulting projects are our flagship — but companies partner with DSS in
+                several ways, from recruiting to speaker events and hackathons.
+              </p>
+            </RevealOnScroll>
+
+            {/* Flagship — filled teal card, full width, so consulting reads as the
+                headline offering against the hairline-bordered cards below. */}
+            {flagship && (
+              <RevealOnScroll delayMs={100} className="mt-14">
+                <article className="rounded-3xl bg-primary p-8 text-white md:p-10">
+                  <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+                    <div className="md:max-w-2xl">
+                      <div className="flex items-center gap-4">
+                        <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-white/15 text-white">
+                          <OfferingIcon name={flagship.icon} className="h-6 w-6" />
+                        </span>
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">
+                          Flagship
+                        </span>
+                      </div>
+                      <h3 className="mt-6 text-2xl font-semibold tracking-tight">
+                        {flagship.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-white/80 md:text-base">
+                        {flagship.summary}
+                      </p>
+                    </div>
+                    <ul className="flex flex-col gap-3 md:max-w-xs md:pt-1">
+                      {flagship.bullets.map((bullet) => (
+                        <li key={bullet} className="flex gap-3 text-sm leading-snug text-white/90">
+                          <span
+                            aria-hidden="true"
+                            className="mt-[7px] h-1.5 w-1.5 flex-none rounded-full bg-white/70"
+                          />
+                          {bullet}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              </RevealOnScroll>
+            )}
+
+            {/* The other offerings — compact, soft-tinted cards that alternate
+                teal and sage so the row reads as colour blocks rather than a
+                grid of identical white boxes. Detail (bullets) lives on the
+                flagship above; these stay to a single scannable line. */}
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 md:mt-8 lg:grid-cols-3">
+              {otherOfferings.map((offering, i) => {
+                const sage = i % 2 === 1;
+                return (
+                  <RevealOnScroll key={offering.id} delayMs={175 + i * 75}>
+                    <article
+                      className={`group flex h-full flex-col rounded-2xl p-6 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:shadow-card ${
+                        sage ? "bg-accent/[0.16]" : "bg-primary/[0.09]"
+                      }`}
+                    >
+                      <span
+                        className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${
+                          sage ? "bg-accent/25 text-accent-ink" : "bg-primary/15 text-primary"
+                        }`}
+                      >
+                        <OfferingIcon name={offering.icon} className="h-6 w-6" />
+                      </span>
+                      <h3 className="mt-5 text-lg font-semibold tracking-tight text-ink">
+                        {offering.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted">{offering.summary}</p>
+                    </article>
+                  </RevealOnScroll>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* How it works — three tall cards */}
         <section className="font-poppins">
           <div className="mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20 lg:px-12">
             <RevealOnScroll delayMs={0} className="mx-auto max-w-2xl text-center">
               <p className="text-[11px] uppercase tracking-[0.18em] text-primary">
-                (01) — Process
+                (02) — Process
               </p>
               <h2 className="mt-6 text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1.05] tracking-tight text-ink">
-                How it works.
+                How projects work.
               </h2>
               <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
-                We partner with companies to ship focused data science work through student
-                teams, pairing real execution with meaningful student experience.
+                Our consulting projects run on a semester cadence — a scoped problem, a
+                dedicated student team, and a shipped deliverable at the end.
               </p>
             </RevealOnScroll>
 
             <div className="mt-14 grid gap-6 md:grid-cols-3 md:gap-7">
               {/* 01 — Team structure */}
               <RevealOnScroll delayMs={100}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
                     <TeamIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">01</span>
@@ -149,8 +239,8 @@ export default async function PartnersPage() {
 
               {/* 02 — Project scopes */}
               <RevealOnScroll delayMs={175}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
                     <ScopeIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">02</span>
@@ -176,8 +266,8 @@ export default async function PartnersPage() {
 
               {/* 03 — Why student teams */}
               <RevealOnScroll delayMs={250}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center border border-border text-primary transition-colors duration-200 group-hover:border-primary group-hover:bg-primary group-hover:text-white">
+                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
                     <StudentIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">03</span>
@@ -224,23 +314,6 @@ export default async function PartnersPage() {
               </p>
               <div className="mt-10">
                 <ProjectTimeline />
-              </div>
-            </RevealOnScroll>
-
-            {/* Closing panel — same continuation pattern as the timeline above:
-                a bold label under a hairline rule, not a new section. Reuses the
-                hero's form card, stacked vertically as its own standalone CTA. */}
-            <RevealOnScroll delayMs={0} className="mt-16 border-t border-border pt-14 md:mt-20 md:pt-16">
-              <p className="text-center text-xl font-semibold tracking-tight text-ink">
-                Interested in an engagement?
-              </p>
-              <p className="mt-3 text-center text-sm leading-relaxed text-muted">
-                Reach out and we&apos;ll get back to you within a few days.
-              </p>
-              {/* Wider than the card was originally: max-w-md left the new
-                  Email/Company row too cramped for two comfortable fields. */}
-              <div className="mx-auto mt-10 max-w-xl">
-                <PartnerInquiryCard headingLevel="h3" />
               </div>
             </RevealOnScroll>
           </div>
