@@ -8,6 +8,7 @@ import offeringsData from "@/content/offerings.json";
 import consultingProcessData from "@/content/consulting-process.json";
 import externalEventsData from "@/content/external-events.json";
 import projectsData from "@/content/projects.json";
+import acadevProjectsData from "@/content/acadev-projects.json";
 import testimonialsData from "@/content/testimonials.json";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -306,6 +307,7 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
 });
 
 export async function getProjectsByCommittee(committeeId: string): Promise<Project[]> {
+  if (committeeId === "acadev") return acadevProjectsData as Project[];
   return (await getProjects()).filter((p) => p.committee === committeeId);
 }
 

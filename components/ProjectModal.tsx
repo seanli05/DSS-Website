@@ -20,6 +20,14 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   // a frame later — that's what makes the enter transition actually animate
   // instead of snapping straight to its final state.
   const [visible, setVisible] = useState(false);
+  const monogramSource = project.partner || project.title;
+  const monogram = monogramSource
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
   const requestClose = useCallback(() => {
     setVisible(false);
@@ -90,7 +98,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               className="flex h-16 w-16 items-center justify-center border border-border bg-surface font-mono text-base text-muted"
               aria-hidden="true"
             >
-              {project.partner.slice(0, 2).toUpperCase()}
+              {monogram}
             </div>
           )}
           <span className="font-mono text-xs text-muted">{project.semester}</span>

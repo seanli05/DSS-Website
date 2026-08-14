@@ -52,6 +52,9 @@ export default async function CommitteePage({
   // have to be derived rather than hardcoded.
   const activities = committee.activities ?? [];
   const projectsIndex = activities.length > 0 ? 3 : 2;
+  // Acadev's portfolio showcases student DeCal projects, not client work, and is
+  // sourced separately from the Consulting/Social Good Airtable project feed.
+  const isAcadevProjects = committee.id === "acadev";
 
   const breadcrumb = (
     <p className={HERO_EYEBROW}>
@@ -194,16 +197,22 @@ export default async function CommitteePage({
 
         {/* Projects — its own section rather than a subheading inside "What we do",
             so the activities section above can sit between the two. */}
-        {projects.length > 0 && (
+        {(projects.length > 0 || isAcadevProjects) && (
           <Section
             index={projectsIndex}
-            eyebrow="Portfolio"
+            eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
             heading="Projects"
-            subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
+            subtext={
+              isAcadevProjects
+                ? undefined
+                : "A rotating look at what this committee has shipped. Click “See more” for the full story."
+            }
           >
-            <RevealOnScroll delayMs={100}>
-              <ProjectCarousel projects={projects} />
-            </RevealOnScroll>
+            {projects.length > 0 && (
+              <RevealOnScroll delayMs={100}>
+                <ProjectCarousel projects={projects} />
+              </RevealOnScroll>
+            )}
           </Section>
         )}
 

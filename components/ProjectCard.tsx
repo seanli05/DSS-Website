@@ -12,6 +12,14 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const monogramSource = project.partner || project.title;
+  const monogram = monogramSource
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
 
   return (
     <article
@@ -33,7 +41,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
             aria-hidden="true"
           >
-            {project.partner.slice(0, 2).toUpperCase()}
+            {monogram}
           </div>
         )}
         <span className="font-mono text-xs text-muted">{project.semester}</span>
