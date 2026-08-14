@@ -1,0 +1,30 @@
+[
+  {
+    "id": "bootcamp",
+    "title": "Bootcamp",
+    "body": "TODO: confirm bootcamp length, format, and what's actually covered. Every new member starts with bootcamp — a hands-on ramp through the tools we use day to day, so you're ready to contribute on a real project by the end of it.",
+    "image": "/newbie-experience/bootcamp.jpg",
+    "imageAlt": "New DSS members out together on Durant Avenue in Berkeley at night, holding cups of frozen yogurt"
+  },
+  {
+    "id": "professional-development",
+    "title": "Professional Development",
+    "body": "TODO: confirm what pro-dev actually runs — resume nights, mock interviews, alumni talks. Workshops and prep sessions built around what students are actually recruiting for, run with people who've recently been through it.",
+    "image": "/newbie-experience/professional-development.jpg",
+    "imageAlt": "A DSS project team in business attire presenting their work to seated members in a classroom"
+  },
+  {
+    "id": "networking",
+    "title": "Networking",
+    "body": "TODO: confirm which networking events are real and recurring. Time with alumni, industry partners, and members across every committee — the relationships that outlast any one semester.",
+    "image": "/newbie-experience/networking.jpg",
+    "imageAlt": "DSS members seated around tables listening to speakers at an evening alumni and industry event"
+  },
+  {
+    "id": "community",
+    "title": "Community",
+    "body": "TODO: confirm which traditions newbies take part in (Big Little? House system? retreat?). Socials, traditions, and the people you'll be around every week — the part members say kept them here.",
+    "image": "/newbie-experience/community.jpg",
+    "imageAlt": "DSS members covered head to toe in coloured powder, crowded together and smiling at an outdoor Holi celebration"
+  }
+]

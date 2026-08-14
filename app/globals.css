@@ -17,6 +17,20 @@
   --color-accent-ink:     #5F8A46;  /* darkened sage — the AA-legible variant of --color-accent, for text/icons that need the sage identity (e.g. Social Good's card accent) */
   --color-blossom:        #FFF9EF;  /* warm cream — decorative only (GrowingSapling petals) */
 
+  /* Warm card surfaces (recruitment timeline). A pure-white card on a white page
+     has nothing to hold it; these give the cards their own warmth without
+     needing a heavier border. --color-cream is the card body, --color-cream-deep
+     the meta footer bled to its edges, --color-cream-border the hairline —
+     a warm counterpart to --color-border, which is cool grey-green and reads
+     dirty against cream. Body text clears AA on both surfaces: --color-muted is
+     5.35:1 on cream and 4.99:1 on cream-deep, so DON'T darken either surface
+     further — cream-deep has almost no margin left over the 4.5:1 floor. The
+     ramp-coloured meta icons land at 4.4–5.2:1 there, which is fine for icons
+     (the 3:1 non-text floor) but would not be for text. */
+  --color-cream:          #FCF9F3;
+  --color-cream-deep:     #F6F1E7;
+  --color-cream-border:   #EBE3D5;
+
   /* Dark atmospheric canvas — hero + nav, "Air"-inspired, recolored to brand teal/sage */
   --color-hero-canvas:      #061615;
   --color-hero-canvas-deep: #030b0a;
@@ -44,6 +58,21 @@
      Good "What we do"). Use white text on it; every stop keeps white ≥4.5:1
      (AA), so don't lighten any stop. */
   --gradient-surface-green: linear-gradient(135deg, #1B6E68 0%, #2E9690 45%, #7CA85F 100%);
+
+  /* Recruitment-timeline ramp (Join page). Color there encodes progression
+     through the recruitment cycle: the first event starts at the brand's deep
+     teal and each one after it steps toward a warm ochre, so how far along the
+     cycle an event sits is legible before you read a word of it.
+     Every stop is dark enough to hold white text at AA (each is ≥4.9:1 against
+     white; the rails print the date in white), so don't lighten any of them —
+     the sage end of --gradient-surface-green above, for contrast, is only
+     2.8:1 and could never carry small white text. */
+  --tl-ramp-0: #0C706E;  /* deep teal — the brand's --color-primary */
+  --tl-ramp-1: #1A7A63;
+  --tl-ramp-2: #2E7D4F;  /* forest */
+  --tl-ramp-3: #577A3C;
+  --tl-ramp-4: #7A6B22;  /* olive-gold */
+  --tl-ramp-5: #8A5A12;  /* ochre */
 }
 
 /* ─── Base Styles ──────────────────────────────────────────────────────────── */
@@ -187,24 +216,101 @@ body {
 }
 
 /* ─── Recruitment timeline (Join page) ─────────────────────────────────────── */
-/* The continuous horizontal spine, drawn once across the whole track. Fades out
-   at both ends so it reads as "more to scroll" rather than a hard-cut line. */
-.timeline-spine {
-  background: linear-gradient(
-    to right,
-    transparent,
-    color-mix(in srgb, var(--color-accent) 55%, transparent) 6%,
-    color-mix(in srgb, var(--color-accent) 55%, transparent) 94%,
-    transparent
+/* The scroll track breaks out of the section's max-w-6xl container and runs the
+   full width of the viewport — the timeline is the page's widest element, and a
+   horizontal scroller reads as intentional only when it reaches both edges.
+   `margin-inline: calc(50% - 50vw)` is the standard full-bleed trick (the 50% is
+   half the container, the 50vw half the viewport). The page wraps this in an
+   `overflow-x-clip` ancestor so the bleed can never add a horizontal scrollbar.
+   The padding re-aligns the first card with the section heading above it:
+   72rem = max-w-6xl, 3rem = the lg gutter, 1.25rem = the card's inset inside
+   its column ((COL_WIDTH - card width) / 2). */
+.timeline-track {
+  /* Column, card, and slot sizing for the whole timeline. The component reads
+     these rather than hard-coding pixels, so narrowing them below is the only
+     change a phone layout needs. --tl-inset is the gap between a column's edge
+     and the card centered inside it, which the padding below has to cancel out
+     for the first card to line up with the section heading. */
+  /* --tl-col is the spacing between consecutive NODES, not the visual gap
+     between cards. Because cards alternate above/below, two cards on the same
+     side sit two columns apart, so the gap you actually see between them is
+     (2 × --tl-col) − --tl-card. Keeping --tl-col under the card width is
+     deliberate: neighbouring cards then overlap horizontally, but they're on
+     opposite sides of the spine, so it reads as a tight zigzag rather than a
+     collision. Keep --tl-col comfortably above --tl-card / 2 or a card will
+     start covering its neighbour's node and connector. */
+  --tl-col: 320px;
+  --tl-card: 400px;
+  --tl-rail: 96px;
+  /* Tallest card plus its 36px connector, with headroom for a two-line event
+     name. Both slots share it so the spine stays centered. */
+  --tl-slot: 360px;
+  --tl-inset: calc((var(--tl-col) - var(--tl-card)) / 2);
+
+  margin-inline: calc(50% - 50vw);
+  padding-inline: max(
+    calc(1.5rem - var(--tl-inset)),
+    calc((100vw - 72rem) / 2 + 3rem - var(--tl-inset))
   );
 }
 
-/* Green glow ring around each node — echoes the hero's teal→sage signature. */
+/* Phones: a 352px card plus gutters overflows a 390px viewport. The rail
+   narrows with it — at full width it would eat a third of the card and squeeze
+   the description into four-word lines. */
+@media (max-width: 30rem) {
+  .timeline-track {
+    --tl-col: 240px;
+    --tl-card: 300px;
+    --tl-rail: 66px;
+  }
+}
+
+/* Each column takes one slice of the --tl-ramp-* ramp: its rail runs from its
+   own stop to the next, so consecutive cards read as one continuous sweep from
+   teal to ochre rather than five flat bands. The step index is set as data-step
+   on .tl-item (see rampStep() in the component), and everything the column
+   colors — card rail, node, connector — reads it from here. */
+.tl-item[data-step="0"] { --tl-step-from: var(--tl-ramp-0); --tl-step-to: var(--tl-ramp-1); }
+.tl-item[data-step="1"] { --tl-step-from: var(--tl-ramp-1); --tl-step-to: var(--tl-ramp-2); }
+.tl-item[data-step="2"] { --tl-step-from: var(--tl-ramp-2); --tl-step-to: var(--tl-ramp-3); }
+.tl-item[data-step="3"] { --tl-step-from: var(--tl-ramp-3); --tl-step-to: var(--tl-ramp-4); }
+.tl-item[data-step="4"] { --tl-step-from: var(--tl-ramp-4); --tl-step-to: var(--tl-ramp-5); }
+
+.tl-ramp {
+  background: linear-gradient(160deg, var(--tl-step-from) 0%, var(--tl-step-to) 100%);
+}
+
+/* Meta icons pick up their own column's ramp colour, so each card's accent
+   matches its rail instead of every card sharing one teal. Every ramp stop
+   clears AA on white (see the --tl-ramp-* note above). */
+.tl-meta-icon {
+  color: var(--tl-step-to);
+}
+
+/* The continuous horizontal spine, drawn once across the whole track, running
+   the same ramp left to right so the line itself warms as the cycle advances.
+   Fades out at both ends so it reads as "more to scroll" rather than a
+   hard-cut line. */
+.timeline-spine {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    color-mix(in srgb, var(--tl-ramp-0) 38%, transparent) 6%,
+    color-mix(in srgb, var(--tl-ramp-2) 38%, transparent) 38%,
+    color-mix(in srgb, var(--tl-ramp-4) 38%, transparent) 72%,
+    color-mix(in srgb, var(--tl-ramp-5) 38%, transparent) 94%,
+    transparent 100%
+  );
+}
+
+/* Glow ring around each node. The fill comes from .tl-ramp (same element), so
+   nodes step through the ramp alongside their cards; only the ring lives here.
+   The white inner ring lifts the node off the spine it sits on. */
 .timeline-node {
-  background: var(--gradient-surface-green);
   box-shadow:
-    0 0 0 6px color-mix(in srgb, var(--color-accent) 14%, transparent),
-    0 0 26px color-mix(in srgb, var(--color-primary-bright) 55%, transparent);
+    0 0 0 4px var(--color-bg),
+    0 0 0 9px color-mix(in srgb, var(--tl-step-to) 16%, transparent),
+    0 0 22px color-mix(in srgb, var(--tl-step-to) 34%, transparent);
 }
 
 /* Scroll-in reveal: as each item scrolls into the track's window (data-revealed
@@ -218,23 +324,39 @@ body {
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .tl-connector {
+  /* Matches the far end of its own column's ramp slice, so the stub reads as
+     part of the card it points at rather than a separate grey line. */
+  background: color-mix(in srgb, var(--tl-step-to) 70%, transparent);
   transform: scaleY(0);
   transition: transform 0.35s ease 0.12s;
 }
 .tl-connector-top    { transform-origin: bottom; } /* card above spine — grow up toward card */
 .tl-connector-bottom { transform-origin: top; }    /* card below spine — grow down toward card */
+/* border-color/box-shadow are in the transition list so the card's hover state
+   still animates — this rule is unlayered, so it beats any Tailwind
+   `transition-*` utility that would otherwise apply on the element. */
 .tl-card {
   opacity: 0;
   transform: translateY(14px) scale(0.94);
   transition:
     opacity 0.5s ease 0.28s,
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s;
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .tl-item[data-revealed="true"] .tl-node      { transform: scale(1); }
 .tl-item[data-revealed="true"] .tl-connector { transform: scaleY(1); }
 .tl-item[data-revealed="true"] .tl-card {
   opacity: 1;
   transform: none;
+}
+/* The hover lift has to be scoped inside the revealed selector above, which
+   would otherwise win (equal specificity, later in the file) and pin the card
+   at transform: none. */
+.tl-item[data-revealed="true"] .tl-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
 }
 
 /* Hide scrollbar while keeping scroll behavior

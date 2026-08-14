@@ -3,36 +3,14 @@ import Section from "@/components/Section";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import RecruitmentTimeline from "@/components/RecruitmentTimeline";
-import { getRecruitmentTimeline } from "@/lib/content";
+import NewbieExperience from "@/components/NewbieExperience";
+import { getNewbieExperience, getRecruitmentTimeline } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Join",
   description:
     "Join Data Science Society at UC Berkeley — apply now and become part of our community.",
 };
-
-const BENEFITS = [
-  {
-    icon: "🚀",
-    title: "Work on real projects",
-    body: "Every DSS member ships real work for real clients. No toy datasets — production code, real stakeholders, genuine impact.",
-  },
-  {
-    icon: "🧠",
-    title: "Learn from the best",
-    body: "Get mentored by alumni at top tech companies and research labs. We run workshops, reading groups, and skill-building sessions every week.",
-  },
-  {
-    icon: "🤝",
-    title: "Build your network",
-    body: "Our alumni network spans Google, Meta, McKinsey, and dozens more. DSS is where long-term professional relationships start.",
-  },
-  {
-    icon: "🎯",
-    title: "Fast-track your career",
-    body: "Partners recruit directly through DSS. Many members land internships and full-time offers before they've even finished their first project.",
-  },
-];
 
 const FAQ = [
   {
@@ -59,6 +37,7 @@ const FAQ = [
 
 export default async function JoinPage() {
   const timeline = await getRecruitmentTimeline();
+  const newbieExperience = getNewbieExperience();
 
   return (
     <>
@@ -77,7 +56,8 @@ export default async function JoinPage() {
             everything you need to know.
           </p>
           <div className="mt-10">
-            <EditorialButton href="#apply" variant="inverse">
+            {/* TODO: replace with the actual application link when it opens */}
+            <EditorialButton href="#" variant="inverse" size="large">
               Apply now
             </EditorialButton>
           </div>
@@ -85,8 +65,11 @@ export default async function JoinPage() {
       </section>
 
       {/* One continuous gradient from the hero's green down into the footer's,
-          so both seams read as fades. Sections inside must stay transparent. */}
-      <div className="fade-between-gradients">
+          so both seams read as fades. Sections inside must stay transparent.
+          overflow-x-clip contains the recruitment timeline's full-bleed track
+          (.timeline-track is 100vw wide, which overshoots by the scrollbar's
+          width on platforms that reserve space for one). */}
+      <div className="fade-between-gradients overflow-x-clip">
         {/* Recruitment timeline — horizontal, Airtable-driven */}
         <Section
           index={1}
@@ -99,38 +82,16 @@ export default async function JoinPage() {
           <RecruitmentTimeline events={timeline} />
         </Section>
 
-        {/* Why join */}
-        <Section index={2} eyebrow="Why DSS" heading="What you'll get">
-          <div className="grid gap-8 sm:grid-cols-2">
-            {BENEFITS.map((b, i) => (
-              <RevealOnScroll
-                key={b.title}
-                delayMs={100 + i * 100}
-                className="flex h-full gap-5 border border-border bg-bg p-7 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8"
-              >
-                <span className="mt-0.5 flex-none text-2xl">{b.icon}</span>
-                <div>
-                  <h3 className="font-semibold text-ink">{b.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{b.body}</p>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
+        {/* The Newbie Experience — four pillars, content from
+            content/newbie-experience.json */}
+        <Section
+          index={2}
+          eyebrow="Your first semester"
+          heading="The Newbie Experience"
+        >
+          <NewbieExperience pillars={newbieExperience} />
         </Section>
 
-        {/* Apply CTA — unnumbered, matching how Partners closes. */}
-        <Section
-          id="apply"
-          eyebrow="Applications"
-          heading="Ready to build something real?"
-          subtext="The Fall 2025 application will be linked here when it opens. Check back in August or follow us on Instagram for the announcement."
-          centered
-        >
-          {/* TODO: replace with actual application link when live */}
-          <RevealOnScroll delayMs={100}>
-            <EditorialButton href="#">Open application</EditorialButton>
-          </RevealOnScroll>
-        </Section>
 
         {/* FAQ */}
         <Section index={3} eyebrow="FAQ" heading="Common questions">
