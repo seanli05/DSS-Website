@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import CommitteePhoto from "@/components/CommitteePhoto";
@@ -14,9 +13,6 @@ import {
   getProjectsByCommittee,
 } from "@/lib/content";
 
-// Shared hero bits, so the photo and gradient variants below can't drift apart.
-const HERO_EYEBROW =
-  "inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80";
 const HERO_H1 =
   "text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
 const HERO_BLURB = "mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg";
@@ -45,20 +41,13 @@ export default async function SocialGoodCommitteePage() {
   if (!committee) notFound();
   const projects = await getProjectsByCommittee(committee.id);
   const paragraphs = getDescriptionParagraphs(committee.description);
-  // Only some committees have activity tiles, so the section numbers after them
-  // have to be derived rather than hardcoded.
+  // Projects come second, then committee life. Only some committees have
+  // activity tiles and some have no projects, so both numbers have to be
+  // derived rather than hardcoded — otherwise a committee missing one section
+  // renders "(01) ... (03)" with a gap.
   const activities = committee.activities ?? [];
-  const projectsIndex = activities.length > 0 ? 3 : 2;
-
-  const breadcrumb = (
-    <p className={HERO_EYEBROW}>
-      <Link href="/committees" className="transition-colors hover:text-white">
-        Committees
-      </Link>
-      {" / "}
-      {committee.name}
-    </p>
-  );
+  const projectsIndex = 2;
+  const activitiesIndex = projects.length > 0 ? 3 : 2;
 
   return (
     <>
@@ -75,16 +64,14 @@ export default async function SocialGoodCommitteePage() {
           />
           <div className="absolute inset-0 bg-ink/70" aria-hidden="true" />
           <div className={HERO_CONTAINER}>
-            {breadcrumb}
-            <h1 className={`mt-8 ${HERO_H1}`}>{committee.name}</h1>
+            <h1 className={HERO_H1}>{committee.name}</h1>
             <p className={HERO_BLURB}>{committee.blurb}</p>
           </div>
         </section>
       ) : (
         <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
           <div className={HERO_CONTAINER}>
-            {breadcrumb}
-            <div className="mt-8 flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <span className="text-5xl" aria-hidden="true">
                 {committee.icon}
               </span>
@@ -174,22 +161,8 @@ export default async function SocialGoodCommitteePage() {
 
         </LegacySection>
 
-        {/* How we spend our time — what the committee's weeks actually look like,
-            as opposed to what it produces. Only committees with activities in
-            committees.json render this at all. */}
-        {activities.length > 0 && (
-          <LegacySection
-            index={2}
-            eyebrow="Committee life"
-            heading="How we spend our time"
-            subtext="Beyond the client work, this is what a semester in the committee looks like."
-          >
-            <LegacyCommitteeActivities activities={activities} />
-          </LegacySection>
-        )}
-
-        {/* Projects — its own section rather than a subheading inside "What we do",
-            so the activities section above can sit between the two. */}
+        {/* Projects — the committee's actual output, so it leads. Its own
+            section rather than a subheading inside "What we do". */}
         {projects.length > 0 && (
           <LegacySection
             index={projectsIndex}
@@ -200,6 +173,21 @@ export default async function SocialGoodCommitteePage() {
             <RevealOnScroll delayMs={100}>
               <LegacyProjectCarousel projects={projects} />
             </RevealOnScroll>
+          </LegacySection>
+        )}
+
+        {/* How we spend our time — what the committee's weeks actually look like,
+            as opposed to what it produces, so it follows the work rather than
+            interrupting the run from "What we do" into it. Only committees with
+            activities in committees.json render this at all. */}
+        {activities.length > 0 && (
+          <LegacySection
+            index={activitiesIndex}
+            eyebrow="Committee life"
+            heading="How we spend our time"
+            subtext="Beyond the client work, this is what a semester in the committee looks like."
+          >
+            <LegacyCommitteeActivities activities={activities} />
           </LegacySection>
         )}
 

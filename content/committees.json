@@ -75,22 +75,22 @@
         "id": "discussions",
         "title": "Discussions on political issues",
         "body": "TODO: confirm with committee leadership. Members meet to talk through the ethical and political questions behind the data they work with, and to practice making a case they can defend.",
-        "image": null,
-        "imageAlt": null
+        "image": "/committees/social-good-discussions.jpg",
+        "imageAlt": "Committee members seated in a wide circle of desk chairs in a classroom, talking with a presentation on the screen behind them"
       },
       {
         "id": "skill-workshops",
         "title": "Skill workshops",
         "body": "TODO: confirm with committee leadership. Hands-on sessions on the skills the committee leans on most — including decking, where members build and critique the slides that carry a project's findings.",
-        "image": null,
-        "imageAlt": null
+        "image": "/committees/social-good-skill-workshops.jpg",
+        "imageAlt": "The Social Good committee gathered for a group photo outside a campus building in the evening"
       },
       {
         "id": "bonding-games",
         "title": "Bonding games",
         "body": "TODO: confirm with committee leadership. Games and socials that give the committee a reason to spend time together away from the work itself.",
-        "image": null,
-        "imageAlt": null
+        "image": "/committees/social-good-bonding-games.jpg",
+        "imageAlt": "Two committee members holding up sheets of paper covered in quick sketches during a drawing game in class"
       }
     ]
   }
