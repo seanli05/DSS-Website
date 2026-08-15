@@ -74,6 +74,11 @@ export default function CommitteePhoto({
   };
 
   const activeCaption = photos[current]?.caption ?? caption;
+  const startingFigure = Number.parseInt(figure, 10);
+  const activeFigure =
+    isCarousel && Number.isFinite(startingFigure)
+      ? String(startingFigure + current).padStart(2, "0")
+      : figure;
 
   return (
     /* No `h-full` anywhere: a percentage height on a grid item whose row is sized
@@ -181,8 +186,7 @@ export default function CommitteePhoto({
       </div>
       {activeCaption && (
         <figcaption className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted">
-          Fig. {figure} — {activeCaption}
-          {isCarousel && ` (${current + 1}/${photos.length})`}
+          Fig. {activeFigure} — {activeCaption}
         </figcaption>
       )}
     </figure>
