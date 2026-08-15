@@ -204,7 +204,7 @@ export default async function CommitteePage({
             heading="Projects"
             subtext={
               isAcadevProjects
-                ? undefined
+                ? "A selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
                 : "A rotating look at what this committee has shipped. Click “See more” for the full story."
             }
           >

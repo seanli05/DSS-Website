@@ -1,5 +1,17 @@
 [
   {
+    "id": "deepfake-detection-computer-vision",
+    "title": "Deepfake Detection with Computer Vision",
+    "semester": "DeCal project",
+    "partner": "",
+    "committee": "acadev",
+    "tags": ["Computer Vision", "Deep Learning", "CNNs", "AI Safety"],
+    "description": "Trained MobileNetV3 and XceptionNet models on 140,000 face images to distinguish real photos from AI-generated deepfakes. The project combined visual and frequency analysis with augmentation, dropout, and early stopping, reaching approximately 74% validation accuracy.",
+    "logo": null,
+    "images": [],
+    "link": null
+  },
+  {
     "id": "caselink-legal-similarity-search",
     "title": "CaseLink: Semantic Search for Legal Cases",
     "semester": "DeCal project",
@@ -7,6 +19,18 @@
     "committee": "acadev",
     "tags": ["Legal Technology", "Natural Language Processing", "Semantic Search", "Explainable AI"],
     "description": "Built an NLP-powered search tool that uses legal-text embeddings and similarity ranking to surface relevant court cases beyond simple keyword matches, with an experimental occlusion method for explaining which passages drive each result.",
+    "logo": null,
+    "images": [],
+    "link": null
+  },
+  {
+    "id": "nba-mvp-predictor",
+    "title": "NBA MVP Predictor",
+    "semester": "DeCal project",
+    "partner": "",
+    "committee": "acadev",
+    "tags": ["Sports Analytics", "Machine Learning", "Random Forest", "Ridge Regression"],
+    "description": "Analyzed more than 14,000 player observations to identify the statistics that separate MVP candidates, then used Random Forest and Ridge regression models with feature reduction to predict the 2025 NBA MVP rankings with 97% accuracy.",
     "logo": null,
     "images": [],
     "link": null

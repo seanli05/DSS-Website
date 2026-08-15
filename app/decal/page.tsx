@@ -6,14 +6,14 @@ import RevealOnScroll from "@/components/RevealOnScroll";
 export const metadata: Metadata = {
   title: "DeCal",
   description:
-    "Introduction to Real-World Data Science — DSS's student-taught DeCal at UC Berkeley.",
+    "Introduction to Real-World Data Science, DSS's student-taught DeCal at UC Berkeley.",
 };
 
 const LIFECYCLE = [
   {
     icon: "📝",
     title: "Project proposal",
-    body: "Pitch a data science project you actually want to work on — you have full creative control over the direction.",
+    body: "Pitch a data science project you actually want to pursue and take full creative control over its direction.",
   },
   {
     icon: "🔍",
@@ -35,7 +35,7 @@ const LIFECYCLE = [
 export default function DecalPage() {
   return (
     <>
-      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
+      {/* The negative margin pulls the header behind the fixed translucent nav. */}
       <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
         <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
           <p className="inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80">
@@ -46,8 +46,8 @@ export default function DecalPage() {
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
             New to Berkeley and still deciding if data science is right for you? This
-            semester-long DeCal is a hands-on, project-based way to find out — no prior
-            experience required.
+            semester-long DeCal offers a hands-on, project-based way to find out. No prior
+            experience is required.
           </p>
           {/* TODO: replace with real enrollment/application link and info */}
           <div className="mt-10">
@@ -64,6 +64,7 @@ export default function DecalPage() {
         {/* About the course */}
         <Section
           index={1}
+          indexSeparator=":"
           eyebrow="About the course"
           heading="Full creative control, real mentorship."
           divider
@@ -76,14 +77,19 @@ export default function DecalPage() {
               control over a data science project of their choosing, allowing them to
               collaborate and apply key concepts in real-world scenarios. Guided by mentorship
               from committee members, students will navigate the entire data science
-              lifecycle — from crafting a project proposal and performing exploratory data
-              analysis, to engineering and evaluating machine learning models.
+              lifecycle, beginning with a project proposal and exploratory data analysis,
+              then progressing to machine learning model engineering and evaluation.
             </p>
           </RevealOnScroll>
         </Section>
 
         {/* Lifecycle breakdown */}
-        <Section index={2} eyebrow="What you'll do" heading="The data science lifecycle.">
+        <Section
+          index={2}
+          indexSeparator=":"
+          eyebrow="What you'll do"
+          heading="The data science lifecycle."
+        >
           <div className="grid gap-8 sm:grid-cols-2">
             {LIFECYCLE.map((l, i) => (
               <RevealOnScroll
@@ -101,11 +107,11 @@ export default function DecalPage() {
           </div>
         </Section>
 
-        {/* CTA — unnumbered, matching how Partners closes. */}
+        {/* The unnumbered CTA matches how the Partners page closes. */}
         <Section
           eyebrow="Interested?"
           heading="Come see if data science is right for you."
-          subtext="Units, prerequisites, and enrollment details are on their way — check back soon or reach out to DSS directly."
+          subtext="Units, prerequisites, and enrollment details are on their way. Check back soon or reach out to DSS directly."
           centered
         >
           {/* TODO: replace with real units, semester offered, and enrollment details */}

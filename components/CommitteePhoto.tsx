@@ -136,7 +136,7 @@ export default function CommitteePhoto({
                 alt={photo.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 384px, 100vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                className={`${isCarousel ? "object-contain" : "object-cover"} transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
               />
             </div>
           ))

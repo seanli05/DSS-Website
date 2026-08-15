@@ -16,6 +16,11 @@
     "workCaption": null,
     "workImages": [
       {
+        "src": "/committees/acadev/acadev-committee.jpg",
+        "alt": "Members of the Acadev committee gathered for a group photo outside a UC Berkeley campus building",
+        "caption": "The Acadev committee"
+      },
+      {
         "src": "/committees/acadev/decal-lecture-wide.jpg",
         "alt": "Students attending an Acadev lecture on data visualization in a UC Berkeley classroom",
         "caption": "Inside Introduction to Real World Data Science"
