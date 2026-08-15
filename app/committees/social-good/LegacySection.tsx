@@ -45,7 +45,10 @@ export default function LegacySection({
   return (
     <section id={id} className={`font-poppins ${className}`}>
       <div
-        className={`mx-auto flex max-w-6xl flex-col px-6 py-16 md:px-8 md:py-20 lg:px-12 ${align}`}
+        /* Sections butt up flush against each other, so the visible gap between
+           two of them is this padding doubled — at py-16/md:py-20 that was
+           128px on phones and 160px on desktop. */
+        className={`mx-auto flex max-w-6xl flex-col px-6 py-10 md:px-8 md:py-14 lg:px-12 ${align}`}
       >
         {/* Section header */}
         {(eyebrow || heading || subtext) && (

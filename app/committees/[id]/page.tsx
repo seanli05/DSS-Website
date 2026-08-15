@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import Section from "@/components/Section";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
@@ -14,9 +13,6 @@ import {
   getProjectsByCommittee,
 } from "@/lib/content";
 
-// Shared hero bits, so the photo and gradient variants below can't drift apart.
-const HERO_EYEBROW =
-  "inline-flex border border-white/40 px-4 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/80";
 const HERO_H1 =
   "text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
 const HERO_BLURB = "mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg";
@@ -62,15 +58,6 @@ export default async function CommitteePage({
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
   const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
 
-  const breadcrumb = (
-    <p className={HERO_EYEBROW}>
-      <Link href="/committees" className="transition-colors hover:text-white">
-        Committees
-      </Link>
-      {" / "}
-      {committee.name}
-    </p>
-  );
 
   return (
     <>
@@ -87,16 +74,14 @@ export default async function CommitteePage({
           />
           <div className="absolute inset-0 bg-ink/70" aria-hidden="true" />
           <div className={HERO_CONTAINER}>
-            {breadcrumb}
-            <h1 className={`mt-8 ${HERO_H1}`}>{committee.name}</h1>
+            <h1 className={HERO_H1}>{committee.name}</h1>
             <p className={HERO_BLURB}>{committee.blurb}</p>
           </div>
         </section>
       ) : (
         <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
           <div className={HERO_CONTAINER}>
-            {breadcrumb}
-            <div className="mt-8 flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <span className="text-5xl" aria-hidden="true">
                 {committee.icon}
               </span>

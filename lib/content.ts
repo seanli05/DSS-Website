@@ -1,4 +1,5 @@
 import Airtable from "airtable";
+import { parseHexPalette } from "@/lib/logoTint";
 import statsData from "@/data/stats.json";
 import partnersData from "@/data/partners.json";
 import committeesData from "@/content/committees.json";
@@ -91,11 +92,13 @@ export interface Project {
   partner: string;
   committee: string; // matches a Committee.id — which committee page shows this project
   tags: string[];
-  description: string; // the card clamps this to 3 lines; "See more" opens the full project in a popup
+  description: string; // the full write-up, shown in the "See more" popup
+  oneLiner: string | null; // the short hook the card shows instead of the full description. null (or an empty cell) falls back to `description`, so a project without one still reads sensibly.
   logo: string | null; // path under /public, or a hosted URL from Airtable's Logo attachment
   images: string[]; // additional images/gifs shown in the "See more" popup
   link: string | null;
   brandColor: string | null; // hex from Airtable's "Brand Color" column — tints the ProjectCard background. null falls back to a best-effort lookup (see getProjectAccentColor), then to the site's own teal.
+  logoPalette: string[]; // hexes from Airtable's "Logo Color Palette" column — the colors the logo is drawn in. Fed to getLogoTint() in lib/logoTint.ts to derive the Social Good card's background. Empty is fine: the card falls back to its token palette.
 }
 
 export interface ExecProfile {
@@ -265,6 +268,23 @@ function attachmentUrls(value: unknown): string[] {
     .filter((url): url is string => typeof url === "string");
 }
 
+/**
+ * Reads a text cell that may be either a plain string or an *AI-generated*
+ * field. Airtable returns AI fields as `{ state, value, isStale }`, with
+ * `value: null` while generation is pending or failed — a raw
+ * `as string` cast on one of those renders "[object Object]" into the page.
+ * Several project columns ("Project Summary", "One-liner") are AI fields
+ * today and may be converted to plain text later, so read them all this way.
+ */
+function plainText(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (value && typeof value === "object") {
+    const inner = (value as { value?: unknown }).value;
+    if (typeof inner === "string") return inner.trim();
+  }
+  return "";
+}
+
 // "Grad Year" may be a number column or single-line text — normalize to string.
 function normalizeGradYear(value: unknown): string | null {
   if (typeof value === "number") return String(value);
@@ -328,16 +348,24 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
       const records = await base(table).select({ view: AIRTABLE_VIEW }).all();
       return records.map((r) => ({
         id: r.id,
-        title: (r.fields["Project Name"] as string) ?? "",
+        // The two tables genuinely disagree on this column's name — Consulting
+        // calls it "Project Name", Social Good "Project Title" — so read both
+        // rather than renaming a column officers are already using. Without
+        // this, one table's projects all get a blank title and the "See more"
+        // popup opens with an empty heading.
+        title: plainText(r.fields["Project Name"]) || plainText(r.fields["Project Title"]),
         semester: (r.fields["Semester"] as string) ?? "",
         partner: (r.fields["Client"] as string) ?? "",
         committee,
         tags: parseTags(r.fields["Tech Stack"]),
-        description: (r.fields["Project Summary"] as string) ?? "",
+        description: plainText(r.fields["Project Summary"]),
+        oneLiner: plainText(r.fields["One-liner"]) || null,
         logo: attachmentUrls(r.fields["Logo"])[0] ?? null,
         images: attachmentUrls(r.fields["Additional Images/GIFS"]),
         link: null,
         brandColor: (r.fields["Brand Color"] as string) ?? null,
+        // Lowercase "color palette" — that's the column's actual name in the base.
+        logoPalette: parseHexPalette(r.fields["Logo color palette"]),
       }));
     };
 
@@ -353,7 +381,13 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
     console.error("getProjects(): Airtable fetch failed, falling back to content/projects.json", err);
   }
 
-  return projectsData as Project[];
+  // The local fallback predates the Airtable-only fields, so fill them in here
+  // rather than repeating them across every row in projects.json.
+  return projectsData.map((p) => ({
+    ...p,
+    logoPalette: parseHexPalette((p as { logoPalette?: unknown }).logoPalette),
+    oneLiner: plainText((p as { oneLiner?: unknown }).oneLiner) || null,
+  })) as Project[];
 });
 
 export async function getProjectsByCommittee(committeeId: string): Promise<Project[]> {

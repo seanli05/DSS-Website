@@ -30,8 +30,8 @@ app/                       Next.js App Router — one folder per route
   globals.css              ALL design tokens (CSS variables) + Tailwind theme
   page.tsx                 Home (/)
   about/page.tsx           About (/about)
-  committees/page.tsx      Committees (/committees)
   committees/[id]/page.tsx Committee detail (/committees/[id]) — includes a projects carousel
+                           (there is no /committees index; the Nav dropdown links straight to each)
   partners/page.tsx        Partners (/partners)
   join/page.tsx            Join (/join)
   contact/page.tsx         Contact (/contact)
@@ -91,11 +91,11 @@ The main landing page. Sections in order:
 
 Tells the club's story.
 
-**Theming.** This page uses the same editorial system as the homepage and Partners page rather than the shared `<Section>` component: `font-poppins`, numbered uppercase eyebrows (`(01) — Our story`) in `text-primary`, light-weight `clamp()` headings, square corners with hairline borders, `Fig. NN —` photo captions, and `RevealOnScroll` staggering. Everything below the hero sits inside one `fade-between-gradients` wrapper so the page eases out of the hero's green and back into the footer's; child sections stay transparent. The eyebrow/heading/caption class strings are constants at the top of the page file. `Gallery`, `EventCarousel`, and `ExecCard` are About-only and were squared to match; `CommitteeCard` is shared with `/committees` and deliberately kept as-is, so its focus-area chips are still pills.
+**Theming.** This page uses the same editorial system as the homepage and Partners page rather than the shared `<Section>` component: `font-poppins`, numbered uppercase eyebrows (`(01) — Our story`) in `text-primary`, light-weight `clamp()` headings, square corners with hairline borders, `Fig. NN —` photo captions, and `RevealOnScroll` staggering. Everything below the hero sits inside one `fade-between-gradients` wrapper so the page eases out of the hero's green and back into the footer's; child sections stay transparent. The eyebrow/heading/caption class strings are constants at the top of the page file. `Gallery`, `EventCarousel`, and `ExecCard` are About-only and were squared to match; `CommitteeCard` is deliberately kept as-is, so its focus-area chips are still pills.
 
 Sections:
 
-- Static gradient page header (left-aligned eyebrow/heading/subtext, matching the Partners/Committees/Join header pattern)
+- Static gradient page header (left-aligned heading/subtext, matching the Partners/Join header pattern). The bordered uppercase page label that used to sit above the `h1` was removed site-wide — every hero now opens on the heading itself.
 - Mission / founding story
 - Values list (4 rows, numbered, hardcoded in the page file under `VALUES`) — icons come from `lucide-react`
 - Committee preview (`CommitteeCard` grid, each card links to `/committees/[id]`) — `content/committees.json`, featured only. **This `<Section>` carries `id="committees"`**; the homepage "Find your committee" card links to `/about#committees`, so don't drop the id.
@@ -105,14 +105,6 @@ Sections:
   - "Moments from the year" gallery (`Gallery`, photos from `content/community-photos.json` via `getCommunityPhotos()`) — two rows drifting continuously in opposite directions, purely decorative (no filter, no arrows, no lightbox, no captions, nothing clickable). Photos alternate between the rows, since the JSON is category-ordered and a straight split would leave one row single-category. The strip is inset to 90% and sits outside the section's `max-w-6xl` column so it reads wider than the text without running to the window edge. To change the pace, edit `SECONDS_PER_TILE` in `components/Gallery.tsx`
 - **Campus involvement** — `EventCarousel` of large photo tiles from the Airtable `External Events` table via `getExternalEvents()`, falling back to `content/external-events.json`. Hover/focus darkens the photo and shows the event name
 - Executive board grid (`ExecCard`) — fetched from Airtable (Exec Profiles table); shows a friendly empty-state message if the fetch fails
-
-### Committees — `app/committees/page.tsx`
-
-Lists all four committees. Sections:
-
-- Page header
-- All `CommitteeCard`s in a 2-col grid — data from `content/committees.json`
-- Apply CTA linking to `/join`
 
 ### Committee detail — `app/committees/[id]/page.tsx`
 
@@ -124,11 +116,11 @@ One page per committee (e.g. `/committees/consulting`, `/committees/social-good`
   - The grid row **stretches** (no `items-start`): the photo takes its height from the copy beside it and crops via `object-cover`, so both columns end on exactly the same line. The committee-lead byline uses `lg:mt-auto` to pin itself to the bottom of the copy column, so it meets the photo's caption even when the copy above is short.
   - Two columns only from `lg`. In the `md` band the column is narrow enough that copy runs tall, and a photo stretched to match came out a 292×753 sliver — so tablets and phones stack instead, photo last, at its natural 2:3.
   - Where copy is *shorter* than the frame's `lg:min-h-[30rem]` floor, the floor wins and the photo hangs below the copy. That's a copy-length problem, not a layout one — it currently affects Consulting (105 px) and Acadev (446 px), both pending real write-ups.
-- **How we spend our time** (`CommitteeActivities`) — three tiles across, each a landscape 4:3 photo over a numbered title and short description, describing what a semester in the committee is actually like (as opposed to what it produces). Rendered only for committees with a non-empty `activities` array; currently Social Good only.
 - **Projects carousel** (`ProjectCarousel`) — its own section, shown only when `getProjectsByCommittee(committee.id)` returns results. `committee` (`"consulting"` or `"social-good"`) comes from which Airtable table the project was fetched from (see Airtable section below); no `/projects` archive page exists anymore, this carousel plus the homepage carousel are the only places projects are browsable.
+- **How we spend our time** (`CommitteeActivities`) — three tiles across, each a landscape 4:3 photo over a numbered title and short description, describing what a semester in the committee is actually like (as opposed to what it produces). Sits *after* Projects: the work the committee produces leads, and committee life follows it. Rendered only for committees with a non-empty `activities` array; currently Social Good only.
 - Apply CTA linking to `/join` — closes every committee page, unnumbered.
 
-**Section numbering is derived, not hardcoded.** Only some committees have activities, so the index passed to `<Section>` for Projects is computed (`activities.length > 0 ? 3 : 2`). Social Good reads (01) (02) (03); Consulting reads (01) (02); Acadev has neither activities nor projects, so it is (01) plus the CTA. `divider` stays on section (01) only, per the site-wide convention.
+**Section numbering is derived, not hardcoded.** Projects is always (02); the activities index is computed (`projects.length > 0 ? 3 : 2`), since a committee with activities but no projects would otherwise render "(01) … (03)" with a gap. Social Good reads (01) (02) (03); Consulting reads (01) (02); Acadev has neither activities nor projects, so it is (01) plus the CTA. `divider` stays on section (01) only, per the site-wide convention.
 
 **Theming.** Every committee sits on the standard light editorial field — there is no dark band. All three pages now share the same structure, with no per-committee layout special-casing left.
 
@@ -233,7 +225,7 @@ Four committees. Fields:
   "icon": "📊",               // emoji shown on the card
   "blurb": "...",             // short blurb shown in the page header
   "focusAreas": ["Business Analytics", "..."],  // shown as chips in "What we do" — only used when description is null
-  "lead": "First Last",       // shown below the card on /committees; leave TODO if unknown
+  "lead": "First Last",       // shown on the committee detail page; leave TODO if unknown
   "featured": true,           // true → shown on the Home page preview (keep all 4 featured)
   "heroImage": null,           // path under /public, or null. When set, /committees/[id]'s header becomes a full-bleed photo background instead of the plain surface header
   "description": null,         // longer write-up for the "What we do" section, or null. When set, replaces the focusAreas chips.
@@ -270,7 +262,9 @@ Four committees. Fields:
   "logo": null,                // path under /public, or a hosted URL, or null for a placeholder
   "images": [],                 // extra image/gif URLs shown as a mini carousel in the "See more" popup
   "link": null,                // external URL or null
-  "brandColor": null           // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
+  "brandColor": null,          // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
+  "logoPalette": [],           // optional hexes for the logo's own colors; drives the Social Good card tint (lib/logoTint.ts). Omit and the card uses the site's token palette
+  "oneLiner": null             // optional short hook for the card face; when null the card falls back to `description`
 }
 ```
 
@@ -405,14 +399,28 @@ If any of a function's required env vars are missing, it silently falls back to 
 
 | Airtable column | Type | Maps to |
 |---|---|---|
-| `Project Name` | text | `title` |
+| `Project Name` *or* `Project Title` | text | `title` — the two tables disagree on this column's name (Consulting uses the first, Social Good the second); `getProjects()` reads whichever is present |
 | `Client` | text | `partner` |
 | `Semester` | text | `semester` |
-| `Project Summary` | text | `description` |
+| `Project Summary` | AI field or text | `description` — the **full** write-up, shown in the "See more" popup |
+| `One-liner` | AI field or text | `oneLiner` — the short hook shown on the Social Good card face. Leave blank and the card falls back to `description` |
 | `Logo` | attachment | `logo` (first attachment's URL) |
 | `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
 | `Additional Images/GIFS` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup) |
 | `Brand Color` | text (hex, e.g. `#FF3621`) | `brandColor` — optional; tints the `ProjectCard` background. Leave blank to use the built-in lookup by partner name (`getProjectAccentColor` in `lib/content.ts`), which falls back to the site's teal for unlisted partners |
+| `Logo color palette` | AI field, text, or multi-select — hexes in any format | `logoPalette` — optional; the colors the logo is drawn in. Drives the Social Good project card's background (see **Logo-derived card tints** below). Leave blank and the card uses the site's own token palette |
+
+### Logo-derived card tints
+
+The Social Good project cards (`app/committees/social-good/LegacyProjectCard.tsx`) colour themselves from the partner's own logo. The logic lives in **`lib/logoTint.ts`**:
+
+1. `parseHexPalette()` pulls hexes out of the `Logo color palette` cell. That column is currently an *AI-generated* field, so Airtable returns `{ state, value, isStale }` rather than a string — the parser walks whatever shape it gets, so switching the column to plain text or a multi-select later needs no code change.
+2. `getLogoTint()` converts them to OKLCh, ignores near-neutrals (a pure-black wordmark has no hue to borrow), and picks the entry most likely to be the brand's identity colour — highest chroma, discounted for being very dark or very pale.
+3. That **hue** is then re-rendered at a *fixed* lightness and chroma. This is the important part: the tone constants at the top of the file are measured off the site's own token tints, so a neon-red logo and a navy one come out equally soft and a derived card sits happily next to a fallback card.
+4. If every colour in the palette is too light to be seen on white (a white wordmark, a bright yellow mark), the logo panel goes **dark** instead of pale. The lower text band stays light in both cases, so text colours never change.
+5. Anything unusable — empty cell, greyscale logo, unparseable text — returns `null`, and the card falls back to the three-tint token palette (teal / sage / cream) cycling down the row.
+
+**To retune the look**, edit the constants at the top of `lib/logoTint.ts` — `BODY_C` is the one that matters most; pushing it much past `0.02` is what makes the cards look garish rather than muted.
 
 **Exec Profiles table** (`EXEC_PROFILES_TABLE`) — fetched by `getExecProfiles()` in `lib/content.ts`, shown as the executive board grid on `/about`. Rows with a blank `Name` are skipped. Records render in the table's Grid-view row order (see **Row ordering** above).
 
