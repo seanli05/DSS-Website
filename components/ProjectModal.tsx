@@ -83,26 +83,38 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           </svg>
         </button>
 
-        {/* Logo + semester */}
-        <div className="flex items-center justify-between gap-3 pr-12">
-          {project.logo ? (
+        {/* DeCal projects lead with a visual; client projects retain logo + semester. */}
+        {project.coverImage ? (
+          <div className="relative mr-12 aspect-[16/9] overflow-hidden border border-border bg-surface">
             <Image
-              src={project.logo}
-              alt={`${project.partner} logo`}
-              width={220}
-              height={88}
-              className="h-16 w-auto max-w-[50%] object-contain object-left"
+              src={project.coverImage}
+              alt={project.coverImageAlt ?? ""}
+              fill
+              sizes="(min-width: 768px) 576px, calc(100vw - 7rem)"
+              className="object-contain"
             />
-          ) : (
-            <div
-              className="flex h-16 w-16 items-center justify-center border border-border bg-surface font-mono text-base text-muted"
-              aria-hidden="true"
-            >
-              {monogram}
-            </div>
-          )}
-          <span className="font-mono text-xs text-muted">{project.semester}</span>
-        </div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-3 pr-12">
+            {project.logo ? (
+              <Image
+                src={project.logo}
+                alt={`${project.partner} logo`}
+                width={220}
+                height={88}
+                className="h-16 w-auto max-w-[50%] object-contain object-left"
+              />
+            ) : (
+              <div
+                className="flex h-16 w-16 items-center justify-center border border-border bg-surface font-mono text-base text-muted"
+                aria-hidden="true"
+              >
+                {monogram}
+              </div>
+            )}
+            <span className="font-mono text-xs text-muted">{project.semester}</span>
+          </div>
+        )}
 
         {/* Title + partner */}
         <div className="mt-5">

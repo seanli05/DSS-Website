@@ -210,7 +210,7 @@ export default async function CommitteePage({
           >
             {projects.length > 0 && (
               <RevealOnScroll delayMs={100}>
-                <ProjectCarousel projects={projects} />
+                <ProjectCarousel projects={projects} circular={isAcadevProjects} />
               </RevealOnScroll>
             )}
           </Section>

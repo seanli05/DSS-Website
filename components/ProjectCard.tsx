@@ -26,26 +26,38 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       id={project.id}
       className="scroll-mt-28 flex h-full min-h-[420px] flex-col gap-3 bg-bg p-6 shadow-card hover:shadow-card-hover transition-shadow duration-200 motion-reduce:transition-none"
     >
-      {/* Logo + semester */}
-      <div className="flex items-center justify-between gap-3">
-        {project.logo ? (
+      {/* DeCal projects lead with a visual; client projects retain logo + semester. */}
+      {project.coverImage ? (
+        <div className="relative -mx-6 -mt-6 mb-3 aspect-[16/9] overflow-hidden border-b border-border bg-surface">
           <Image
-            src={project.logo}
-            alt={`${project.partner} logo`}
-            width={160}
-            height={64}
-            className="h-14 w-auto max-w-[40%] object-contain object-left"
+            src={project.coverImage}
+            alt={project.coverImageAlt ?? ""}
+            fill
+            sizes="(min-width: 640px) 340px, 300px"
+            className="object-contain"
           />
-        ) : (
-          <div
-            className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
-            aria-hidden="true"
-          >
-            {monogram}
-          </div>
-        )}
-        <span className="font-mono text-xs text-muted">{project.semester}</span>
-      </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-3">
+          {project.logo ? (
+            <Image
+              src={project.logo}
+              alt={`${project.partner} logo`}
+              width={160}
+              height={64}
+              className="h-14 w-auto max-w-[40%] object-contain object-left"
+            />
+          ) : (
+            <div
+              className="flex h-14 w-14 items-center justify-center bg-primary/10 font-mono text-sm text-primary"
+              aria-hidden="true"
+            >
+              {monogram}
+            </div>
+          )}
+          <span className="font-mono text-xs text-muted">{project.semester}</span>
+        </div>
+      )}
 
       {/* Partner (client) leads; project title is the secondary line.
           Falls back to the title when a project has no partner. */}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import ProjectCarousel from "@/components/ProjectCarousel";
+import { getProjectsByCommittee } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "DeCal",
@@ -32,7 +34,9 @@ const LIFECYCLE = [
   },
 ];
 
-export default function DecalPage() {
+export default async function DecalPage() {
+  const projects = await getProjectsByCommittee("acadev");
+
   return (
     <>
       {/* The negative margin pulls the header behind the fixed translucent nav. */}
@@ -105,6 +109,19 @@ export default function DecalPage() {
               </RevealOnScroll>
             ))}
           </div>
+        </Section>
+
+        {/* Featured student projects completed with Acadev mentorship. */}
+        <Section
+          index={3}
+          indexSeparator=":"
+          eyebrow="Student work"
+          heading="Featured DeCal projects."
+          subtext="A selection of projects developed by students with mentorship from Acadev instructors throughout the course."
+        >
+          <RevealOnScroll delayMs={100}>
+            <ProjectCarousel projects={projects} circular />
+          </RevealOnScroll>
         </Section>
 
         {/* The unnumbered CTA matches how the Partners page closes. */}

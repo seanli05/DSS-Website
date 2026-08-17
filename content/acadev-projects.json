@@ -6,8 +6,10 @@
     "partner": "",
     "committee": "acadev",
     "tags": ["Computer Vision", "Deep Learning", "CNNs", "AI Safety"],
-    "description": "Trained MobileNetV3 and XceptionNet models on 140,000 face images to distinguish real photos from AI-generated deepfakes. The project combined visual and frequency analysis with augmentation, dropout, and early stopping, reaching approximately 74% validation accuracy.",
+    "description": "Built a computer vision system with MobileNetV3 and XceptionNet to distinguish real face images from AI-generated deepfakes. The project combined visual and frequency analysis with data augmentation, dropout, and early stopping to create a more robust detection pipeline.",
     "logo": null,
+    "coverImage": "/projects/acadev/deepfake-detection.png",
+    "coverImageAlt": "Side-by-side comparison of an original face image and an AI-generated deepfake",
     "images": [],
     "link": null
   },
@@ -20,6 +22,8 @@
     "tags": ["Legal Technology", "Natural Language Processing", "Semantic Search", "Explainable AI"],
     "description": "Built an NLP-powered search tool that uses legal-text embeddings and similarity ranking to surface relevant court cases beyond simple keyword matches, with an experimental occlusion method for explaining which passages drive each result.",
     "logo": null,
+    "coverImage": "/projects/acadev/caselink.png",
+    "coverImageAlt": "A magnifying glass highlighting the word legal in a reference book",
     "images": [],
     "link": null
   },
@@ -30,8 +34,10 @@
     "partner": "",
     "committee": "acadev",
     "tags": ["Sports Analytics", "Machine Learning", "Random Forest", "Ridge Regression"],
-    "description": "Analyzed more than 14,000 player observations to identify the statistics that separate MVP candidates, then used Random Forest and Ridge regression models with feature reduction to predict the 2025 NBA MVP rankings with 97% accuracy.",
+    "description": "Analyzed historical player statistics to identify what separates NBA MVP candidates, then used Random Forest and Ridge regression models with feature reduction to predict and rank the leading contenders for the 2025 award.",
     "logo": null,
+    "coverImage": "/projects/acadev/nba-mvp-predictor.png",
+    "coverImageAlt": "NBA player Shai Gilgeous-Alexander pictured above an MVP odds ranking graphic",
     "images": [],
     "link": null
   },
@@ -44,6 +50,8 @@
     "tags": ["Political Science", "Machine Learning", "LLMs", "Interactive Visualization"],
     "description": "Developed an interactive map of food desert risk scores across the United States, using machine learning and LLM-based analysis to help users explore geographic disparities in food access.",
     "logo": null,
+    "coverImage": "/projects/acadev/food-desert-risk.png",
+    "coverImageAlt": "County-level map of limited vehicle and supermarket access across the United States",
     "images": [],
     "link": null
   },
@@ -56,6 +64,8 @@
     "tags": ["Business Analytics", "Consumer Behavior", "Machine Learning"],
     "description": "Compared pre-monsoon and early-monsoon transaction data to study shifts in spending behavior, then evaluated Random Forest and Logistic Regression models for predicting high-value purchases.",
     "logo": null,
+    "coverImage": "/projects/acadev/ecommerce-spending.png",
+    "coverImageAlt": "Bar and line chart illustrating quarterly e-commerce sales growth",
     "images": [],
     "link": null
   },
@@ -66,8 +76,10 @@
     "partner": "",
     "committee": "acadev",
     "tags": ["Astronomy", "K-Nearest Neighbors"],
-    "description": "Explored how temperature, luminosity, and radius vary across six star types, then built a K-Nearest Neighbors model to classify stars from their physical characteristics.",
+    "description": "Explored how temperature, luminosity, and radius vary across different types of stars, then built a K-Nearest Neighbors model to classify stars from their physical characteristics.",
     "logo": null,
+    "coverImage": "/projects/acadev/star-types.png",
+    "coverImageAlt": "Hertzsprung-Russell diagram comparing star temperature, luminosity, and classification",
     "images": [],
     "link": null
   },
@@ -78,8 +90,10 @@
     "partner": "",
     "committee": "acadev",
     "tags": ["Healthcare Analytics", "K-Nearest Neighbors", "Hypothesis Testing", "Data Visualization"],
-    "description": "Analyzed clinical records from 300 heart-failure patients to explore relationships between health indicators and mortality, combining visual analysis and chi-square testing with a K-Nearest Neighbors classification model.",
+    "description": "Analyzed heart-failure clinical records to explore relationships between health indicators and mortality, combining visual analysis and chi-square testing with a K-Nearest Neighbors classification model.",
     "logo": null,
+    "coverImage": "/projects/acadev/heart-failure.png",
+    "coverImageAlt": "Medical illustration of a human heart and cardiovascular system",
     "images": [],
     "link": null
   }

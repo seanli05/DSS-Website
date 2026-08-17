@@ -7,9 +7,14 @@ import ProjectCard from "./ProjectCard";
 interface ProjectCarouselProps {
   projects: Project[];
   dark?: boolean; // white prev/next buttons, for dark section backgrounds
+  circular?: boolean; // wrap arrow navigation at either end
 }
 
-export default function ProjectCarousel({ projects, dark = false }: ProjectCarouselProps) {
+export default function ProjectCarousel({
+  projects,
+  dark = false,
+  circular = false,
+}: ProjectCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const buttonClass = `flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${
     dark
@@ -24,6 +29,12 @@ export default function ProjectCarousel({ projects, dark = false }: ProjectCarou
     if (!track) return;
     const card = track.querySelector<HTMLElement>("[data-project-card]");
     const amount = (card?.offsetWidth ?? 320) + 24; // card width + gap
+    if (circular) {
+      const current = Math.round(track.scrollLeft / amount);
+      const target = (current + direction + projects.length) % projects.length;
+      track.scrollTo({ left: target * amount, behavior: "smooth" });
+      return;
+    }
     track.scrollBy({ left: direction * amount, behavior: "smooth" });
   };
 

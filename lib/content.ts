@@ -86,6 +86,8 @@ export interface Project {
   tags: string[];
   description: string; // the card clamps this to 3 lines; "See more" opens the full project in a popup
   logo: string | null; // path under /public, or a hosted URL from Airtable's Logo attachment
+  coverImage?: string | null; // optional featured image shown across the top of a project card
+  coverImageAlt?: string | null; // alt text for coverImage; required whenever coverImage is set
   images: string[]; // additional images/gifs shown in the "See more" popup
   link: string | null;
 }
