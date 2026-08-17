@@ -57,9 +57,15 @@ export default async function CommitteePage({
   let sectionIndex = 1;
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
   const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
+<<<<<<< Updated upstream
   // Acadev's portfolio showcases student DeCal projects, not client work, and is
   // sourced separately from the Consulting/Social Good Airtable project feed.
   const isAcadevProjects = committee.id === "acadev";
+=======
+  // Every committee's workImage is a vertical 2:3 shot except Consulting's,
+  // which is a wide group photo — see the `landscape` prop on CommitteePhoto.
+  const isLandscapePhoto = committee.id === "consulting";
+>>>>>>> Stashed changes
 
 
   return (
@@ -107,16 +113,23 @@ export default async function CommitteePage({
         <Section index={1} eyebrow="Our work" heading="What we do" divider>
           {/* Proportional columns, not fixed widths: 1.4fr/1fr always sums to the
               container, so the pair fills the section rather than leaving dead space
-              to the right of the photo.
+              to the right of the photo. Kept the same for `landscape` too — widening
+              the photo's own *column* would come straight out of the copy's width,
+              which read as cramped. Its extra size instead comes from bleeding past
+              its column via negative margins (see below), so the copy never moves.
 
-              Deliberately NOT items-start: the row stretches, so the photo takes its
-              height from the copy beside it and both columns end on exactly the same
-              line, cropping (object-cover) rather than letterboxing to get there.
+              Deliberately NOT items-start for the default case: the row stretches, so
+              the photo takes its height from the copy beside it and both columns end
+              on exactly the same line, cropping (object-cover) rather than
+              letterboxing to get there. `landscape` opts back into that with
+              `lg:items-center` instead, since its photo already sizes itself.
 
               Two columns only from lg up. In the md band the column is narrow enough
               that the copy runs tall, and a photo stretched to match would come out a
               292x753 sliver — so tablets stack instead. */}
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-16">
+          <div
+            className={`grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-16 ${isLandscapePhoto ? "lg:items-center" : ""}`}
+          >
             <div className="flex max-w-2xl flex-col lg:max-w-none">
               {paragraphs.length > 0 ? (
                 /* First paragraph is the lead — darker and a step larger, so the
@@ -159,14 +172,31 @@ export default async function CommitteePage({
             </div>
 
             {/* Capped while stacked so a 2:3 portrait doesn't eat the whole screen;
-                fills its column — and its full row height — from lg up. */}
-            <RevealOnScroll delayMs={200} className="mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0 lg:flex lg:max-w-none lg:flex-col">
+                fills its column — and its full row height — from lg up.
+
+                `landscape` additionally bleeds right past its own column, into the
+                section's own padding (lg:px-12 is 3rem; the extra 2.5rem of width
+                below eats most of that, leaving half a rem before the true edge) —
+                so the photo reads larger without the copy column narrowing to make
+                room. A wider *width*, not a negative margin: this box's width is
+                `w-full` (100% of its track), and margins don't add to an explicit
+                width, so a negative margin here would only sit unused. Left edge
+                stays put: bleeding into the gap there pulled the photo toward the
+                copy and read as the two crowding each other, even though the copy's
+                own width never changed. */}
+            <RevealOnScroll
+              delayMs={200}
+              className={`mx-auto w-full max-w-xs sm:max-w-sm lg:mx-0 lg:flex lg:max-w-none lg:flex-col ${
+                isLandscapePhoto ? "lg:w-[calc(100%+2.5rem)]" : ""
+              }`}
+            >
               <CommitteePhoto
                 src={committee.workImage}
                 alt={committee.workImageAlt}
                 caption={committee.workCaption}
                 images={committee.workImages}
                 figure="01"
+                landscape={isLandscapePhoto}
               />
             </RevealOnScroll>
           </div>
@@ -181,6 +211,7 @@ export default async function CommitteePage({
         {projects.length > 0 && (
           <Section
             index={projectsIndex}
+<<<<<<< Updated upstream
             eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
             heading="Projects"
             subtext={
@@ -194,6 +225,15 @@ export default async function CommitteePage({
                 <ProjectCarousel projects={projects} circular={isAcadevProjects} />
               </RevealOnScroll>
             )}
+=======
+            eyebrow="Portfolio"
+            heading="Projects"
+            subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
+          >
+            <RevealOnScroll delayMs={100}>
+              <ProjectCarousel projects={projects} />
+            </RevealOnScroll>
+>>>>>>> Stashed changes
           </Section>
         )}
 
@@ -205,7 +245,11 @@ export default async function CommitteePage({
             index={activitiesIndex}
             eyebrow="Committee life"
             heading="Outside of projects"
+<<<<<<< Updated upstream
             subtext="Client work is the core of what we do — this is everything else that makes up a semester."
+=======
+            subtext="Beyond client work, we make time to grow, learn, and have fun."
+>>>>>>> Stashed changes
           >
             <CommitteeActivities activities={activities} />
           </Section>
@@ -222,8 +266,12 @@ export default async function CommitteePage({
           size="sm"
         >
           {/* TODO: update with current recruitment dates */}
-          <RevealOnScroll delayMs={100}>
-            <EditorialButton href="/join">Apply to {committee.name}</EditorialButton>
+          {/* -mt-6 pulls the button up closer to the subtext above it; rounded-full
+              is a scoped exception here, not a change to EditorialButton itself. */}
+          <RevealOnScroll delayMs={100} className="-mt-6">
+            <EditorialButton href="/join" className="rounded-full">
+              Apply to {committee.name}
+            </EditorialButton>
           </RevealOnScroll>
         </Section>
       </div>

@@ -39,11 +39,12 @@
     "fullName": null,
     "kicker": "Build",
     "icon": "📊",
-    "blurb": "Semester-long engagements where teams partner with real companies to ship data solutions and deliver insights.",
+    "blurb": "The Consulting committee aims to attack some of the industry's most exciting problems by continuously adapting to new technologies and strategies.",
     "focusAreas": ["Client Projects", "Analytics", "Industry"],
     "lead": "Rakshan Reddy",
     "featured": true,
     "heroImage": "/committees/consulting-hero.JPG",
+<<<<<<< Updated upstream
     "description": "TODO: finalize with committee leadership. We partner with companies ranging from early-stage startups to Fortune 500s to tackle real, high-stakes data problems — from building predictive models to designing dashboards that shape executive decisions.\n\nEach semester-long engagement pairs a small team of students with a client stakeholder, mirroring the cadence and rigor of a real consulting relationship.\n\nMembers leave with a portfolio of shipped work, direct client-facing experience, and a technical toolkit spanning the full analytics stack, from data cleaning to communicating insights that actually get acted on.",
     "workImage": null,
     "workImageAlt": null,
@@ -62,13 +63,39 @@
         "body": "TODO: confirm with committee leadership. Alumni now working in data roles come back to share how they broke in and what the job actually looks like day to day.",
         "image": null,
         "imageAlt": null
+=======
+    "description": "We partner with Big Tech and Fortune 500 clients, developing end-to-end technical solutions across machine learning, agentic AI, data science, and software.\n\nWe focus our efforts not only on building effective, production-ready solutions, but also on communicating that work clearly, regularly presenting progress and results in client-facing update meetings to build confidence and professionalism alongside technical skill.\n\nIn our committee, we strive to instill a mindset of continuous growth within our members, encouraging them to stay curious, keep learning, and sharpen their technical abilities as they prepare to pursue their professional endeavors.",
+    "workImage": "/committees/consulting-what-we-do.JPEG",
+    "workImageAlt": "Consulting committee members posing together outside a UC Berkeley campus building",
+    "workCaption": "The Consulting committee",
+    "activities": [
+      {
+        "id": "case-practice",
+        "title": "Professional Growth",
+        "body": "Inside of bi-weekly consulting meetings, we aim to also grow together through things like interview practice prep, AI building sessions, and skills development.",
+        "image": "/committees/consulting-professional-development.png",
+        "imageAlt": "Consulting committee members posing together during a committee meeting"
+      },
+      {
+        "id": "alumni-chats",
+        "title": "Network Building",
+        "body": "Consulting members take initiative by assisting in project sourcing initiatives where you get to speak to tech leaders and we also host in-committee alumni/networking panels.",
+        "image": "/committees/consulting-network-building.JPG",
+        "imageAlt": "Consulting members speaking on an alumni panel during a committee meeting"
+>>>>>>> Stashed changes
       },
       {
         "id": "committee-socials",
         "title": "Committee socials",
+<<<<<<< Updated upstream
         "body": "TODO: confirm with committee leadership. Dinners and hangouts that give the committee a reason to know each other outside of client deadlines.",
         "image": null,
         "imageAlt": null
+=======
+        "body": "We also take the time to step away from everything else and just have fun through bigger committee socials and smaller group activities.",
+        "image": "/committees/consulting-committee-socials.png",
+        "imageAlt": "Consulting committee members watching the sunset together on a hike overlooking the Bay Area"
+>>>>>>> Stashed changes
       }
     ]
   },

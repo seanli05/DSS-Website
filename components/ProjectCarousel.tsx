@@ -45,13 +45,14 @@ export default function ProjectCarousel({
         className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-6 pr-6 pl-[15px] scroll-pl-[15px] py-8 -my-8"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {projects.map((project) => (
+        {projects.map((project, i) => (
           <div
             key={project.id}
             data-project-card
-            className="flex-none w-[300px] sm:w-[340px] snap-start"
+            className="flex-none w-[320px] sm:w-[370px] snap-start"
           >
-            <ProjectCard project={project} />
+            {/* Index drives the card's fallback tint, so the tints cycle along the row. */}
+            <ProjectCard project={project} index={i} />
           </div>
         ))}
         {/* Extra right padding so the last card doesn't sit flush against the edge */}

@@ -63,9 +63,13 @@ export default function Section({
 }: SectionProps) {
   const align = centered ? "text-center items-center" : "";
   const label =
+<<<<<<< Updated upstream
     index === undefined
       ? eyebrow
       : `(${String(index).padStart(2, "0")})${indexSeparator} ${eyebrow}`;
+=======
+    index === undefined ? eyebrow : `(${String(index).padStart(2, "0")}) — ${eyebrow}`;
+>>>>>>> Stashed changes
   const showSeam = !divider;
 
   return (
