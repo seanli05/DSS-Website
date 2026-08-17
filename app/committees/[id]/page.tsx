@@ -57,6 +57,9 @@ export default async function CommitteePage({
   let sectionIndex = 1;
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
   const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
+  // Acadev's portfolio showcases student DeCal projects, not client work, and is
+  // sourced separately from the Consulting/Social Good Airtable project feed.
+  const isAcadevProjects = committee.id === "acadev";
 
 
   return (
@@ -162,6 +165,7 @@ export default async function CommitteePage({
                 src={committee.workImage}
                 alt={committee.workImageAlt}
                 caption={committee.workCaption}
+                images={committee.workImages}
                 figure="01"
               />
             </RevealOnScroll>
@@ -177,13 +181,19 @@ export default async function CommitteePage({
         {projects.length > 0 && (
           <Section
             index={projectsIndex}
-            eyebrow="Portfolio"
+            eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
             heading="Projects"
-            subtext="A rotating look at what this committee has shipped. Click “Read more” for the full story."
+            subtext={
+              isAcadevProjects
+                ? "A selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
+                : "A rotating look at what this committee has shipped. Click “Read more” for the full story."
+            }
           >
-            <RevealOnScroll delayMs={100}>
-              <ProjectCarousel projects={projects} />
-            </RevealOnScroll>
+            {projects.length > 0 && (
+              <RevealOnScroll delayMs={100}>
+                <ProjectCarousel projects={projects} circular={isAcadevProjects} />
+              </RevealOnScroll>
+            )}
           </Section>
         )}
 

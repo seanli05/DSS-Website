@@ -10,6 +10,7 @@ import offeringsData from "@/content/offerings.json";
 import consultingProcessData from "@/content/consulting-process.json";
 import externalEventsData from "@/content/external-events.json";
 import projectsData from "@/content/projects.json";
+import acadevProjectsData from "@/content/acadev-projects.json";
 import testimonialsData from "@/content/testimonials.json";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -51,6 +52,13 @@ export interface NewbieExperiencePillar {
   imageAlt: string | null; // required whenever image is set
 }
 
+/** A photo in a committee page's work/gallery carousel. */
+export interface CommitteeWorkImage {
+  src: string;
+  alt: string;
+  caption: string | null;
+}
+
 export interface Committee {
   id: string;
   name: string;
@@ -66,6 +74,7 @@ export interface Committee {
   workImage: string | null; // path under /public — the vertical (2:3) photo beside the "What we do" copy. null renders the "photo to come" placeholder frame.
   workImageAlt: string | null; // alt text for workImage; required whenever workImage is set
   workCaption: string | null; // caption under the frame, e.g. "Social Good, Spring 2026" (rendered as "Fig. 02 — …")
+  workImages?: CommitteeWorkImage[] | null; // optional 4:3 carousel; when populated it takes precedence over the legacy single-image fields above
   activities: CommitteeActivity[] | null; // the "How we spend our time" tiles. null or empty → that section doesn't render
 }
 
@@ -95,6 +104,8 @@ export interface Project {
   description: string; // the full write-up, shown in the "See more" popup
   oneLiner: string | null; // the short hook the card shows instead of the full description. null (or an empty cell) falls back to `description`, so a project without one still reads sensibly.
   logo: string | null; // path under /public, or a hosted URL from Airtable's Logo attachment
+  coverImage?: string | null; // optional featured image shown across the top of a project card
+  coverImageAlt?: string | null; // alt text for coverImage; required whenever coverImage is set
   images: string[]; // additional images/gifs shown in the "See more" popup
   link: string | null;
   brandColor: string | null; // hex from Airtable's "Brand Color" column — tints the ProjectCard background. null falls back to a best-effort lookup (see getProjectAccentColor), then to the site's own teal.
@@ -391,6 +402,20 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
 });
 
 export async function getProjectsByCommittee(committeeId: string): Promise<Project[]> {
+  // Acadev's DeCal projects are student work read straight from JSON — no
+  // Airtable call, and no client to carry a logo or brand color. Fill in the
+  // partner-only fields here rather than repeating three null columns across
+  // every row, the same way the projects.json fallback above does. A null
+  // brandColor tints the card with the site's own teal; a null oneLiner makes
+  // ProjectCard fall back to the first sentence of the description.
+  if (committeeId === "acadev") {
+    return acadevProjectsData.map((p) => ({
+      ...p,
+      oneLiner: null,
+      brandColor: null,
+      logoPalette: [],
+    })) as Project[];
+  }
   return (await getProjects()).filter((p) => p.committee === committeeId);
 }
 

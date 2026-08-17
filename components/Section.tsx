@@ -7,6 +7,11 @@ interface SectionProps {
   /** Section number for the `(01) — Label` eyebrow. Omit on closing CTAs, which
    *  stay unnumbered (same convention the Partners page uses). */
   index?: number;
+  /** Separator between the optional section number and eyebrow label. Appended
+   *  directly after the `(01)`, so it carries its own leading space if it needs
+   *  one — the default `" —"` renders `(01) — Label`, while the decal page's
+   *  `":"` renders `(01): Label`. */
+  indexSeparator?: string;
   heading?: string;
   subtext?: string;
   /** The rule under the header. Only the FIRST section of a page gets one. */
@@ -46,6 +51,7 @@ export default function Section({
   id,
   eyebrow,
   index,
+  indexSeparator = " —",
   heading,
   subtext,
   divider = false,
@@ -57,7 +63,9 @@ export default function Section({
 }: SectionProps) {
   const align = centered ? "text-center items-center" : "";
   const label =
-    index === undefined ? eyebrow : `(${String(index).padStart(2, "0")}) — ${eyebrow}`;
+    index === undefined
+      ? eyebrow
+      : `(${String(index).padStart(2, "0")})${indexSeparator} ${eyebrow}`;
   const showSeam = !divider;
 
   return (
