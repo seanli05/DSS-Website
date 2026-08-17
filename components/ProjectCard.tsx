@@ -45,23 +45,41 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         }}
         className="group flex h-full w-full scroll-mt-28 flex-col items-center gap-5 rounded-3xl p-8 text-center transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-card-hover focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] focus-visible:outline-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
-        <div className="relative mt-2 h-16 w-full max-w-[170px]">
-          {project.logo ? (
+        {/* DeCal projects lead with a screenshot instead of a client logo — they
+            have no partner, so the logo slot would otherwise sit empty. Bleeds
+            to the card's top edge (the `-m*-8` cancel the `p-8` above) and keeps
+            the card's own top rounding. `object-contain` on a plain surface,
+            not `object-cover`: these are charts and model outputs, and cropping
+            one to fill the frame cuts off the part that carries the meaning. */}
+        {project.coverImage ? (
+          <div className="relative -mx-8 -mt-8 aspect-[16/9] self-stretch overflow-hidden rounded-t-3xl bg-surface">
             <Image
-              src={project.logo}
-              alt=""
+              src={project.coverImage}
+              alt={project.coverImageAlt ?? ""}
               fill
-              sizes="170px"
-              className="object-contain transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              sizes="(min-width: 640px) 340px, 300px"
+              className="object-contain transition-transform duration-300 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center" aria-hidden="true">
-              <span className="text-2xl font-semibold tracking-tight text-primary/40">
-                {project.partner.slice(0, 2).toUpperCase()}
-              </span>
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="relative mt-2 h-16 w-full max-w-[170px]">
+            {project.logo ? (
+              <Image
+                src={project.logo}
+                alt=""
+                fill
+                sizes="170px"
+                className="object-contain transition-transform duration-300 ease-out group-hover:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center" aria-hidden="true">
+                <span className="text-2xl font-semibold tracking-tight text-primary/40">
+                  {name.slice(0, 2).toUpperCase()}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-1 flex-col items-center justify-center">
           {/* The one-sentence hook — the rest of the write-up lives behind "Read more".
