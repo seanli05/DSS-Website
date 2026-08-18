@@ -262,9 +262,13 @@ Four committees. Fields:
   "logo": null,                // path under /public, or a hosted URL, or null for a placeholder
   "images": [],                 // extra image/gif URLs shown as a mini carousel in the "See more" popup
   "link": null,                // external URL or null
+<<<<<<< Updated upstream
   "brandColor": null,          // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
   "logoPalette": [],           // optional hexes for the logo's own colors; drives the Social Good card tint (lib/logoTint.ts). Omit and the card uses the site's token palette
   "oneLiner": null             // optional short hook for the card face; when null the card falls back to `description`
+=======
+  "brandColor": null           // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
+>>>>>>> Stashed changes
 }
 ```
 
@@ -408,6 +412,7 @@ If any of a function's required env vars are missing, it silently falls back to 
 | `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
 | `Additional Images/GIFS` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup) |
 | `Brand Color` | text (hex, e.g. `#FF3621`) | `brandColor` — optional; tints the `ProjectCard` background. Leave blank to use the built-in lookup by partner name (`getProjectAccentColor` in `lib/content.ts`), which falls back to the site's teal for unlisted partners |
+<<<<<<< Updated upstream
 | `Logo color palette` | AI field, text, or multi-select — hexes in any format | `logoPalette` — optional; the colors the logo is drawn in. Drives the Social Good project card's background (see **Logo-derived card tints** below). Leave blank and the card uses the site's own token palette |
 
 ### Logo-derived card tints
@@ -421,6 +426,8 @@ The Social Good project cards (`app/committees/social-good/LegacyProjectCard.tsx
 5. Anything unusable — empty cell, greyscale logo, unparseable text — returns `null`, and the card falls back to the three-tint token palette (teal / sage / cream) cycling down the row.
 
 **To retune the look**, edit the constants at the top of `lib/logoTint.ts` — `BODY_C` is the one that matters most; pushing it much past `0.02` is what makes the cards look garish rather than muted.
+=======
+>>>>>>> Stashed changes
 
 **Exec Profiles table** (`EXEC_PROFILES_TABLE`) — fetched by `getExecProfiles()` in `lib/content.ts`, shown as the executive board grid on `/about`. Rows with a blank `Name` are skipped. Records render in the table's Grid-view row order (see **Row ordering** above).
 
