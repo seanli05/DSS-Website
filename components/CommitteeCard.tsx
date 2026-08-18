@@ -78,7 +78,7 @@ export default function CommitteeCard({ committee }: CommitteeCardProps) {
 
   return (
     <Link
-      href={`/committees/${committee.id}`}
+      href={`/${committee.id}`}
       className="group relative flex h-full flex-col overflow-hidden border border-border bg-bg shadow-card transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       {/* Accent bar — grows in from the left on hover */}

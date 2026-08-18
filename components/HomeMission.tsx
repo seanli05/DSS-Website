@@ -71,7 +71,7 @@ export default function HomeMission({ stats }: HomeMissionProps) {
             />
           </div>
           <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted">
-            Fig. 01 — The society, in full
+            DSS Spring 2025 Members
           </p>
           </RevealOnScroll>
         </div>

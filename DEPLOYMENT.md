@@ -1,6 +1,6 @@
 # DSS Website — Deployment Handoff
 
-**Last updated:** 2026-08-17
+**Last updated:** 2026-08-18
 **Purpose:** Self-contained context for continuing the deployment of this site to `dssberkeley.org`. Written to be handed to a fresh conversation with no prior context.
 
 ---
@@ -11,12 +11,14 @@
 |---|---|
 | Vercel deployment | ✅ **Live and verified** at https://dss-website-fawn.vercel.app |
 | Airtable connection | ✅ Working — real data, not fallbacks |
-| **Airtable image expiry** | 🔴 **BLOCKER — must fix before domain cutover** |
+| **Airtable image expiry** | ✅ **FIXED** — attachments mirrored locally at build time (§3) |
 | `merge-acadev` branch | ⚠️ Conflicts resolved, **uncommitted**, mid-merge |
-| Pre-launch code (redirects, sitemap, etc.) | ⬜ Not started |
+| Redirects (old Squarespace + moved routes) | ✅ Done — `next.config.ts` |
+| `metadataBase`, `sitemap.ts`, `robots.ts` | ⬜ Not started |
+| Rebuild cadence | ✅ **Manual by design** — no cron (§5e) |
 | Domain cutover to `dssberkeley.org` | ⬜ Not started — old Squarespace site still live |
 
-**Next action:** fix the Airtable image expiry (see §3). Everything else can follow.
+**Next action:** push the current work, then `metadataBase` + `sitemap.ts` + `robots.ts` (§5), then the domain cutover (§7).
 
 ---
 
@@ -28,16 +30,19 @@
 - **Content layer:** `lib/content.ts` is the only file that knows where data comes from (JSON under `content/` + `data/`, plus Airtable)
 - See `CLAUDE.md` for the always-on ruleset and `PLAN.md` for the original brief
 
-### Routes currently built (14 pages)
+### Routes currently built (13 pages)
 
 ```
-/                          /contact                /committees/acadev
-/about                     /decal                  /committees/consulting
-/partners                  /join                   /committees/social-good
-/styleguide                /_not-found             /api/partner-inquiry (dynamic)
+/                    /about        /partners     /join
+/contact             /styleguide   /_not-found   /api/partner-inquiry (dynamic)
+/acadev              /consulting   /social-good
 ```
 
-**Note:** there is **no `/committees` index route** — it was deleted on `main`. This matters for redirects (§5).
+**Committee pages live at the site root** (`/acadev`), not under `/committees` — moved 2026-08-18 so the new URLs match the old Squarespace ones exactly. `/committees/*` 308-redirects to the new paths.
+
+`app/[id]/page.tsx` is therefore a **root-level dynamic segment**. It sets `dynamicParams = false`, so only the committee ids from `committees.json` resolve and everything else 404s. When adding a committee, its `id` must not collide with an existing top-level route (`about`, `join`, `partners`, `contact`, `styleguide`, `api`) — Next resolves static routes first, so a committee called "about" would silently never render.
+
+There is **no `/decal` route**; that content moved onto the Acadev page.
 
 ---
 
@@ -56,97 +61,83 @@ Deployed and verified on 2026-08-17.
 
 ---
 
-## 3. 🔴 BLOCKER: Airtable attachment URLs expire
+## 3. ✅ RESOLVED: Airtable attachment URLs expire
 
-### The problem
+### What the problem was
 
-Airtable's REST API returns attachment URLs that are **signed and short-lived** (a few hours). This site fetches them at build time and bakes them into statically prerendered HTML. Once the URL expires, Next's image optimizer fails to fetch the source on any cache miss, and images break site-wide.
+Airtable's REST API returns attachment URLs that are **signed and expire a few hours after issue** (they then 410). This site fetches content at build time and bakes the results into static HTML, so the URLs died while the deployment lived on — every logo, headshot, project image, and event image broke a few hours after each deploy.
 
-### Evidence gathered
+It was confirmed in production on 2026-08-18: the Airtable CDN returned **410 Gone**, and the same image through Next's optimizer returned **502** at every width. 54 Airtable images were broken; all 66 local `/public` images were fine.
 
-A live URL from the deployed `/partners` page:
+Why it looked intermittent: browsers cache optimized copies, and `next/image` requests a different variant per viewport width, each a separate optimizer cache entry. So different people saw different subsets break, depending on what their device had already fetched.
 
-```
-https://v5.airtableusercontent.com/v3/u/56/56/1787018400000/HRdo9DmVQ1th9vFPQ_KO1g/xzfviW0
-                                            └── 1787018400000 ms = 2026-08-18 02:00 UTC
-```
+### The fix, as implemented
 
-At time of writing (2026-08-17 22:31 UTC) that URL returned **HTTP 200**, and through the optimizer:
-`/_next/image?url=...` → `200, image/png, 6609 bytes`. So it works *now* and expires ~3.5 hours later.
+**`scripts/mirror-airtable.mjs`** runs via the `prebuild` npm script (so, automatically before `next build`). It:
 
-**To confirm definitively:** reload https://dss-website-fawn.vercel.app/partners after 02:00 UTC (7 PM Pacific) on 2026-08-17. Broken logos = confirmed.
+1. Exits quietly if there are no Airtable credentials — preview/dev builds then use the committed JSON fallbacks and cost 0 API calls
+2. Scans all 6 tables for the 5 attachment fields
+3. Downloads each attachment into `public/airtable/<attachmentId>.<ext>`
+4. Converts animated GIFs to H.264 MP4 (see below)
+5. Writes `content/airtable-manifest.json`, mapping attachment id → local path
 
-### Scope — 5 attachment fields, 5 pages
+**`lib/content.ts`** — `attachmentUrls()` prefers the mirrored local path, falling back to Airtable's signed URL for anything not in the manifest.
 
-| `lib/content.ts` | Field | Appears on |
-|---|---|---|
-| `getProjects()` L374 | `Logo` | `/`, consulting, social-good |
-| `getProjects()` L375 | `Additional Images/GIFS` | project modals |
-| `getExternalEvents()` L438 | `Image` | `/about` |
-| `getPartners()` L562 | `Logo` | `/`, `/partners` |
-| `getExecProfiles()` L594 | `Headshot` | `/about` |
+Keyed by **attachment id, not URL**: the signed URL changes on every fetch, so a URL-keyed manifest would miss on the very next build.
 
-All five flow through the `attachmentUrls()` helper at `lib/content.ts:275`.
+It runs **before** `next build`, not during, so the files are on disk when Next collects `public/`.
 
-### Why this blocks the daily-rebuild plan
+### Animated GIFs
 
-The plan (§6) was a once-daily rebuild to refresh Airtable content within API limits. With expiring URLs, that yields working images for roughly **3 hours out of every 24**. The rebuild schedule cannot fix this on its own.
+`next/image` does not compress animated GIFs — it passes them through byte for byte. One project clip was a 10 MB download for anyone opening that modal. The mirror script now detects animated GIFs and transcodes them to H.264 (crf 31): **9.97 MB → 0.58 MB, 17.3× smaller**.
 
-### Proposed fix — mirror attachments into `public/` at build time
+- `ffmpeg-static` is an **`optionalDependency`** on purpose. If its binary fails to install, `npm ci` still succeeds; the script logs a warning and serves the GIF as before. A video encoder must never be able to break the site's build.
+- A failed conversion keeps the GIF rather than failing the build.
+- `components/ProjectModal.tsx` renders `<video autoplay loop muted playsinline>` for `.mp4`/`.webm`, `<Image>` otherwise. Under `prefers-reduced-motion` it gets `controls` and stays paused.
+- Officers change nothing — they still upload GIFs to Airtable.
 
-A prebuild step downloads each Airtable attachment, writes it to `public/airtable/<id>.<ext>`, and the fetchers return that local path instead of the signed URL. Each deployment then serves its own permanent copies.
+### Verified
 
-Why this shape:
-- **Zero extra API calls** — attachment bytes are downloaded from the CDN, and the records themselves already come back in the fetches you're already making
-- **Preserves the officer workflow** — people keep editing Airtable, nothing changes for them
-- **Images become immune to expiry** — they're static assets of that deployment
-- **Makes the daily rebuild work as designed**
-- Lets you **delete the `remotePatterns` block** in `next.config.ts`
+- 0 `v5.airtableusercontent.com` URLs in built output; 46 local paths baked in
+- MP4 served as `video/mp4`, 604,868 bytes, with `206` range support and `moov` in the first 4 KB (starts before fully downloading)
+- `public/airtable/` totals 49 MB across 46 files — **deployment payload, not page weight**: `next/image` serves resized WebP (one 11.75 MB PNG → 95 KB), 151 homepage images are `loading="lazy"`, and modal contents aren't in the HTML at all (`{isOpen && <ProjectModal/>}`)
 
-Alternatives considered and rejected: a permanent-URL text column in Airtable (relies on officers hosting images somewhere); committing logos to `public/` by hand (breaks the no-git workflow for officers).
+### Maintenance notes
+
+- `public/airtable/` is gitignored and regenerated every build; `content/airtable-manifest.json` is committed
+- Adding a new Airtable attachment field means adding it to `SOURCES` in the mirror script — a field missing there still renders, but via an expiring URL
+- The `remotePatterns` in `next.config.ts` are now only a fallback, not the normal path
 
 ---
 
-## 4. ⚠️ Outstanding: the `merge-acadev` branch
+## 4. Branch state
 
-**State:** branch `merge-acadev` exists locally, created from `origin/main`, with `origin/acadev` merged in. All four conflicts are **resolved on disk and verified**, but the files are **unstaged and `.git/MERGE_HEAD` still exists** — the merge is not committed and nothing is pushed.
+`origin/acadev` was merged and has landed in `origin/main` — the local `merge-acadev` branch has 0 unmerged commits and can be deleted.
 
-### To finish
+Current branch is `final`, 1 commit ahead of `origin/main`.
 
-```bash
-git add app/committees/\[id\]/page.tsx components/ProjectCard.tsx \
-        components/Section.tsx lib/content.ts
-git commit          # pre-filled merge message
-git push -u origin merge-acadev
-```
+### Still unmerged
 
-Or `git merge --abort` to discard the resolutions entirely.
+| Branch | Ahead of origin/main | Note |
+|---|---|---|
+| `origin/final` | 1 | current working branch |
+| `origin/manav` | 1 | small — Social Good images |
+| `origin/sean` | 2 | was 20 behind with 17 conflicts including a modify/delete; almost certainly superseded — **confirm before spending effort** |
 
-### Resolution decisions made (do not silently revert these)
+### Merge decisions worth preserving
 
-**`components/Section.tsx`** — kept acadev's parameterized `indexSeparator` plus main's `showSeam` line (the JSX depends on `showSeam`). **Changed the default from `"—"` to `" —"`**: the separator is appended directly after `(01)`, so without the leading space every numbered eyebrow site-wide would render `(01)— Label` instead of `(01) — Label`. Verified in build output: acadev page renders `(01) — Our work`, decal page renders `(01): About the course`.
+From the acadev merge, in case anything looks odd later:
 
-**`lib/content.ts`** — both branches added a different new interface sharing one closing brace. Kept both (`NewbieExperiencePillar` + `CommitteeWorkImage`).
+- **`Section.tsx`** — `indexSeparator` defaults to `" —"` **with a leading space**. It's appended directly after `(01)`, so without it every numbered eyebrow renders `(01)— Label`.
+- **`ProjectCard.tsx`** — kept main's card design and grafted in acadev's cover-image support, rather than taking either side wholesale. DeCal projects have `partner: ""`, so main's monogram fallback alone would render an empty box.
+- **`app/[id]/page.tsx`** — section ordering is Projects before Activities, with derived section numbering.
+- **`getProjectsByCommittee()`** normalizes `oneLiner`/`brandColor`/`logoPalette` for the acadev JSON, which predates those required `Project` fields.
 
-**`components/ProjectCard.tsx`** — the two branches redesigned this component incompatibly. Kept **main's** design (button-as-card, radial brand tint, rounded, hook + "Read more") and grafted in **acadev's** cover-image support. Rationale: most of acadev's version was the *older* design main had already replaced; its genuine contribution was `coverImage`. Taking main wholesale would have broken decal cards, which have `partner: ""` and would render an empty monogram box with no photo. Also switched the monogram fallback from `project.partner` to `name` (= `partner || title`) so it degrades correctly.
+### Housekeeping still outstanding
 
-**`app/committees/[id]/page.tsx`** — three hunks; the branches chose **opposite section orders**. Took main's ordering (Projects before Activities) and its derived section-numbering. Decisive reason: main's activities section already exists later in the file and auto-merged cleanly, so taking acadev's side would have rendered **two** activities sections. Kept acadev's `isAcadevProjects` flag and DeCal-specific subtext, but with main's "Read more" wording (main renamed that button; acadev's copy still said "See more").
-
-**Bonus fix — a bug neither branch had:** `tsc` caught `content/acadev-projects.json` missing `oneLiner`, `brandColor`, and `logoPalette`, which `main` added as required `Project` fields after acadev branched. Fixed by normalizing in `getProjectsByCommittee()`, matching the existing fallback-normalization pattern a few lines above rather than adding three null columns to all 7 records.
-
-### Verification after resolution
-- `npx tsc --noEmit` — clean
-- `npx next build` — clean, 14 pages
-- All 7 acadev cover images present in prerendered output
-- 1 eslint error is **pre-existing** in `components/RevealOnScroll.tsx` (`react-hooks/set-state-in-effect`), present on `origin/main`, untouched by this merge. Next 16 does not run eslint during `next build`, so it does not block deploys.
-
-### Other unmerged branches
-
-| Branch | Ahead | Behind | Conflicts | Note |
-|---|---|---|---|---|
-| `origin/acadev` | 6 | 6 | 4 | Being merged now |
-| `origin/manav` | 1 | 11 | 1 | Small — Social Good images |
-| `origin/sean` | 2 | 20 | **17** | Badly stale; includes a modify/delete where `main` deleted `app/committees/page.tsx`. Likely superseded — **confirm before spending effort** |
+- `.DS_Store` is **tracked in git** and should be removed + gitignored
+- ~20 MB of stray untracked files in the repo root, referenced nowhere: `DSCF0233.JPG`, `IMG_5642.HEIC`, `IMG_5724 3.HEIC`, `ZSZ_7559.jpg`, `ZSZ_7638.jpg`, `Culture pics/`, `Newbie Experience/`
+- 1 pre-existing eslint error in `components/RevealOnScroll.tsx` (`react-hooks/set-state-in-effect`). Next 16 does not run eslint during `next build`, so it does not block deploys.
 
 ---
 
@@ -154,27 +145,25 @@ Or `git merge --abort` to discard the resolutions entirely.
 
 None of this is written yet. Suggested order:
 
-### 5a. Airtable image mirroring (§3) — do first, it's the blocker
+### 5a. ✅ Airtable image mirroring — done (§3)
 
-### 5b. Redirects from the old Squarespace URLs
+### 5b. ✅ Redirects — done, in `next.config.ts`
 
-The old site's canonical host is **`www`** (apex 301s to www). Keep that direction to preserve SEO.
+All 308s, verified returning the right target at runtime:
 
-Add to `next.config.ts` as `permanent: true` (308):
+| Source | → | Why |
+|---|---|---|
+| `/committees/:id` | `/:id` | committee pages moved to the root |
+| `/committees` | `/#committees` | old index has no equivalent |
+| `/home` | `/` | Squarespace |
+| `/joinus` | `/join` | Squarespace |
+| `/socialgood` | `/social-good` | Squarespace |
+| `/decalinfo` | `/acadev` | DeCal content now lives on the Acadev page |
+| `/decal` | `/acadev` | route was removed |
 
-| Old (Squarespace) | New |
-|---|---|
-| `/home` | `/` |
-| `/joinus` | `/join` |
-| `/decalinfo` | `/decal` |
-| `/acadev` | `/committees/acadev` |
-| `/consulting` | `/committees/consulting` |
-| `/socialgood` | `/committees/social-good` |
-| `/about` | `/about` (unchanged) |
-| `/cart` | drop — Squarespace commerce |
-| **`/committees`** | ⚠️ **no target exists** — decide: restore an index page, or redirect somewhere |
+`/acadev` and `/consulting` need **no redirect** — moving the committee pages to the root made the new URLs identical to the old Squarespace ones, which is the main reason that move was worth doing.
 
-The first seven come from the old site's `sitemap.xml`. `/committees` and `/decal` additionally appear in the old site's nav but not its sitemap, so people may have them bookmarked.
+`/about` is unchanged on both sites.
 
 ### 5c. `metadataBase`
 
@@ -184,17 +173,33 @@ The first seven come from the old site's `sitemap.xml`. `/committees` and `/deca
 
 Neither exists. Exclude `/styleguide` from both — it's currently in the build output and would otherwise get indexed.
 
-### 5e. Daily rebuild for Airtable content (only meaningful after §3 is fixed)
+### 5e. Rebuilds are MANUAL — decided 2026-08-18
 
-Create a Vercel **Deploy Hook** (Project Settings → Git → Deploy Hooks, target `main`), then schedule a daily POST to it.
+**No cron, no scheduled rebuild.** Deliberate: at 13 API calls per build a daily
+schedule would spend ~390 calls/month purely on refreshing content that changes a
+few times a semester. Nothing needs to be undone — the schedule was never built.
 
-Recommended: **Vercel Cron** (`vercel.json` + a small `/api/refresh` route guarded by `CRON_SECRET`). Hobby allows exactly one job at once-per-day, which fits. Preferred over GitHub Actions because GitHub auto-disables scheduled workflows after 60 days of repo inactivity — a real risk over summer break, right when the August recruitment timeline matters most.
+**The tradeoff, stated plainly:** editing Airtable does **not** update the live
+site. Content only changes when someone triggers a build. Officers need to know
+this or they'll edit a row and assume the site is broken.
+
+**How to trigger a rebuild** (either works, no code required):
+
+1. **Vercel dashboard** → Deployments → ⋯ on the latest → **Redeploy**.
+2. **Deploy Hook** — Project Settings → Git → Deploy Hooks, create one targeting
+   `main`. It gives a URL that triggers a build when POSTed to. Useful if you ever
+   want a "refresh the site" button, or an Airtable automation that fires on edit.
+   Note a browser visit won't do it: it must be a POST.
+
+If someone later wants automation without the daily cost, an Airtable automation
+pointed at the deploy hook rebuilds only when a record actually changes — far
+cheaper than a fixed schedule, since the club edits content in bursts.
 
 ### 5f. Housekeeping
-- `.DS_Store` is **tracked in git** and should be removed + gitignored
-- ~20 MB of stray untracked files in the repo root, referenced nowhere in code: `DSCF0233.JPG`, `IMG_5642.HEIC`, `IMG_5724 3.HEIC`, `ZSZ_7559.jpg`, `ZSZ_7638.jpg`, `Culture pics/`, `Newbie Experience/` — gitignore them
-- `public/` is ~36 MB and gains ~6 MB from the acadev merge. Worth compressing hero images
-- `CLAUDE.md` requires updating `README.md` after structural changes; the acadev merge adds `content/acadev-projects.json` and cover-image fields
+
+See §4 — tracked `.DS_Store`, stray root files, pre-existing lint error.
+
+`CLAUDE.md` requires updating `README.md` after structural changes. Outstanding: the committee route move, the mirror script, and `content/airtable-manifest.json`.
 
 ---
 
@@ -202,23 +207,36 @@ Recommended: **Vercel Cron** (`vercel.json` + a small `/api/refresh` route guard
 
 The club is on a plan with a **monthly API call cap** — confirm the exact number in the Airtable workspace billing panel.
 
-### Calls per full build: **6**
+### Calls per full build: **13**
 
-`memoizeOnce` (`lib/content.ts:314`) is module-level, so during a single build all pages render in one process and each fetcher fires exactly once regardless of how many pages call it:
+The image mirroring added a second pass over the tables. Both halves are needed: the prebuild pass gets the attachment URLs to download, the build pass gets the content.
 
-| Fetcher | Tables hit |
-|---|---|
-| `getProjects()` | 2 (consulting + social-good) |
-| `getPartners()` | 1 |
-| `getExecProfiles()` | 1 |
-| `getExternalEvents()` | 1 |
-| `getRecruitmentTimeline()` | 1 |
+| Pass | Tables | Calls |
+|---|---|---|
+| `prebuild` (mirror script) | consulting, social-good, acadev, external-events, logowall, exec-profiles | 6 |
+| `next build` | `getProjects` (2), `getAcadevClientProjects`, `getExternalEvents`, `getPartners`, `getExecProfiles`, `getRecruitmentTimeline` | 7 |
+| | **total** | **13** |
 
-At 6 calls/build: daily rebuild ≈ **180/month**, weekly ≈ **26/month**.
+`memoizeOnce` (`lib/content.ts`) is module-level, so during the build pass each fetcher fires exactly once regardless of how many pages call it.
+
+At 13/build, with **manual rebuilds only** (§5e), spend tracks how often you
+deploy rather than a schedule:
+
+| Activity | Builds/month | Calls |
+|---|---|---|
+| Pushes to `main` during active development | ~15 | ~195 |
+| Manual content refreshes | ~4 | ~52 |
+| **Typical total** | | **~250** |
+
+A daily cron would have added ~390 on top of that, which is why it was dropped.
+Preview and PR builds cost **0** (§2). Confirm the workspace's actual monthly cap
+in Airtable billing.
+
+**If that's too high**, the fix is to have the prebuild script cache the records it already fetched to disk and let `lib/content.ts` read that cache during the build — back to 6 calls. Deliberately not done yet: it would touch all six fetchers and their fallback paths, which is a bigger change than the expiry fix warranted.
 
 ### Do NOT use per-page ISR (`export const revalidate`)
 
-ISR regenerates each page in its own isolated invocation, which **defeats the memoization** — each page re-fetches independently. Measured cost would be ~13 calls per refresh cycle vs 6 for a full rebuild, i.e. roughly 2× worse. Keep the current build-time fetching and schedule rebuilds instead.
+ISR regenerates each page in its own isolated invocation, which **defeats the memoization** — each page re-fetches independently. It would also bypass the prebuild mirror entirely, so ISR-regenerated pages would go back to embedding expiring Airtable URLs — reintroducing the §3 bug. Keep build-time fetching and schedule rebuilds instead.
 
 ### The real budget risk is development, not the daily refresh
 
@@ -289,6 +307,9 @@ The site currently depends on personal accounts, which is how club sites go dark
 # Build without touching Airtable (uses JSON fallbacks — costs 0 API calls)
 AIRTABLE_TOKEN= AIRTABLE_BASE_ID= npx next build
 
+# Re-mirror Airtable attachments only (costs 6 API calls)
+node scripts/mirror-airtable.mjs
+
 # Typecheck
 npx tsc --noEmit
 
@@ -314,8 +335,9 @@ Names only — real values live in `.env.local` (gitignored) and in Vercel proje
 ```
 AIRTABLE_TOKEN              AIRTABLE_BASE_ID
 LOGOWALL_TABLE              CONSULTING_PROJECTS_TABLE
-SOCIAL_GOOD_PROJECTS_TABLE  EXEC_PROFILES_TABLE
-EXTERNAL_EVENTS_TABLE       RECRUITMENT_TIMELINE_TABLE
+SOCIAL_GOOD_PROJECTS_TABLE  ACADEV_PROJECTS_TABLE
+EXEC_PROFILES_TABLE         RECRUITMENT_TIMELINE_TABLE
+EXTERNAL_EVENTS_TABLE
 PARTNER_INQUIRIES_TABLE     ← needs a WRITE-scoped token; the /api/partner-inquiry
                               route returns 503 with an email fallback without it
 ```

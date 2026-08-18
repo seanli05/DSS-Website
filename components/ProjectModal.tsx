@@ -12,10 +12,23 @@ interface ProjectModalProps {
 
 const TRANSITION_MS = 200;
 
+/** Animated GIFs are converted to H.264 by scripts/mirror-airtable.mjs — the one
+ *  format next/image won't compress, and a 10 MB download for anyone who opens
+ *  the modal. Officers still upload GIFs to Airtable; only the served file
+ *  differs, so this checks the extension rather than anything in the data. */
+const isVideo = (src: string) => /\.(mp4|webm)$/i.test(src);
+
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [imageIndex, setImageIndex] = useState(0);
+  // A looping clip is motion the visitor didn't ask for. Under
+  // prefers-reduced-motion it gets controls and stays paused instead, which is
+  // strictly better than the GIF it replaces — that could never be stopped.
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
   // Starts false so the first paint is the "hidden" state, then flips to true
   // a frame later — that's what makes the enter transition actually animate
   // instead of snapping straight to its final state.
@@ -131,14 +144,31 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
         {project.images.length > 0 && (
           <div className="mt-6 flex flex-col gap-2">
             <div className="relative overflow-hidden border border-border bg-surface">
-              <Image
-                src={project.images[imageIndex]}
-                alt={`${project.title} — image ${imageIndex + 1} of ${project.images.length}`}
-                width={640}
-                height={400}
-                unoptimized
-                className="h-64 w-full object-contain"
-              />
+              {isVideo(project.images[imageIndex]) ? (
+                /* No `alt` on <video> — the accessible name comes from
+                   aria-label. Muted + playsInline are what let it autoplay at
+                   all on iOS; without them Safari blocks it silently. */
+                <video
+                  key={project.images[imageIndex]}
+                  src={project.images[imageIndex]}
+                  aria-label={`${project.title} — clip ${imageIndex + 1} of ${project.images.length}`}
+                  autoPlay={!reducedMotion}
+                  loop
+                  muted
+                  playsInline
+                  controls={reducedMotion}
+                  className="h-64 w-full object-contain"
+                />
+              ) : (
+                <Image
+                  src={project.images[imageIndex]}
+                  alt={`${project.title} — image ${imageIndex + 1} of ${project.images.length}`}
+                  width={640}
+                  height={400}
+                  unoptimized
+                  className="h-64 w-full object-contain"
+                />
+              )}
               {project.images.length > 1 && (
                 <>
                   <button

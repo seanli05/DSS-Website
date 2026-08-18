@@ -145,7 +145,7 @@ export default async function AboutPage() {
                   className="object-cover"
                 />
               </div>
-              <p className={`mt-4 ${CAPTION}`}>Fig. 01 — The society, on campus</p>
+              <p className={`mt-4 ${CAPTION}`}>DSS Fall 2025 Members</p>
             </RevealOnScroll>
 
             <div className="mt-16 grid gap-12 md:grid-cols-[minmax(0,28rem)_1fr] md:items-start">
