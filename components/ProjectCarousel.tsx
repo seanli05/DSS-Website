@@ -8,12 +8,14 @@ interface ProjectCarouselProps {
   projects: Project[];
   dark?: boolean; // white prev/next buttons, for dark section backgrounds
   circular?: boolean; // wrap arrow navigation at either end
+  uniformTint?: boolean; // one brand tint for every card instead of a cycling palette
 }
 
 export default function ProjectCarousel({
   projects,
   dark = false,
   circular = false,
+  uniformTint = false,
 }: ProjectCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const buttonClass = `flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${
@@ -51,8 +53,9 @@ export default function ProjectCarousel({
             data-project-card
             className="flex-none w-[320px] sm:w-[370px] snap-start"
           >
-            {/* Index drives the card's fallback tint, so the tints cycle along the row. */}
-            <ProjectCard project={project} index={i} />
+            {/* Index drives the card's fallback tint, so the tints cycle along
+                the row — unless uniformTint pins them all to one colour. */}
+            <ProjectCard project={project} index={i} uniformTint={uniformTint} />
           </div>
         ))}
         {/* Extra right padding so the last card doesn't sit flush against the edge */}

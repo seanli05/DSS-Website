@@ -3,9 +3,9 @@
     "id": "consulting",
     "icon": "consulting",
     "title": "Consulting projects",
-    "summary": "Our flagship. Bring us a real data problem and we build a dedicated student team to solve it — shipping production-quality models, pipelines, and dashboards within a single semester.",
+    "summary": "Bring us a real data problem and we build a dedicated student team to solve it — shipping production-quality models, pipelines, and dashboards within a single semester.",
     "bullets": [
-      "Hand-picked team of 4–6 vetted members plus a faculty or alumni advisor",
+      "Hand-picked team of 4–6 experienced members plus a senior advisor",
       "A scoped, semester-long deliverable with weekly check-ins",
       "You keep the code, models, and findings"
     ],
@@ -15,7 +15,7 @@
     "id": "recruiting-career-fairs",
     "icon": "recruiting",
     "title": "Recruiting & career fairs",
-    "summary": "Meet Berkeley's strongest data science students before graduation — through booths, info sessions, and referrals.",
+    "summary": "Meet Berkeley's strongest tech students before graduation through booths, infosessions, and referrals.",
     "bullets": [
       "Booth presence at our data-focused career fair",
       "Resume book and targeted candidate referrals",
@@ -27,7 +27,7 @@
     "id": "speaker-events",
     "icon": "speaker",
     "title": "Speaker events & tech talks",
-    "summary": "Put your engineers in front of an engaged technical audience with a talk, workshop, or fireside chat.",
+    "summary": "Put your engineers in front of an engaged technical audience with a talk, workshop, or fireside chat to broadcast your company to passionate young talent.",
     "bullets": [
       "Tech talks, workshops, and fireside chats",
       "An engaged, technically fluent audience",
@@ -39,7 +39,7 @@
     "id": "hackathon-sponsorship",
     "icon": "hackathon",
     "title": "Hackathon sponsorship",
-    "summary": "Sponsor a challenge track, judge projects, and recruit directly from a room of builders.",
+    "summary": "Sponsor a track, provide a real-world problem and dataset, judge projects, and recruit directly from a room of builders.",
     "bullets": [
       "Branded challenge tracks and prizes",
       "Judging and mentorship slots for your team",

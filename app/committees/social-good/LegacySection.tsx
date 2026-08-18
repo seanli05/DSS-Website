@@ -10,7 +10,8 @@ interface LegacySectionProps {
   heading?: string;
   subtext?: string;
   /** The rule under the header. Only the FIRST section of a page gets one. */
-  divider?: boolean;
+  /** Marks the page's FIRST section, which skips the top hairline seam. */
+  firstOnPage?: boolean;
   dark?: boolean;      // white header text, for dark backgrounds passed via className
   centered?: boolean;  // center-align the header text
   className?: string;
@@ -32,7 +33,7 @@ export default function LegacySection({
   index,
   heading,
   subtext,
-  divider = false,
+  firstOnPage = false,
   dark = false,
   centered = false,
   className = "",
@@ -76,26 +77,6 @@ export default function LegacySection({
               >
                 {subtext}
               </p>
-            )}
-            {/* Thick rule punctuated by a small bordered square — structure without mass.
-                The reference pages only ever use this left-aligned, where it runs off
-                to the right. Centered sections get a symmetric version instead, since
-                the asymmetric one reads as a misalignment under centered text. */}
-            {divider && (
-              <div
-                className={`mt-8 flex items-center gap-4 ${centered ? "justify-center" : ""}`}
-                aria-hidden="true"
-              >
-                <div className={`h-[3px] w-20 ${dark ? "bg-white" : "bg-primary"}`} />
-                <div
-                  className={`h-2.5 w-2.5 border-2 ${dark ? "border-white" : "border-primary"}`}
-                />
-                {centered ? (
-                  <div className={`h-[3px] w-20 ${dark ? "bg-white" : "bg-primary"}`} />
-                ) : (
-                  <div className={`h-px flex-1 ${dark ? "bg-white/25" : "bg-border"}`} />
-                )}
-              </div>
             )}
           </RevealOnScroll>
         )}

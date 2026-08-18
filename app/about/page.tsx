@@ -28,14 +28,13 @@ const CAPTION = "text-[11px] uppercase tracking-[0.18em] text-muted";
 const SECTION = "font-poppins";
 const CONTAINER = "mx-auto max-w-6xl px-6 py-16 md:px-8 md:py-20 lg:px-12";
 
-// Bento tile hover, matching the card treatment on the homepage and Partners:
-// the tile lifts and picks up the brand border, and `group` lets the photo
-// inside slow-zoom (the tile's overflow-hidden clips the overflow). Both back
-// off under prefers-reduced-motion.
-const TILE_HOVER =
-  "group transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0";
-const TILE_IMAGE_ZOOM =
-  "transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
+// Caption tints for the community bento, borrowed from the Partners page's
+// offering cards so both pages speak one colour language. The tints are
+// translucent and sit directly on the page gradient (no white base), which is
+// what gives them the soft, slightly varied look there. The tiles are static,
+// so colour carries the visual interest a hover lift used to.
+const TINT_TEAL = "bg-primary/[0.09]";
+const TINT_SAGE = "bg-accent/[0.16]";
 
 export const metadata: Metadata = {
   title: "About",
@@ -43,26 +42,56 @@ export const metadata: Metadata = {
     "Learn about Data Science Society — our mission, values, and the community we're building at UC Berkeley.",
 };
 
+// `body` is JSX rather than a string so each value can bold its key phrase, the
+// same emphasis treatment the story paragraphs use in the column beside it.
+const B = ({ children }: { children: React.ReactNode }) => (
+  <strong className="font-semibold text-ink">{children}</strong>
+);
+
 const VALUES = [
   {
     icon: Unlock,
     title: "Open to all",
-    body: "Data science belongs to everyone. We welcome students from every major, background, and skill level — curiosity is the only prerequisite.",
+    body: (
+      <>
+        We welcome students from <B>every major, background, and skill level</B>.
+        We want to help anyone who&apos;s <B>curious about technology</B> achieve
+        their goals.
+      </>
+    ),
   },
   {
     icon: Handshake,
     title: "Community first",
-    body: "DSS is more than a club — it's a support network. We grow together through mentorship, study sessions, and shared wins.",
+    body: (
+      <>
+        DSS is a tight-knit support network. We grow together through{" "}
+        <B>mentorship</B>, <B>hard work</B>, and{" "}
+        <B>celebrating our shared successes</B>.
+      </>
+    ),
   },
   {
     icon: Wrench,
-    title: "Learning by doing",
-    body: "We believe the fastest path to mastery is building real things for real clients. Every member ships production-quality work.",
+    title: "Skill development",
+    body: (
+      <>
+        Through our client projects, teaching, and new member development, we aim
+        to <B>transform beginners</B> into <B>leaders</B> and innovators in
+        industry.
+      </>
+    ),
   },
   {
     icon: Compass,
     title: "Forward looking",
-    body: "Data science moves fast, and so do we. We keep our curriculum, projects, and skills pointed at where the field is headed, not where it's been.",
+    body: (
+      <>
+        Technology is rapidly changing. Our curriculum, projects, and mindset are
+        constantly evolving to ensure we <B>stay ahead</B> of where the field is
+        heading.
+      </>
+    ),
   },
 ];
 
@@ -85,11 +114,11 @@ export default async function AboutPage() {
       <section className="relative -mt-16 overflow-hidden brand-gradient pt-16 font-poppins">
         <div className="mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
           <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
-            Data, Together.
+            About DSS
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
-            DSS is UC Berkeley&apos;s home for data science — where curious
-            students become skilled practitioners, and lifelong connections are made.
+            Learn more about our origins, the values we stand by, our 3 different committees for you to join, the tight-knit community that we've fostered
+            , our campus involvement, and our current executive board. 
           </p>
         </div>
       </section>
@@ -104,23 +133,16 @@ export default async function AboutPage() {
             <RevealOnScroll delayMs={0}>
               <p className={EYEBROW}>(01) — Our story</p>
               <h2 className={HEADING}>Our background and values</h2>
-
-              {/* Thick rule punctuated by a small bordered square — structure without mass. */}
-              <div className="mt-8 flex items-center gap-4" aria-hidden="true">
-                <div className="h-[3px] w-20 bg-primary" />
-                <div className="h-2.5 w-2.5 border-2 border-primary" />
-                <div className="h-px flex-1 bg-border" />
-              </div>
             </RevealOnScroll>
 
-            <RevealOnScroll delayMs={100} className="group mt-14 block">
+            <RevealOnScroll delayMs={100} className="mt-14 block">
               <div className="relative aspect-[3941/1442] w-full overflow-hidden border border-border">
                 <Image
                   src="/dss-campanile-group.jpg"
                   alt="DSS members gathered in front of Sather Tower on the UC Berkeley campus"
                   fill
                   sizes="(min-width: 1152px) 1152px, 100vw"
-                  className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                  className="object-cover"
                 />
               </div>
               <p className={`mt-4 ${CAPTION}`}>Fig. 01 — The society, on campus</p>
@@ -184,8 +206,7 @@ export default async function AboutPage() {
               <p className={EYEBROW}>(02) — Get involved</p>
               <h2 className={HEADING}>Find your committee</h2>
               <p className={SUBTEXT}>
-                Three ways to get hands-on with data science at Berkeley — whether you
-                want to learn it, build with it, or use it for good.
+                We offer three different ways to get involved with data science and machine learning within our organization.
               </p>
             </RevealOnScroll>
 
@@ -216,8 +237,7 @@ export default async function AboutPage() {
               <p className={EYEBROW}>(03) — Life at DSS</p>
               <h2 className={HEADING}>More than a club</h2>
               <p className={SUBTEXT}>
-                Committees teach the skills — these are the traditions that make DSS
-                feel like home.
+                DSS has many traditions that help you feel included in a close and friendly community at Berkeley.
               </p>
             </RevealOnScroll>
 
@@ -225,7 +245,7 @@ export default async function AboutPage() {
             <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {/* Big Little — horizontal split */}
               <RevealOnScroll delayMs={0} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg sm:flex-row ${TILE_HOVER}`}>
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl sm:flex-row">
                   <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-gradient-to-br from-primary/25 via-primary-bright/15 to-transparent sm:aspect-auto sm:w-1/2 sm:shrink-0">
                     {bigLittle.image ? (
                       <Image
@@ -233,13 +253,13 @@ export default async function AboutPage() {
                         alt="A DSS Big and Little smiling together at a Big–Little reveal"
                         fill
                         sizes="(min-width: 640px) 50vw, 100vw"
-                        className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-5xl" aria-hidden="true">{bigLittle.icon}</span>
                     )}
                   </div>
-                  <div className="flex flex-col justify-center gap-2 p-6">
+                  <div className={`flex flex-col justify-center gap-2 p-6 ${TINT_TEAL}`}>
                     <h3 className="text-lg font-semibold text-ink">{bigLittle.title}</h3>
                     <p className="text-sm leading-relaxed text-muted">{bigLittle.body}</p>
                   </div>
@@ -248,7 +268,7 @@ export default async function AboutPage() {
 
               {/* House System — vertical split */}
               <RevealOnScroll delayMs={80} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl">
                   {/* This tile sets the height of the whole top row, so its aspect
                       drives Big Little alongside it. NOTE: 5/2 is much wider than the
                       collage's own 16:9, so object-cover crops ~29% of its height. */}
@@ -259,13 +279,13 @@ export default async function AboutPage() {
                         alt="DSS members repping their House colors at a competition"
                         fill
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-5xl" aria-hidden="true">{houseSystem.icon}</span>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1.5 p-4">
+                  <div className={`flex flex-col gap-1.5 p-4 ${TINT_SAGE}`}>
                     <h3 className="text-lg font-semibold text-ink">{houseSystem.title}</h3>
                     <p className="text-sm leading-relaxed text-muted">{houseSystem.body}</p>
                   </div>
@@ -274,7 +294,7 @@ export default async function AboutPage() {
 
               {/* Chummings — compact */}
               <RevealOnScroll delayMs={160}>
-                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl">
                   <div className="relative flex grow aspect-[12/7] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-transparent">
                     {chummings.image ? (
                       <Image
@@ -282,13 +302,13 @@ export default async function AboutPage() {
                         alt="A small DSS chumming group hanging out over coffee"
                         fill
                         sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                        className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-4xl" aria-hidden="true">{chummings.icon}</span>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1.5 p-4">
+                  <div className={`flex flex-col gap-1.5 p-4 ${TINT_TEAL}`}>
                     <h3 className="font-semibold text-ink">{chummings.title}</h3>
                     <p className="text-sm leading-relaxed text-muted">{chummings.body}</p>
                   </div>
@@ -297,7 +317,7 @@ export default async function AboutPage() {
 
               {/* Retreats — compact */}
               <RevealOnScroll delayMs={240}>
-                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl">
                   <div className="relative flex grow aspect-[12/7] items-center justify-center overflow-hidden bg-gradient-to-br from-accent/25 to-transparent">
                     {retreats.image ? (
                       <Image
@@ -305,13 +325,13 @@ export default async function AboutPage() {
                         alt="DSS members bonding outdoors on a weekend retreat"
                         fill
                         sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                        className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-4xl" aria-hidden="true">{retreats.icon}</span>
                     )}
                   </div>
-                  <div className="flex flex-col gap-1.5 p-4">
+                  <div className={`flex flex-col gap-1.5 p-4 ${TINT_SAGE}`}>
                     <h3 className="font-semibold text-ink">{retreats.title}</h3>
                     <p className="text-sm leading-relaxed text-muted">{retreats.body}</p>
                   </div>
@@ -320,7 +340,7 @@ export default async function AboutPage() {
 
               {/* Socials — vertical split: cover photo above the caption, same as House System */}
               <RevealOnScroll delayMs={320} className="sm:col-span-2">
-                <div className={`flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg ${TILE_HOVER}`}>
+                <div className="flex h-full flex-col overflow-hidden rounded-2xl">
                   <div className="relative flex grow aspect-[7/3] items-center justify-center overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                     {socials.image ? (
                       <Image
@@ -328,13 +348,13 @@ export default async function AboutPage() {
                         alt="DSS members celebrating together at a club social"
                         fill
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        className={`object-cover ${TILE_IMAGE_ZOOM}`}
+                        className="object-cover"
                       />
                     ) : (
                       <span className="text-5xl" aria-hidden="true">{socials.icon}</span>
                     )}
                   </div>
-                  <div className="flex flex-col gap-2 p-4">
+                  <div className={`flex flex-col gap-2 p-4 ${TINT_TEAL}`}>
                     <div>
                       <h3 className="font-semibold text-ink">{socials.title}</h3>
                       <p className="mt-1 text-sm leading-relaxed text-muted">{socials.body}</p>

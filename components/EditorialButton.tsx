@@ -44,7 +44,9 @@ const variantClasses: Record<Variant, string> = {
 // it unambiguous.
 const sizeClasses: Record<Size, string> = {
   default: "gap-3 px-7 py-3.5 text-[11px]",
-  large: "gap-4 px-9 py-4.5 text-[13px]",
+  // Only the Join hero uses this, so it's tuned as that page's single primary
+  // CTA rather than as a general "one step up" from default.
+  large: "gap-5 px-12 py-5 text-[15px]",
 };
 
 export default function EditorialButton({

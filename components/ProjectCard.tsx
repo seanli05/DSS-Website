@@ -10,6 +10,10 @@ interface ProjectCardProps {
   project: Project;
   /** Position in the row — picks the fallback tint (see PALETTE). */
   index?: number;
+  /** Render every card in the single brand tint instead of cycling PALETTE.
+   *  Used by the DeCal portfolio, where the cards are student work with no
+   *  client brand to echo, so a rotating palette added colour without meaning. */
+  uniformTint?: boolean;
 }
 
 /**
@@ -35,15 +39,35 @@ const PALETTE = [
   { panel: "bg-cream", body: "bg-cream-deep", mark: "text-primary" },
 ] as const;
 
-export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
+/** The single tint used when `uniformTint` is set — a neutral light grey, drawn
+ *  from --color-ink at low alpha the same way the teal entry above is drawn from
+ *  --color-primary. Deliberately NOT a member of PALETTE: it's a separate
+ *  decision from the cycling row, so reordering that list can't silently
+ *  repaint the DeCal cards. */
+const UNIFORM_TINT = {
+  panel: "bg-ink/[0.03]",
+  body: "bg-ink/[0.06]",
+  mark: "text-primary",
+} as const;
+
+export default function ProjectCard({
+  project,
+  index = 0,
+  uniformTint = false,
+}: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const name = project.partner || project.title;
 
   // Derived colour wins when we have one; otherwise the token palette. The two
   // are applied through different channels (inline style vs. Tailwind class),
   // so each band takes exactly one of them.
-  const logoTint = getLogoTint(project.logoPalette);
-  const fallback = PALETTE[index % PALETTE.length];
+  //
+  // `uniformTint` opts out of both: it pins every card to one neutral grey, so a
+  // row reads as one set. It suppresses the derived tint too, not just the cycling
+  // fallback — otherwise a single project that happened to have a logo palette
+  // would break the run of colour it exists to create.
+  const logoTint = uniformTint ? null : getLogoTint(project.logoPalette);
+  const fallback = uniformTint ? UNIFORM_TINT : PALETTE[index % PALETTE.length];
 
   // The short hook, not the full write-up — that's what "See more" is for.
   // Falls back to the summary for projects with no One-liner recorded yet.
@@ -52,7 +76,10 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
   return (
     <article
       id={project.id}
-      className="group scroll-mt-28 flex h-full min-h-[520px] flex-col overflow-hidden rounded-2xl shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      /* A small lift on hover. Deliberately no `group` here: the "See more"
+         button owns that, so its arrow responds to the button rather than to
+         anywhere on the card. */
+      className="scroll-mt-28 flex h-full min-h-[520px] flex-col overflow-hidden rounded-2xl shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       {/* Logo panel — flex-[1.15] against the body's flex-1 puts the split just
           past halfway, so the mark is the card's headline rather than a badge.
@@ -66,18 +93,21 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       >
         {project.coverImage ? (
           /* DeCal projects lead with a screenshot instead of a client logo — they
-             have no partner, so the logo slot would otherwise sit empty. The `-m-8`
-             cancels this panel's own `p-8` so the image fills it edge to edge.
+             have no partner, so the logo slot would otherwise sit empty.
+             `inset-0`, not `-inset-8`: an absolutely positioned child is laid out
+             against the panel's padding box, so inset-0 already fills it edge to
+             edge despite the `p-8`. Negative insets overshoot the panel and let a
+             tall image paint down over the title below.
              `object-contain`, not `object-cover`: these are charts and model
              outputs, and cropping one to fill the frame cuts off the part that
              carries the meaning. */
-          <div className="absolute -inset-8">
+          <div className="absolute inset-0">
             <Image
               src={project.coverImage}
               alt={project.coverImageAlt ?? ""}
               fill
               sizes="(min-width: 640px) 340px, 300px"
-              className="object-contain transition-transform duration-300 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+              className="object-contain"
             />
           </div>
         ) : project.logo ? (
@@ -86,7 +116,7 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             alt={`${name} logo`}
             fill
             sizes="340px"
-            className="object-contain p-8 transition-transform duration-300 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            className="object-contain p-8"
           />
         ) : (
           /* No logo yet — a large monogram keeps the panel deliberate rather
@@ -141,7 +171,7 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
           aria-label={`See more about the ${name} project`}
           /* Sentence case, not an uppercase tracked-out label — that styling
              is right for section eyebrows and cold on a call to action. */
-          className="mt-auto flex items-center gap-2 self-start pt-5 text-[15px] font-semibold text-primary transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:transition-none"
+          className="group mt-auto flex items-center gap-2 self-start pt-5 text-[15px] font-semibold text-primary transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:transition-none"
         >
           See more
           <span

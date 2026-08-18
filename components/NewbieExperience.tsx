@@ -3,14 +3,17 @@ import PhotoPlaceholder from "./PhotoPlaceholder";
 import RevealOnScroll from "./RevealOnScroll";
 import { stripTodo, type NewbieExperiencePillar } from "@/lib/content";
 
-// Tile treatment matched to CommitteeActivities so the two photo-tile sections
-// read as one system: the tile lifts and picks up the brand border, and `group`
-// lets the photo inside slow-zoom. Kept as plain strings rather than a shared
-// theme module, per CLAUDE.md rule 8.
-const TILE =
-  "group flex h-full flex-col overflow-hidden border border-border bg-bg transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0";
-const TILE_IMAGE_ZOOM =
-  "object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
+// Kept as plain strings rather than a shared theme module, per CLAUDE.md rule 8.
+//
+// No hover state: these tiles are read-only, so a lift and a brand border
+// advertised a click target that doesn't exist.
+//
+// A shadow rather than a hairline border holds the tile against the page.
+// --shadow-card is offset-free (0 0 20px), so it reads as an even halo on all
+// four edges rather than a drop shadow with a light source — which is what lets
+// it replace a border cleanly instead of looking like a card that's floating.
+const TILE = "flex h-full flex-col overflow-hidden bg-bg shadow-card";
+const TILE_IMAGE_ZOOM = "object-cover";
 
 interface NewbieExperienceProps {
   pillars: NewbieExperiencePillar[];

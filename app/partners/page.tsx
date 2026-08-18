@@ -79,7 +79,7 @@ export default async function PartnersPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
-                Let&apos;s work together.
+                Work with us
               </h1>
 
               <p className="mt-6 max-w-md text-base leading-relaxed text-white/75 md:text-lg">
@@ -118,8 +118,7 @@ export default async function PartnersPage() {
               </h2>
               <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
                 {/* TODO: verify the partnership types with DSS leadership */}
-                Consulting projects are our flagship — but companies partner with DSS in
-                several ways, from recruiting to speaker events and hackathons.
+                Consulting projects are our primary form of engaging with a company, but there are a handful of other ways to partner with DSS, from recruiting to speaker events and hackathons.
               </p>
             </RevealOnScroll>
 
@@ -133,9 +132,6 @@ export default async function PartnersPage() {
                       <div className="flex items-center gap-4">
                         <span className="inline-flex h-12 w-12 flex-none items-center justify-center rounded-xl bg-white/15 text-white">
                           <OfferingIcon name={flagship.icon} className="h-6 w-6" />
-                        </span>
-                        <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">
-                          Flagship
                         </span>
                       </div>
                       <h3 className="mt-6 text-2xl font-semibold tracking-tight">
@@ -171,7 +167,7 @@ export default async function PartnersPage() {
                 return (
                   <RevealOnScroll key={offering.id} delayMs={175 + i * 75}>
                     <article
-                      className={`group flex h-full flex-col rounded-2xl p-6 transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:shadow-card ${
+                      className={`flex h-full flex-col rounded-2xl p-6 ${
                         sage ? "bg-accent/[0.16]" : "bg-primary/[0.09]"
                       }`}
                     >
@@ -213,8 +209,8 @@ export default async function PartnersPage() {
             <div className="mt-14 grid gap-6 md:grid-cols-3 md:gap-7">
               {/* 01 — Team structure */}
               <RevealOnScroll delayMs={100}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
+                <article className="flex h-full flex-col border border-border bg-bg p-7 shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary">
                     <TeamIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">01</span>
@@ -235,8 +231,8 @@ export default async function PartnersPage() {
 
               {/* 02 — Project scopes */}
               <RevealOnScroll delayMs={175}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
+                <article className="flex h-full flex-col border border-border bg-bg p-7 shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary">
                     <ScopeIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">02</span>
@@ -262,8 +258,8 @@ export default async function PartnersPage() {
 
               {/* 03 — Why student teams */}
               <RevealOnScroll delayMs={250}>
-                <article className="group flex h-full flex-col border border-border bg-bg p-7 shadow-card transition-all duration-200 motion-reduce:transition-none hover:-translate-y-1 hover:border-primary hover:shadow-card-hover md:p-8">
-                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-white">
+                <article className="flex h-full flex-col border border-border bg-bg p-7 shadow-card md:p-8">
+                  <span className="inline-flex h-12 w-12 items-center justify-center bg-primary/10 text-primary">
                     <StudentIcon />
                   </span>
                   <span className="mt-7 text-[11px] tracking-[0.18em] text-primary">03</span>
@@ -285,7 +281,7 @@ export default async function PartnersPage() {
                       {PLACEMENTS.map((company) => (
                         <li
                           key={company}
-                          className="border border-border px-3 py-1 text-xs text-ink transition-colors duration-200 group-hover:border-primary/40"
+                          className="border border-border px-3 py-1 text-xs text-ink"
                         >
                           {company}
                         </li>

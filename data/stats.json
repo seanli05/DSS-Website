@@ -1,6 +1,6 @@
 [
-  { "value": 200, "label": "Active members",      "suffix": "+" },
-  { "value": 50,  "label": "Projects completed",  "suffix": "+" },
-  { "value": 30,  "label": "Industry partners",   "suffix": "+" },
-  { "value": 6,   "label": "Years running",        "suffix": ""  }
+  { "value": 90, "label": "Projects Completed",      "suffix": "+" },
+  { "value": 1000,  "label": "Past Students Taught",  "suffix": "+" },
+  { "value": 3000,  "label": "Event Attendees",   "suffix": "+" },
+  { "value": 10,   "label": "Years Running",        "suffix": ""  }
 ]

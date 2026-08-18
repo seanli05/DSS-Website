@@ -40,7 +40,7 @@ export default function Hero({ partners, projects }: HeroProps) {
             </p>
             {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-lg leading-relaxed">
-              We turn Berkeley students into data scientists. Through hands-on projects with
+              We turn passionate students into innovative leaders. Through hands-on projects with
               real industry partners and mentorship from experienced members, we&apos;ll help
               you build the skills and portfolio to break into the field.
             </p>
