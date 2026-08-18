@@ -9,6 +9,10 @@ const links = [
   { label: "Partners", href: "/partners" },
 ];
 
+// The DeCal has its own site, so this nav item leaves dssberkeley.org entirely.
+// Opens in a new tab so people don't lose their place here.
+const DECAL_URL = "https://dssdecal.org/";
+
 const committeeLinks = [
   { label: "Acadev", href: "/committees/acadev" },
   { label: "Consulting", href: "/committees/consulting" },
@@ -25,7 +29,9 @@ export default function Nav() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-white">
           <Image src="/dss-logo-white.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
-          <span className="text-xl font-bold tracking-tight">DSS</span>
+          <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">
+            Data Science Society
+          </span>
         </Link>
 
         {/* Desktop links + Join, grouped together on the right so the logo stands alone on the left */}
@@ -80,12 +86,14 @@ export default function Nav() {
             </li>
 
             <li>
-              <Link
-                href="/decal"
+              <a
+                href={DECAL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hover:text-white transition-colors duration-150"
               >
                 Decal
-              </Link>
+              </a>
             </li>
           </ul>
 
@@ -170,13 +178,15 @@ export default function Nav() {
             </li>
 
             <li>
-              <Link
-                href="/decal"
+              <a
+                href={DECAL_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="block hover:text-white transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 Decal
-              </Link>
+              </a>
             </li>
 
             <li>

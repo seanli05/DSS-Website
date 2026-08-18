@@ -334,6 +334,42 @@ function memoizeOnce<T>(fn: () => Promise<T>): () => Promise<T> {
 // in), and rows hidden by view filters are excluded from the site.
 const AIRTABLE_VIEW = "Grid view";
 
+// Consulting, Social Good, and Acadev's client work live in three separately
+// configured but identically shaped Airtable tables, so one fetcher serves all
+// three. Takes the credentials rather than a shared Airtable client so each
+// caller stays a self-contained try/catch — one table failing can't take the
+// others down with it.
+const fetchProjectTable = async (
+  apiKey: string,
+  baseId: string,
+  table: string,
+  committee: string
+): Promise<Project[]> => {
+  const base = new Airtable({ apiKey }).base(baseId);
+  const records = await base(table).select({ view: AIRTABLE_VIEW }).all();
+  return records.map((r) => ({
+    id: r.id,
+    // The tables genuinely disagree on this column's name — Consulting calls it
+    // "Project Name", Social Good "Project Title" — so read both rather than
+    // renaming a column officers are already using. Without this, one table's
+    // projects all get a blank title and the "See more" popup opens with an
+    // empty heading.
+    title: plainText(r.fields["Project Name"]) || plainText(r.fields["Project Title"]),
+    semester: (r.fields["Semester"] as string) ?? "",
+    partner: (r.fields["Client"] as string) ?? "",
+    committee,
+    tags: parseTags(r.fields["Tech Stack"]),
+    description: plainText(r.fields["Project Summary"]),
+    oneLiner: plainText(r.fields["One-liner"]) || null,
+    logo: attachmentUrls(r.fields["Logo"])[0] ?? null,
+    images: attachmentUrls(r.fields["Additional Images/GIFS"]),
+    link: null,
+    brandColor: (r.fields["Brand Color"] as string) ?? null,
+    // Lowercase "color palette" — that's the column's actual name in the base.
+    logoPalette: parseHexPalette(r.fields["Logo color palette"]),
+  }));
+};
+
 // Runs server-side only — never import into client components.
 // Falls back to projects.json if env vars are missing or the request fails.
 export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
@@ -353,36 +389,9 @@ export const getProjects = memoizeOnce(async (): Promise<Project[]> => {
       throw new Error("Airtable env vars not configured");
     }
 
-    const base = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
-
-    const fetchTable = async (table: string, committee: string): Promise<Project[]> => {
-      const records = await base(table).select({ view: AIRTABLE_VIEW }).all();
-      return records.map((r) => ({
-        id: r.id,
-        // The two tables genuinely disagree on this column's name — Consulting
-        // calls it "Project Name", Social Good "Project Title" — so read both
-        // rather than renaming a column officers are already using. Without
-        // this, one table's projects all get a blank title and the "See more"
-        // popup opens with an empty heading.
-        title: plainText(r.fields["Project Name"]) || plainText(r.fields["Project Title"]),
-        semester: (r.fields["Semester"] as string) ?? "",
-        partner: (r.fields["Client"] as string) ?? "",
-        committee,
-        tags: parseTags(r.fields["Tech Stack"]),
-        description: plainText(r.fields["Project Summary"]),
-        oneLiner: plainText(r.fields["One-liner"]) || null,
-        logo: attachmentUrls(r.fields["Logo"])[0] ?? null,
-        images: attachmentUrls(r.fields["Additional Images/GIFS"]),
-        link: null,
-        brandColor: (r.fields["Brand Color"] as string) ?? null,
-        // Lowercase "color palette" — that's the column's actual name in the base.
-        logoPalette: parseHexPalette(r.fields["Logo color palette"]),
-      }));
-    };
-
     const [consulting, socialGood] = await Promise.all([
-      fetchTable(CONSULTING_PROJECTS_TABLE, "consulting"),
-      fetchTable(SOCIAL_GOOD_PROJECTS_TABLE, "social-good"),
+      fetchProjectTable(AIRTABLE_TOKEN, AIRTABLE_BASE_ID, CONSULTING_PROJECTS_TABLE, "consulting"),
+      fetchProjectTable(AIRTABLE_TOKEN, AIRTABLE_BASE_ID, SOCIAL_GOOD_PROJECTS_TABLE, "social-good"),
     ]);
 
     return [...consulting, ...socialGood];
@@ -418,6 +427,36 @@ export async function getProjectsByCommittee(committeeId: string): Promise<Proje
   }
   return (await getProjects()).filter((p) => p.committee === committeeId);
 }
+
+// Runs server-side only — never import into client components.
+// Acadev's CLIENT work, which is distinct from the student DeCal projects that
+// getProjectsByCommittee("acadev") reads out of acadev-projects.json. Same table
+// shape as Consulting and Social Good, just configured separately.
+//
+// No JSON fallback, unlike getProjects(): there is no local copy of this data to
+// fall back TO. A missing table or a failed fetch returns an empty array and the
+// committee page simply omits the section, which is the honest outcome — better
+// than inventing placeholder client work. The failure is still logged.
+export const getAcadevClientProjects = memoizeOnce(async (): Promise<Project[]> => {
+  try {
+    const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID, ACADEV_PROJECTS_TABLE } = process.env;
+    if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID || !ACADEV_PROJECTS_TABLE) {
+      throw new Error("Airtable env vars not configured");
+    }
+    return await fetchProjectTable(
+      AIRTABLE_TOKEN,
+      AIRTABLE_BASE_ID,
+      ACADEV_PROJECTS_TABLE,
+      "acadev"
+    );
+  } catch (err) {
+    console.error(
+      "getAcadevClientProjects(): Airtable fetch failed, omitting the section",
+      err
+    );
+    return [];
+  }
+});
 
 // Runs server-side only — never import into client components.
 // Falls back to external-events.json if env vars are missing or the request fails.

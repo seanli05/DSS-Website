@@ -54,7 +54,7 @@ export default function LegacyProjectCard({ project, index = 0 }: LegacyProjectC
   return (
     <article
       id={project.id}
-      className="group scroll-mt-28 flex h-full min-h-[520px] flex-col overflow-hidden rounded-2xl shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="scroll-mt-28 flex h-full min-h-[520px] flex-col overflow-hidden rounded-2xl shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       {/* Logo panel — flex-[1.15] against the body's flex-1 puts the split just
           past halfway, so the mark is the card's headline rather than a badge.
@@ -72,7 +72,7 @@ export default function LegacyProjectCard({ project, index = 0 }: LegacyProjectC
             alt={`${name} logo`}
             fill
             sizes="340px"
-            className="object-contain p-8 transition-transform duration-300 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+            className="object-contain p-8"
           />
         ) : (
           /* No logo yet (most Social Good partners are still TODO) — a large
@@ -127,7 +127,7 @@ export default function LegacyProjectCard({ project, index = 0 }: LegacyProjectC
           aria-label={`See more about the ${name} project`}
           /* Sentence case, not the uppercase tracked-out label it was — that
              styling is right for section eyebrows and cold on a call to action. */
-          className="mt-auto flex items-center gap-2 self-start pt-5 text-[15px] font-semibold text-primary transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:transition-none"
+          className="group mt-auto flex items-center gap-2 self-start pt-5 text-[15px] font-semibold text-primary transition-colors hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary motion-reduce:transition-none"
         >
           See more
           <span

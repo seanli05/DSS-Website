@@ -19,6 +19,8 @@ interface Path {
   title: string;
   body: string;
   href: string;
+  /** Set when href leaves this site, so the panel opens in a new tab. */
+  external?: boolean;
   cta: string;
   /** Shown in the frame until a real photo exists for this path. */
   imageLabel: string;
@@ -31,7 +33,7 @@ const PATHS: Path[] = [
     index: "01",
     title: "Find your committee.",
     body:
-      "Acadev, Consulting, and Social Good each take on real work for real partners — pick the one that fits how you want to build.",
+      "Acadev, Consulting, and Social Good are the three committees within our organization. Pick the one that best fits your interest and apply to join it!",
     href: "/about#committees",
     cta: "Explore committees",
     imageLabel: "Committee photo",
@@ -45,8 +47,9 @@ const PATHS: Path[] = [
     index: "02",
     title: "Start with the DeCal.",
     body:
-      "New to Berkeley, or still deciding whether data science is for you? Our project-based DeCal is a low-stakes way to find out — no experience required.",
-    href: "/decal",
+      "New to Berkeley, or still deciding whether data science is for you? Our project-based DeCal is a low-stakes way to find out where no experience is required!",
+    href: "https://dssdecal.org/",
+    external: true,
     cta: "About the DeCal",
     imageLabel: "DeCal photo",
     image: {
@@ -76,6 +79,9 @@ export default function HomePaths() {
             <RevealOnScroll key={path.index} delayMs={100 + i * 100}>
               <Link
                 href={path.href}
+                {...(path.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
                 className="group flex h-full flex-col border border-border bg-bg p-6 text-ink transition-colors duration-150 hover:border-primary hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] focus-visible:outline-primary md:p-8"
               >
                 <div className="flex items-center justify-between">

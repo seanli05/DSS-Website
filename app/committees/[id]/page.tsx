@@ -8,13 +8,14 @@ import ProjectCarousel from "@/components/ProjectCarousel";
 import CommitteePhoto from "@/components/CommitteePhoto";
 import CommitteeActivities from "@/components/CommitteeActivities";
 import {
+  getAcadevClientProjects,
   getCommittees,
   getDescriptionParagraphs,
   getProjectsByCommittee,
 } from "@/lib/content";
 
 const HERO_H1 =
-  "text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
+  "text-center text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
 const HERO_BLURB = "mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg";
 const HERO_CONTAINER =
   "relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12";
@@ -47,19 +48,24 @@ export default async function CommitteePage({
   const { id } = await params;
   const committee = getCommittees().find((c) => c.id === id);
   if (!committee) notFound();
-  const projects = await getProjectsByCommittee(committee.id);
-  const paragraphs = getDescriptionParagraphs(committee.description);
-  const activities = committee.activities ?? [];
-  // "What we do" is always 1. Projects and the activities tiles are each
-  // optional and rendered in that order, so their numbers have to be derived
-  // rather than hardcoded — a committee with only one of the two shouldn't
-  // skip straight to "(03)".
-  let sectionIndex = 1;
-  const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
-  const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
   // Acadev's portfolio showcases student DeCal projects, not client work, and is
   // sourced separately from the Consulting/Social Good Airtable project feed.
   const isAcadevProjects = committee.id === "acadev";
+  const projects = await getProjectsByCommittee(committee.id);
+  // Acadev alone has a SECOND portfolio: the client work it takes on alongside
+  // the DeCal, read from its own Airtable table. Empty for every other committee,
+  // and empty for Acadev too if that table isn't configured.
+  const clientProjects = isAcadevProjects ? await getAcadevClientProjects() : [];
+  const paragraphs = getDescriptionParagraphs(committee.description);
+  const activities = committee.activities ?? [];
+  // "What we do" is always 1. The two portfolios and the activities tiles are
+  // each optional and rendered in that order, so their numbers have to be
+  // derived rather than hardcoded — a committee with only some of them
+  // shouldn't skip straight to "(03)".
+  let sectionIndex = 1;
+  const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
+  const clientProjectsIndex = clientProjects.length > 0 ? ++sectionIndex : undefined;
+  const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
   // Every committee's workImage is a vertical 2:3 shot except Consulting's,
   // which is a wide group photo — see the `landscape` prop on CommitteePhoto.
   const isLandscapePhoto = committee.id === "consulting";
@@ -87,7 +93,9 @@ export default async function CommitteePage({
       ) : (
         <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
           <div className={HERO_CONTAINER}>
-            <div className="flex items-center gap-4">
+            {/* justify-center, not just text-center on the h1: the icon and the
+                title are flex siblings, so the pair has to be centred as a unit. */}
+            <div className="flex items-center justify-center gap-4">
               <span className="text-5xl" aria-hidden="true">
                 {committee.icon}
               </span>
@@ -107,7 +115,7 @@ export default async function CommitteePage({
             ~90 characters per line, well past a comfortable measure. Committees
             without a photo yet render CommitteePhoto's placeholder frame, so the
             layout is already right and going live is one file plus one JSON field. */}
-        <Section index={1} eyebrow="Our work" heading="What we do" divider>
+        <Section index={1} eyebrow="Our work" heading="What we do" firstOnPage>
           {/* Proportional columns, not fixed widths: 1.4fr/1fr always sums to the
               container, so the pair fills the section rather than leaving dead space
               to the right of the photo. Kept the same for `landscape` too — widening
@@ -209,15 +217,37 @@ export default async function CommitteePage({
           <Section
             index={projectsIndex}
             eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
-            heading="Projects"
+            heading={isAcadevProjects ? "DeCal Projects We've Mentored" : "Projects"}
             subtext={
               isAcadevProjects
-                ? "A selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
+                ? "Here are a selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
                 : "A rotating look at what this committee has shipped. Click “See more” for the full story."
             }
           >
             <RevealOnScroll delayMs={100}>
-              <ProjectCarousel projects={projects} circular={isAcadevProjects} />
+              <ProjectCarousel
+                projects={projects}
+                circular={isAcadevProjects}
+                uniformTint={isAcadevProjects}
+              />
+            </RevealOnScroll>
+          </Section>
+        )}
+
+        {/* Acadev's client work — a second portfolio, kept visually identical to
+            the Consulting and Social Good sections (same eyebrow, subtext, and
+            non-circular carousel) so client projects read the same wherever they
+            appear on the site. Only renders when the Airtable table is
+            configured and returns rows. */}
+        {clientProjects.length > 0 && (
+          <Section
+            index={clientProjectsIndex}
+            eyebrow="Portfolio"
+            heading="Client Projects"
+            subtext="Alongside our teaching responsibilities, our committee also works on a client project during the semester. Here are some of the projects that have helped our members gain more project experience."
+          >
+            <RevealOnScroll delayMs={100}>
+              <ProjectCarousel projects={clientProjects} />
             </RevealOnScroll>
           </Section>
         )}

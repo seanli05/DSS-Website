@@ -54,7 +54,14 @@ export default async function JoinPage() {
           </p>
           <div className="mt-10">
             {/* TODO: replace with the actual application link when it opens */}
-            <EditorialButton href="#" variant="inverse" size="large">
+            {/* rounded-full is a scoped exception here, matching the homepage's
+                pill CTAs — not a change to EditorialButton's square default. */}
+            <EditorialButton
+              href="#"
+              variant="inverse"
+              size="large"
+              className="rounded-full"
+            >
               Apply now
             </EditorialButton>
           </div>
@@ -73,7 +80,7 @@ export default async function JoinPage() {
           eyebrow="Recruitment"
           heading="Recruitment timeline"
           subtext="Every event in our recruitment cycle, start to finish. Come to as many as you can — most are open to everyone, no application needed."
-          divider
+          firstOnPage
           centered
         >
           <RecruitmentTimeline events={timeline} />

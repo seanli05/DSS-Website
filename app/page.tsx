@@ -3,19 +3,11 @@ import HomeMission from "@/components/HomeMission";
 import HomePaths from "@/components/HomePaths";
 import { getStats, getPartners, getProjects } from "@/lib/content";
 
-// Which stats.json entries appear in the proof band, in this order.
-const HOME_STAT_LABELS = [
-  "Active members",
-  "Projects completed",
-  "Industry partners",
-  "Years running",
-];
-
 export default async function HomePage() {
   const [partners, projects] = await Promise.all([getPartners(), getProjects()]);
-  const stats = HOME_STAT_LABELS.map(
-    (label) => getStats().find((s) => s.label === label)
-  ).filter((s) => s !== undefined);
+  // The proof band shows stats.json as-is, in file order. Edit the labels and
+  // numbers there. The band is laid out as four columns, so keep it to four.
+  const stats = getStats();
 
   return (
     <>

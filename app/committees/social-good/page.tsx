@@ -14,7 +14,7 @@ import {
 } from "@/lib/content";
 
 const HERO_H1 =
-  "text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
+  "text-center text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white";
 const HERO_BLURB = "mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg";
 const HERO_CONTAINER =
   "relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12";
@@ -71,7 +71,9 @@ export default async function SocialGoodCommitteePage() {
       ) : (
         <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
           <div className={HERO_CONTAINER}>
-            <div className="flex items-center gap-4">
+            {/* justify-center, not just text-center on the h1: the icon and the
+                title are flex siblings, so the pair has to be centred as a unit. */}
+            <div className="flex items-center justify-center gap-4">
               <span className="text-5xl" aria-hidden="true">
                 {committee.icon}
               </span>
@@ -91,7 +93,7 @@ export default async function SocialGoodCommitteePage() {
             ~90 characters per line, well past a comfortable measure. Committees
             without a photo yet render CommitteePhoto's placeholder frame, so the
             layout is already right and going live is one file plus one JSON field. */}
-        <LegacySection index={1} eyebrow="Our work" heading="What we do" divider>
+        <LegacySection index={1} eyebrow="Our work" heading="What we do" firstOnPage>
           {/* Proportional columns, not fixed widths: 1.4fr/1fr always sums to the
               container, so the pair fills the section rather than leaving dead space
               to the right of the photo.
@@ -201,7 +203,11 @@ export default async function SocialGoodCommitteePage() {
         >
           {/* TODO: update with current recruitment dates */}
           <RevealOnScroll delayMs={100}>
-            <EditorialButton href="/join">Apply to {committee.name}</EditorialButton>
+            {/* rounded-full is a scoped exception here, matching the other
+                committee pages — not a change to EditorialButton's square default. */}
+            <EditorialButton href="/join" className="rounded-full">
+              Apply to {committee.name}
+            </EditorialButton>
           </RevealOnScroll>
         </LegacySection>
       </div>

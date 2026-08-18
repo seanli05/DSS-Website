@@ -126,7 +126,7 @@ export default function CommitteePhoto({
           cropping any one of them too hard), 3:2 for `landscape` (matches a single
           wide group shot exactly, so `object-cover` never has anything to crop). */}
       <div
-        className={`group relative w-full overflow-hidden border border-border bg-surface ${
+        className={`relative w-full overflow-hidden border border-border bg-surface ${
           isCarousel
             ? "aspect-[4/3]"
             : landscape
@@ -165,7 +165,7 @@ export default function CommitteePhoto({
                 alt={photo.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 384px, 100vw"
-                className={`${isCarousel ? "object-contain" : "object-cover"} transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
+                className={isCarousel ? "object-contain" : "object-cover"}
               />
             </div>
           ))

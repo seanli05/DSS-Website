@@ -31,13 +31,6 @@ export default function HomeMission({ stats }: HomeMissionProps) {
           <h2 className="mt-6 text-[clamp(2.25rem,5vw,4.125rem)] font-normal leading-[0.95] tracking-tight text-ink">
             Our Mission
           </h2>
-
-          {/* Thick rule punctuated by a small bordered square — structure without mass. */}
-          <div className="mt-8 flex items-center gap-4" aria-hidden="true">
-            <div className="h-[3px] w-20 bg-primary" />
-            <div className="h-2.5 w-2.5 border-2 border-primary" />
-            <div className="h-px flex-1 bg-border" />
-          </div>
         </RevealOnScroll>
 
         <div className="mt-14 grid gap-10 md:grid-cols-12 md:gap-12">
@@ -52,25 +45,29 @@ export default function HomeMission({ stats }: HomeMissionProps) {
           <RevealOnScroll delayMs={150} className="md:col-span-8">
             {/* TODO: finalize copy with DSS leadership */}
             <p className="text-lg leading-relaxed text-ink md:text-xl">
-              DSS is UC Berkeley&apos;s premier student organization for data science — a
-              community where students learn by doing, grow through mentorship, and build
-              careers in tech, research, and consulting.
+              DSS is UC Berkeley&apos;s premier student organization for data science and machine learning. We are
+              a community where students learn by doing, grow through mentorship, and build
+              careers by impactfully applying technology in the fields they most care about.
             </p>
 
             <div className="mt-10">
-              <EditorialButton href="/about">Learn more about DSS</EditorialButton>
+              {/* rounded-full is a scoped exception here, matching the site's
+                  other CTAs — not a change to EditorialButton's square default. */}
+              <EditorialButton href="/about" className="rounded-full">
+                Learn more about DSS
+              </EditorialButton>
             </div>
           </RevealOnScroll>
         </div>
 
-        <RevealOnScroll delayMs={200} className="group mt-16 block md:mt-20">
+        <RevealOnScroll delayMs={200} className="mt-16 block md:mt-20">
           <div className="relative aspect-[21/9] w-full overflow-hidden border border-border">
             <Image
               src="/group-photo.jpg"
               alt="DSS members on the UC Berkeley campus"
               fill
               sizes="(min-width: 1152px) 1152px, 100vw"
-              className="object-cover transition-transform duration-500 motion-reduce:transition-none group-hover:scale-[1.03]"
+              className="object-cover"
             />
           </div>
           <p className="mt-4 text-[11px] uppercase tracking-[0.18em] text-muted">

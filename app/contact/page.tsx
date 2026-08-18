@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 // Square-corner hairline card, matching the homepage and Partners treatment.
 const CARD =
-  "flex h-full flex-col gap-4 border border-border bg-bg p-7 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:p-8";
+  "flex h-full flex-col gap-4 border border-border bg-bg p-7 md:p-8";
 
 const SOCIALS = [
   {
@@ -53,7 +53,7 @@ export default function ContactPage() {
           so both seams read as fades. Sections inside must stay transparent. */}
       <div className="fade-between-gradients">
         {/* Contact methods */}
-        <Section index={1} eyebrow="Reach us" heading="Ways to connect." divider>
+        <Section index={1} eyebrow="Reach us" heading="Ways to connect." firstOnPage>
           <div className="grid gap-8 sm:grid-cols-3">
             {/* Email */}
             <RevealOnScroll delayMs={100} className={CARD}>

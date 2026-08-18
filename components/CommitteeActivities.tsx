@@ -6,10 +6,11 @@ import { stripTodo, type CommitteeActivity } from "@/lib/content";
 // Tile treatment lifted from the About page's tradition grid: the tile lifts and
 // picks up the brand border, and `group` lets the photo inside slow-zoom. Kept as
 // plain strings rather than a shared theme module, per CLAUDE.md rule 8.
+// No hover state: these tiles are read-only, so a lift and a brand border
+// advertised a click target that doesn't exist.
 const TILE =
-  "group flex h-full flex-col overflow-hidden border border-border bg-bg transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0";
-const TILE_IMAGE_ZOOM =
-  "object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100";
+  "flex h-full flex-col overflow-hidden border border-border bg-bg";
+const TILE_IMAGE_ZOOM = "object-cover";
 
 interface CommitteeActivitiesProps {
   activities: CommitteeActivity[];
