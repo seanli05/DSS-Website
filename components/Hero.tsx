@@ -143,7 +143,7 @@ export default function Hero({ partners, projects }: HeroProps) {
                 return project ? (
                   <Link
                     key={`${partner.id}-${i}`}
-                    href={`/committees/${project.committee}#${project.id}`}
+                    href={`/${project.committee}#${project.id}`}
                     className={itemClass}
                   >
                     {content}

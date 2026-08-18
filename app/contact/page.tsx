@@ -15,15 +15,21 @@ const CARD =
 const SOCIALS = [
   {
     platform: "Instagram",
-    handle: "@berkeleydss", // TODO: verify handle
-    href: "https://instagram.com/berkeleydss",
+    handle: "@dssberkeley",
+    href: "https://www.instagram.com/dssberkeley/",
     icon: "📸",
   },
   {
     platform: "LinkedIn",
     handle: "UC Berkeley Data Science Society",
-    href: "https://linkedin.com/company/uc-berkeley-data-science-society",
+    href: "https://www.linkedin.com/company/dssberkeley/",
     icon: "💼",
+  },
+  {
+    platform: "Medium",
+    handle: "@dssberkeley",
+    href: "https://medium.com/@dssberkeley",
+    icon: "✍️",
   },
   {
     platform: "GitHub",
@@ -65,10 +71,10 @@ export default function ContactPage() {
                 </p>
               </div>
               <a
-                href="mailto:dss@berkeley.edu" // TODO: verify email
+                href="mailto:dss.berkeley@gmail.com"
                 className="mt-auto text-sm text-primary underline-offset-2 hover:underline"
               >
-                dss@berkeley.edu
+                dss.berkeley@gmail.com
               </a>
             </RevealOnScroll>
 
@@ -138,7 +144,7 @@ export default function ContactPage() {
           centered
         >
           <RevealOnScroll delayMs={100}>
-            <EditorialButton href="mailto:dss@berkeley.edu" external>
+            <EditorialButton href="mailto:dss.berkeley@gmail.com" external>
               Send us an email
             </EditorialButton>
           </RevealOnScroll>

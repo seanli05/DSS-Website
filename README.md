@@ -110,7 +110,9 @@ Sections:
 
 One page per committee (e.g. `/committees/consulting`, `/committees/social-good`). Sections:
 
-- Page header (icon, name, blurb) from `content/committees.json` — if the committee's `heroImage` is set, the header becomes a full-bleed photo background (dark overlay, white text, Hero-like) instead of the plain surface header. Currently only Social Good has one (`public/committees/social-good-hero.jpg`).
+- Page header (icon, name, blurb) from `content/committees.json` — if the committee's `heroImage` is set, the header becomes a full-bleed photo background (dark overlay, white text, Hero-like) instead of the plain surface header. All three committees have one, under `public/committees/<id>-hero.jpg`.
+  - **`heroImage` feeds two places, not one.** Besides this header it is also the art band of that committee's `CommitteeCard` on the About page, so swapping the file changes both at once — there is no separate card image. (`public/committees/*-card.png` are leftovers from an earlier design and are no longer referenced anywhere.)
+  - **Adding/replacing a hero photo:** derive the original to `public/committees/<id>-hero.jpg` at **2560x1706 (3:2)** — `sharp(src).rotate().resize({ width: 2560, height: 1706, fit: "cover" }).jpeg({ quality: 82, mozjpeg: true })`, which lands around 500-950 KB. 3:2 is the widest source aspect that still survives both consumers: the header crops it to roughly 2:1 on a desktop viewport and the card crops it to 16/10, both from the centre. So **compose for the centre and leave headroom** — anything near the top or bottom edge (heads, hands, feet) is what those two crops eat first. Check a group photo at both aspects before committing it.
 - **What we do** — a two-column spread: the committee's `description` on the left (blank lines in the JSON split it into paragraphs; the first is set larger and darker as a lead), and a vertical committee photo (`CommitteePhoto`) on the right. Committees with no `description` show their focus-area chips in the left column instead.
   - Columns are proportional (`1.4fr / 1fr`), so the pair always fills the container — fixed widths left dead space to the right of the photo.
   - The grid row **stretches** (no `items-start`): the photo takes its height from the copy beside it and crops via `object-cover`, so both columns end on exactly the same line. The committee-lead byline uses `lg:mt-auto` to pin itself to the bottom of the copy column, so it meets the photo's caption even when the copy above is short.
@@ -169,7 +171,7 @@ Contact methods and socials. Sections:
 
 - Page header
 - Three contact method cards: Email, Location (TBD), Mailing list (link TBD)
-- Social links (Instagram, LinkedIn, GitHub — verify all handles under `SOCIALS`)
+- Social links (Instagram, LinkedIn, Medium, GitHub — under `SOCIALS`; the GitHub org name is still unverified)
 - Email CTA
 
 ---
@@ -181,7 +183,7 @@ All components live in `components/`. Server Components by default; only interac
 | Component | Client? | What it does |
 |---|---|---|
 | `Nav.tsx` | ✓ | Fixed top nav with scroll shadow + mobile hamburger drawer |
-| `Footer.tsx` | — | Site footer with nav links, socials, Berkeley disclaimer |
+| `Footer.tsx` | — | Site footer with nav links, socials, Berkeley disclaimer. Socials live in the `socials` array at the top of the file: Instagram, LinkedIn, Medium, and a `mailto:` — all live links. There is deliberately no Facebook entry (DSS has no Facebook), so `public/facebook-icon-white.png` is now unused |
 | `Hero.tsx` | ✓ | Gradient hero with typewriter animation cycling role names |
 | `Section.tsx` | — | Standard page section wrapper: eyebrow → heading → subtext → optional divider → children. Renders the editorial system (Poppins, `max-w-6xl`, `(01) — Label` eyebrow, light-weight `clamp()` heading) that the home/About/Partners pages hand-roll. Props: `index` (adds the `(01) — ` number), `divider` (the rule under the header — first section of a page only), `dark`, `centered`, `id`, `className`. **Has no background** — pages wrap their body in `fade-between-gradients`, and an opaque section would punch a hole in it. Header is auto-wrapped in `RevealOnScroll`. |
 | `Button.tsx` | — | Polymorphic rounded-full pill button/link. Props: `variant` (primary/outline/ghost), `size` (sm/md/lg), `href`, `external`. Still used by `/styleguide`; the editorial pages use `EditorialButton` instead — don't mix the two systems within a page |
@@ -501,9 +503,8 @@ Search the codebase for `TODO` to find all placeholders. High-priority ones:
 - **Social Good activities**: all three "How we spend our time" tiles are placeholders — every `image` is `null`, and each `body` is draft copy marked with a leading `TODO:`. Confirm the three activities and their descriptions with the committee lead (in particular what "decking" should say), then add one landscape 4:3 photo per tile
 - **`content/projects.json`**: only used as a fallback now — real project data lives in Airtable (`CONSULTING_PROJECTS_TABLE`, `SOCIAL_GOOD_PROJECTS_TABLE`). Some Consulting Projects rows currently have blank `Project Name`/`Client` cells, and `Tech Stack` appears empty on every row checked so far — worth a pass in Airtable
 - **`app/join/page.tsx`**: application link is `href="#"` — update each semester with the real Typeform/Google Form URL
-- **`app/contact/page.tsx`**: meeting room location is TBD; mailing list sign-up link is `#`
+- **`app/contact/page.tsx`**: meeting room location is TBD; mailing list sign-up link is `#`; the GitHub org under `SOCIALS` is unverified
 - **`components/Nav.tsx`**: logo text placeholder — replace with SVG logo
-- **`components/Footer.tsx`**: social handles need verification
 - **`data/partners.json`**: placeholder company names — replace with real past partners or wire up Airtable
 
 ---

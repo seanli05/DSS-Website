@@ -12,6 +12,7 @@ import externalEventsData from "@/content/external-events.json";
 import projectsData from "@/content/projects.json";
 import acadevProjectsData from "@/content/acadev-projects.json";
 import testimonialsData from "@/content/testimonials.json";
+import airtableManifest from "@/content/airtable-manifest.json";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -269,13 +270,30 @@ function parseTags(value: unknown): string[] {
 }
 
 // Airtable attachment fields (Logo, Additional Images/GIFS) are normally an
-// array of { url, ... }. Guard against the field being missing, cleared, or
+// array of { id, url, ... }. Guard against the field being missing, cleared, or
 // an unexpected shape — `.map()` on a non-array throws, and one malformed
 // row shouldn't be able to take down the whole fetch.
+//
+// Prefers the LOCAL copy that scripts/mirror-airtable.mjs downloaded into
+// public/airtable/ during prebuild. Airtable's own `url` is a signed link that
+// 410s a few hours after it's issued, and this site bakes content into static
+// HTML at build time — so serving it directly means every logo and headshot
+// breaks partway through the deployment's life. The manifest is keyed by the
+// attachment's stable id, not its URL, because the URL differs on every fetch.
+//
+// Falling back to the signed URL keeps a not-yet-mirrored attachment visible
+// (for a while) rather than blank; the mirror script logs loudly when that
+// happens.
+const MIRRORED: Record<string, string> = airtableManifest;
+
 function attachmentUrls(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value
-    .map((a) => (a as { url?: unknown })?.url)
+    .map((a) => {
+      const att = a as { id?: unknown; url?: unknown };
+      if (typeof att?.id === "string" && MIRRORED[att.id]) return MIRRORED[att.id];
+      return att?.url;
+    })
     .filter((url): url is string => typeof url === "string");
 }
 

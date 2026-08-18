@@ -1,18 +1,17 @@
 import Image from "next/image";
 
-// TODO: verify these are the real handles before launch — placeholders for now.
-//
-// Instagram/LinkedIn/Facebook/Medium's real marks are a colored badge with a white
-// glyph drawn on top — brightness-0+invert on the whole badge crushes both layers to
-// white indistinguishably (a blank rounded square), so those four are pre-extracted
-// down to just the white glyph (badge discarded) rather than filtered at render time.
+// Instagram/LinkedIn/Medium's real marks are a colored badge with a white glyph drawn
+// on top — brightness-0+invert on the whole badge crushes both layers to white
+// indistinguishably (a blank rounded square), so those three are pre-extracted down to
+// just the white glyph (badge discarded) rather than filtered at render time.
 // Gmail's "M" has no separate badge layer, so the filter alone works fine on it as-is.
+//
+// DSS has no Facebook presence, so there's no Facebook entry here.
 const socials = [
-  { label: "Instagram", href: "https://instagram.com/berkeleydss", src: "/instagram-icon-white.svg", filter: false },
-  { label: "LinkedIn", href: "https://linkedin.com/company/berkeleydss", src: "/linkedin-icon-white.png", filter: false },
-  { label: "Facebook", href: "https://facebook.com/berkeleydss", src: "/facebook-icon-white.png", filter: false },
-  { label: "Medium", href: "https://medium.com/@berkeleydss", src: "/medium-badge-knockout-v2.png", filter: false },
-  { label: "Email us", href: "mailto:dss@berkeley.edu", src: "/gmail-icon.png", filter: true },
+  { label: "Instagram", href: "https://www.instagram.com/dssberkeley/", src: "/instagram-icon-white.svg", filter: false },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/dssberkeley/", src: "/linkedin-icon-white.png", filter: false },
+  { label: "Medium", href: "https://medium.com/@dssberkeley", src: "/medium-badge-knockout-v2.png", filter: false },
+  { label: "Email us", href: "mailto:dss.berkeley@gmail.com", src: "/gmail-icon.png", filter: true },
 ];
 
 export default function Footer() {

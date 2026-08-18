@@ -14,9 +14,9 @@ const links = [
 const DECAL_URL = "https://dssdecal.org/";
 
 const committeeLinks = [
-  { label: "Acadev", href: "/committees/acadev" },
-  { label: "Consulting", href: "/committees/consulting" },
-  { label: "Social Good", href: "/committees/social-good" },
+  { label: "Acadev", href: "/acadev" },
+  { label: "Consulting", href: "/consulting" },
+  { label: "Social Good", href: "/social-good" },
 ];
 
 export default function Nav() {
