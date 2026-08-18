@@ -17,32 +17,25 @@ interface CommitteePhotoProps {
   figure: string;
   /** The club mostly shoots vertical 2:3 photos for this slot (the default:
    *  the frame stretches to match the copy column's height, cropping to
-   *  suit). Set this for a committee whose photo is actually landscape —
-   *  the frame becomes a fixed 3:2 box sized from its own width instead of
-   *  the row, so a landscape shot needs no cropping and isn't stretched
-   *  tall. Pair with `lg:items-center` on the parent grid so the (now
-   *  shorter) photo centers against the copy instead of hugging its top. */
+   *  suit). Set this for a committee whose (single, non-carousel) photo is
+   *  actually landscape — the frame becomes a fixed 3:2 box sized from its
+   *  own width instead of the row, so a landscape shot needs no cropping and
+   *  isn't stretched tall. Pair with `lg:items-center` on the parent grid so
+   *  the (now shorter) photo centers against the copy instead of hugging its
+   *  top. Ignored when `images` makes this a carousel, which always uses its
+   *  own fixed 4:3 box. */
   landscape?: boolean;
   className?: string;
 }
 
 /**
-<<<<<<< Updated upstream
  * The photo frame that sits beside a committee's "What we do" copy.
  *
  * Same treatment as the About page's Fig. 01: a hairline-bordered frame, a slow
  * zoom on hover, and a small tracked caption underneath — which is what makes it
  * read as editorial rather than a stock photo dropped into a column. A legacy
- * single photo keeps the portrait treatment; multi-photo sets use a 4:3 carousel.
-=======
- * The photo that sits beside a committee's "What we do" copy.
- *
- * Same treatment as the About page's Fig. 01: a hairline-bordered frame, a slow
- * zoom on hover, and a small tracked caption underneath — which is what makes it
- * read as editorial rather than a stock photo dropped into a column. Portrait 2:3
- * by default to match what the club mostly shoots, so nothing gets cropped; pass
- * `landscape` for the rare committee whose photo is a wide group shot instead.
->>>>>>> Stashed changes
+ * single photo keeps the portrait treatment (or `landscape`'s 3:2 box); multi-photo
+ * sets use a 4:3 carousel.
  *
  * Committees without a photo yet get a bordered placeholder of the same shape, so
  * the layout is already correct and going live is one file plus one JSON field.
@@ -104,10 +97,12 @@ export default function CommitteePhoto({
        from its own content is circular, and engines resolve it differently — it can
        overflow into the next section in one browser and look fine in another. The
        grid item is already stretched to the row by `items-stretch`, which gives it a
-<<<<<<< Updated upstream
-       definite height, so plain `flex-1` fills it and can never exceed it. */
+       definite height, so plain `flex-1` fills it and can never exceed it. Skipped
+       for `isCarousel` (self-centers instead) and `landscape` (sizes itself). */
     <figure
-      className={`flex flex-col ${isCarousel ? "lg:justify-center" : "lg:flex-1"} ${className}`}
+      className={`flex flex-col ${
+        isCarousel ? "lg:justify-center" : landscape ? "" : "lg:flex-1"
+      } ${className}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -115,11 +110,6 @@ export default function CommitteePhoto({
         if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
       }}
     >
-=======
-       definite height, so plain `flex-1` fills it and can never exceed it. Skipped
-       entirely for `landscape`, which sizes itself instead of filling the row. */
-    <figure className={`flex flex-col ${landscape ? "" : "lg:flex-1"} ${className}`}>
->>>>>>> Stashed changes
       {/* While stacked the frame keeps its own 2:3 shape. From lg up — where it sits
           beside the copy — it grows to fill the row instead, so its bottom edge lands
           level with the copy; the image crops to suit. min-h keeps the frame sensible
@@ -129,11 +119,19 @@ export default function CommitteePhoto({
           The aspect ratio is scoped with `max-lg:` rather than set unconditionally and
           overridden by `lg:aspect-auto`. At lg there is then no aspect-ratio property
           at all, so nothing can leave the frame sized from its width and overflowing
-<<<<<<< Updated upstream
-          the row if the override doesn't win. */}
+          the row if the override doesn't win.
+
+          `isCarousel` and `landscape` each replace all of that with one fixed box at
+          every size — 4:3 for a carousel (room for varied source photos without
+          cropping any one of them too hard), 3:2 for `landscape` (matches a single
+          wide group shot exactly, so `object-cover` never has anything to crop). */}
       <div
         className={`group relative w-full overflow-hidden border border-border bg-surface ${
-          isCarousel ? "aspect-[4/3]" : "max-lg:aspect-[2/3] lg:min-h-[30rem] lg:flex-1"
+          isCarousel
+            ? "aspect-[4/3]"
+            : landscape
+              ? "aspect-[3/2]"
+              : "max-lg:aspect-[2/3] lg:min-h-[30rem] lg:flex-1"
         }`}
         role={isCarousel ? "region" : undefined}
         aria-roledescription={isCarousel ? "carousel" : undefined}
@@ -171,26 +169,6 @@ export default function CommitteePhoto({
               />
             </div>
           ))
-=======
-          the row if the override doesn't win.
-
-          `landscape` replaces all of that with one fixed 3:2 box at every size —
-          matches the source photo exactly, so `object-cover` below never has
-          anything to crop. */}
-      <div
-        className={`group relative w-full overflow-hidden border border-border bg-surface ${
-          landscape ? "aspect-[3/2]" : "max-lg:aspect-[2/3] lg:min-h-[30rem] lg:flex-1"
-        }`}
-      >
-        {src ? (
-          <Image
-            src={src}
-            alt={alt ?? ""}
-            fill
-            sizes="(min-width: 768px) 40vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-          />
->>>>>>> Stashed changes
         ) : (
           <PhotoPlaceholder />
         )}

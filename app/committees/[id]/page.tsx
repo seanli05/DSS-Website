@@ -57,15 +57,12 @@ export default async function CommitteePage({
   let sectionIndex = 1;
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
   const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
-<<<<<<< Updated upstream
   // Acadev's portfolio showcases student DeCal projects, not client work, and is
   // sourced separately from the Consulting/Social Good Airtable project feed.
   const isAcadevProjects = committee.id === "acadev";
-=======
   // Every committee's workImage is a vertical 2:3 shot except Consulting's,
   // which is a wide group photo — see the `landscape` prop on CommitteePhoto.
   const isLandscapePhoto = committee.id === "consulting";
->>>>>>> Stashed changes
 
 
   return (
@@ -211,29 +208,17 @@ export default async function CommitteePage({
         {projects.length > 0 && (
           <Section
             index={projectsIndex}
-<<<<<<< Updated upstream
             eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
             heading="Projects"
             subtext={
               isAcadevProjects
                 ? "A selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
-                : "A rotating look at what this committee has shipped. Click “Read more” for the full story."
+                : "A rotating look at what this committee has shipped. Click “See more” for the full story."
             }
           >
-            {projects.length > 0 && (
-              <RevealOnScroll delayMs={100}>
-                <ProjectCarousel projects={projects} circular={isAcadevProjects} />
-              </RevealOnScroll>
-            )}
-=======
-            eyebrow="Portfolio"
-            heading="Projects"
-            subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
-          >
             <RevealOnScroll delayMs={100}>
-              <ProjectCarousel projects={projects} />
+              <ProjectCarousel projects={projects} circular={isAcadevProjects} />
             </RevealOnScroll>
->>>>>>> Stashed changes
           </Section>
         )}
 
@@ -245,11 +230,7 @@ export default async function CommitteePage({
             index={activitiesIndex}
             eyebrow="Committee life"
             heading="Outside of projects"
-<<<<<<< Updated upstream
-            subtext="Client work is the core of what we do — this is everything else that makes up a semester."
-=======
             subtext="Beyond client work, we make time to grow, learn, and have fun."
->>>>>>> Stashed changes
           >
             <CommitteeActivities activities={activities} />
           </Section>
