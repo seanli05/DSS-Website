@@ -53,13 +53,12 @@ const StudentIcon = () => (
 // ones already cited elsewhere on the site plus those given by leadership — do not
 // extend this list without confirming it.
 const SCOPES = [
-  "Data analysis & visualisation",
-  "Predictive modelling & ML",
-  "Dashboards & internal tools",
-  "Research & experimentation",
+  "Generative AI, LLMs, NLP",
+  "Predictive modeling & ML",
+  "Computer Vision",
+  "Data Analytics & Visualization",
+  "Software/Cloud Development",
 ];
-
-const PLACEMENTS = ["Meta", "Tesla", "Amazon", "Google", "McKinsey"];
 
 export default async function PartnersPage() {
   const partners = await getPartners();
@@ -84,9 +83,7 @@ export default async function PartnersPage() {
 
               <p className="mt-6 max-w-md text-base leading-relaxed text-white/75 md:text-lg">
                 {/* TODO: verify copy with DSS leadership */}
-                We partner with companies on semester-long data science engagements —
-                pairing real deliverables with a pipeline to Berkeley&apos;s strongest
-                technical students.
+                We partner with companies on semester-long data science project engagements that allow our  members to work through real industry problems from start to finish.
               </p>
             </div>
 
@@ -198,11 +195,10 @@ export default async function PartnersPage() {
                 (02) — Process
               </p>
               <h2 className="mt-6 text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1.05] tracking-tight text-ink">
-                How projects work.
+                More Details About Our Process
               </h2>
               <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
-                Our consulting projects run on a semester cadence — a scoped problem, a
-                dedicated student team, and a shipped deliverable at the end.
+                Projects run on a semester cadence with a dedicated team and a defined scope to work on. 
               </p>
             </RevealOnScroll>
 
@@ -218,13 +214,7 @@ export default async function PartnersPage() {
                     Team structure
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted">
-                    Each engagement gets a hand-picked team of students paired with a faculty
-                    or alumni advisor — a clear owner for the work, and a senior voice
-                    reviewing it before anything reaches you.
-                  </p>
-                  <p className="mt-5 text-sm leading-relaxed text-muted">
-                    Weekly check-ins keep you visible on progress without managing the
-                    day-to-day.
+                    Each engagement gets a hand-picked team of students consisting of 2 project managers, 3-4 consultants, and a senior advisor. Students are picked for a project based on relevant experience in the project scope or the client’s industry. Weekly check-ins are also in place to keep clients in the loop without directly managing the project.
                   </p>
                 </article>
               </RevealOnScroll>
@@ -240,7 +230,7 @@ export default async function PartnersPage() {
                     Project scopes
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-muted">
-                    We size the problem with you up front. Common scopes include:
+                    Common scopes include, but are not limited to:
                   </p>
                   <ul className="mt-5 flex flex-col gap-3">
                     {SCOPES.map((scope) => (
@@ -266,28 +256,22 @@ export default async function PartnersPage() {
                   <h3 className="mt-3 text-xl font-semibold tracking-tight text-ink">
                     Why student teams
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted">
-                    DSS members are among Berkeley&apos;s most rigorous students. Partnering
-                    is also the earliest way to meet them — well before they reach the
-                    recruiting market.
-                  </p>
-
-                  {/* mt-auto pins this to the card's bottom edge whatever the copy above does. */}
-                  <div className="mt-auto pt-7">
-                    <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
-                      Members go on to
+                    <p className="mt-3 text-sm leading-relaxed text-muted">
+                      Our members intern across industry throughout their time at Berkeley and go
+                      on to full-time roles at leading technology, finance, and consulting
+                      firms.
                     </p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {PLACEMENTS.map((company) => (
-                        <li
-                          key={company}
-                          className="border border-border px-3 py-1 text-xs text-ink"
-                        >
-                          {company}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+
+                  {/* mt-auto pins this to the card's bottom edge whatever the copy above does.
+                      This used to be a row of named employers (Meta, Tesla, Amazon, Google,
+                      McKinsey). Naming companies reads as borrowed credibility and dates
+                      badly — it has to be re-checked every year, and a partner can always
+                      find one name that undercuts the point. The general version makes the
+                      same claim about calibre without any of that upkeep. Set in text-ink
+                      rather than muted so it lands as a claim rather than a footnote. */}
+                  <p className="mt-3 text-sm leading-relaxed text-muted">
+                    Partnering is the best way to not only target a focused project scope but also build an early talent pipeline. 
+                  </p>
                 </article>
               </RevealOnScroll>
             </div>
@@ -301,8 +285,7 @@ export default async function PartnersPage() {
                 Project Timeline
               </p>
               <p className="mt-3 text-center text-sm leading-relaxed text-muted">
-                Engagements run on a semester cadence — click a stage to see what it
-                involves.
+                Click on a stage to view each portion of a project timeline.
               </p>
               <div className="mt-10">
                 <ProjectTimeline />

@@ -38,9 +38,12 @@ const PATHS: Path[] = [
     cta: "Explore committees",
     imageLabel: "Committee photo",
     image: {
-      // Shared with the Social Good committee page's header — one asset, two uses.
-      src: "/committees/social-good-hero.jpg",
-      alt: "Members of the DSS Social Good committee on the UC Berkeley campus",
+      // Its own asset, deliberately NOT /committees/social-good-hero.jpg. This card
+      // is about all three committees, so it must not follow whatever photo the
+      // Social Good committee happens to be using — it used to share that file and
+      // silently changed when that hero was swapped.
+      src: "/committee-group.jpg",
+      alt: "DSS members gathered on the UC Berkeley campus",
     },
   },
   {

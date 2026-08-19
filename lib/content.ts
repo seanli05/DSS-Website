@@ -63,7 +63,7 @@ export interface CommitteeWorkImage {
 export interface Committee {
   id: string;
   name: string;
-  fullName: string | null; // spelled-out name shown alongside the abbreviation on CommitteeCard (e.g. "Academic Development" next to "Acadev"); null when name is already the full name
+  fullName: string | null; // spelled-out name, used as the CommitteeCard title in place of the abbreviation (e.g. "Academic Development" rather than "Acadev"); null when name is already the full name
   kicker: string; // one-word category shown above the name on CommitteeCard (e.g. "Learn", "Build", "Serve")
   icon: string;
   blurb: string;
@@ -380,7 +380,15 @@ const fetchProjectTable = async (
     description: plainText(r.fields["Project Summary"]),
     oneLiner: plainText(r.fields["One-liner"]) || null,
     logo: attachmentUrls(r.fields["Logo"])[0] ?? null,
-    images: attachmentUrls(r.fields["Additional Images/GIFS"]),
+    // Same disagreement as the title column above, in the attachment field:
+    // Consulting calls it "Additional Files", Social Good and Acadev call it
+    // "Additional Images/GIFS". Read both. Spread rather than `a || b` — an
+    // empty array is truthy, so `||` would always pick the first and silently
+    // drop the other table's files.
+    images: [
+      ...attachmentUrls(r.fields["Additional Images/GIFS"]),
+      ...attachmentUrls(r.fields["Additional Files"]),
+    ],
     link: null,
     brandColor: (r.fields["Brand Color"] as string) ?? null,
     // Lowercase "color palette" — that's the column's actual name in the base.

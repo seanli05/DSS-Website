@@ -49,7 +49,7 @@ export default async function JoinPage() {
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
             {/* TODO: update with current semester and application link */}
-            Applications for Fall 2025 open in the first week of classes. Here&apos;s
+            Applications for Fall 2026 open in the first week of classes. Here&apos;s
             everything you need to know.
           </p>
           <div className="mt-10">
@@ -79,7 +79,7 @@ export default async function JoinPage() {
           index={1}
           eyebrow="Recruitment"
           heading="Recruitment timeline"
-          subtext="Every event in our recruitment cycle, start to finish. Come to as many as you can — most are open to everyone, no application needed."
+          subtext="Here are all of our Fall 2026 events that we will be hosting or sharing at. Come to as many as you can to learn about the club and network with our members!"
           firstOnPage
           centered
         >

@@ -45,6 +45,7 @@ public/                 images, logos, favicon
 6. **Placeholder content** is expected — mark it `TODO`. Use realistic but clearly fake copy and images.
 7. **Footer must include** the Berkeley independent-org disclaimer (see PLAN §8). Don't remove it.
 8. Keep components small, named clearly, readable by a beginner. Prefer duplication over a confusing abstraction.
+9. **Never kill the dev server.** If `npm run dev` is already running, leave it running — it is the user's live localhost preview, and stopping it blanks the browser tab they are watching. Do not run `kill`, `pkill -f next`, `lsof -ti:3000 | xargs kill`, `Ctrl-C`, or anything else that stops it, and do not stop-and-restart it to "pick up" a change: Next.js hot-reloads edits on its own. Only stop it when the user explicitly asks you to. If a change genuinely needs a restart (editing `next.config`, `.env.local`, or installing a package), say so and let the user do it. If port 3000 is occupied, assume that is their preview and use another port rather than freeing 3000.
 
 ## Brand (sampled from the logo)
 Teal → sage-green gradient. Tokens:

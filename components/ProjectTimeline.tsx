@@ -12,48 +12,54 @@ import { useState } from "react";
  * progress. Implying partial completion here would be fabricating status.
  * Clicking a node is what does the work the reference's colour-fill did:
  * it swaps the panel below to that stage's longer description.
+ *
+ * There is deliberately no Fall/Spring toggle. The two semesters run identical
+ * stages with identical copy — the toggle only ever swapped the month labels,
+ * so it was a control that hid information behind a click without adding any.
+ * Each stage now prints both months as "Aug / Jan" (fall first), with a legend
+ * above the rail saying so.
  */
 // TODO: confirm milestone timing and detail copy with DSS leadership.
 const MILESTONES = [
   {
     title: "Contracts & Scoping",
-    spring: "Jan",
     fall: "Aug",
+    spring: "Jan",
     icon: "scope",
     detail:
-      "We finalize the engagement contract and lock the project scope together — the problem statement, success criteria, and any data or access we'll need from you before work begins.",
+      "	We finalize the SOW + additional documents and lock the project scope together. Everything regarding projects, from legal forms to the problem statement are defined here before project work starts.",
   },
   {
     title: "Work Begins",
-    spring: "Feb",
     fall: "Sep",
+    spring: "Feb",
     icon: "start",
     detail:
-      "Your team kicks off with an onboarding call, gets access to the resources you've shared, and starts on the first milestone. You'll meet your student lead and advisor here.",
+      "We start off with an onboarding call between the client’s POCs and our full DSS team to align on project deliverables/goals. Project work begins starting from here.",
   },
   {
     title: "Midpoint Deliverables",
-    spring: "Mar",
     fall: "Oct",
+    spring: "Mar",
     icon: "flag",
     detail:
-      "Around the halfway mark, the team shares progress and a first cut of the deliverable — a chance to redirect scope before the semester's remaining weeks are spent.",
+      "Around the halfway mark, the team shares project progress up to this point and a first preview of the deliverable. This is the point for the client to also reset expectations or change certain project aspects before the final deliverable.",
   },
   {
     title: "Final Deliverables",
-    spring: "May",
     fall: "Dec",
+    spring: "May",
     icon: "check",
     detail:
-      "The team presents finished work — code, models, or a dashboard — along with documentation, so it stays usable by your team well after the semester ends.",
+      "The team presents the final work and product through a live demo and slideshow presentation. All materials will be packaged to be used by the client.",
   },
   {
     title: "Materials Transfer",
-    spring: "Jun",
     fall: "Jan",
+    spring: "Jun",
     icon: "handoff",
     detail:
-      "We hand off all code, data, and documentation, and close out access to any shared resources. A short retro call wraps up the engagement.",
+      "We hand off all code, data, and documentation, and close out access to any shared resources. We also do a final wrap-up call to make sure everything was received.",
   },
 ] as const;
 
@@ -101,35 +107,39 @@ const ICONS: Record<(typeof MILESTONES)[number]["icon"], React.ReactNode> = {
   ),
 };
 
+/**
+ * "Aug / Jan" — fall month first, then spring. Returns a fragment so each
+ * layout keeps its own wrapper (a <p> on desktop, a <span> on mobile).
+ *
+ * The sr-only words are load-bearing: "Aug / Jan" read aloud on its own is
+ * meaningless, and the visible legend sits too far from these labels in the
+ * accessibility tree to supply the missing context.
+ */
+function Months({ fall, spring }: { fall: string; spring: string }) {
+  return (
+    <>
+      <span className="sr-only">Fall </span>
+      {fall}
+      <span aria-hidden="true" className="mx-1 opacity-40">/</span>
+      <span className="sr-only">, Spring </span>
+      {spring}
+    </>
+  );
+}
+
 export default function ProjectTimeline() {
   const [selected, setSelected] = useState(0);
-  const [term, setTerm] = useState<"spring" | "fall">("spring");
   const active = MILESTONES[selected];
-
-  // Shared by both layouts below — a plain button pair rather than the site's
-  // pill-shaped Button/EditorialButton, so it reads as a data control (like the
-  // stage buttons beside it) rather than a call to action.
-  const termToggle = (
-    <div role="group" aria-label="Term" className="inline-flex border border-border">
-      {(["spring", "fall"] as const).map((t) => (
-        <button
-          key={t}
-          type="button"
-          onClick={() => setTerm(t)}
-          aria-pressed={term === t}
-          className={`px-4 py-1.5 text-sm font-medium capitalize transition-colors duration-150 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-1 focus-visible:outline-primary ${
-            term === t ? "bg-primary text-white" : "text-muted hover:text-primary"
-          }`}
-        >
-          {t}
-        </button>
-      ))}
-    </div>
-  );
 
   return (
     <div>
-      <div className="mb-10 flex justify-center">{termToggle}</div>
+      {/* Legend, standing in for the toggle this replaces. It mirrors the
+          "Fall / Spring" order the month pairs use, so the format explains
+          itself rather than needing to be decoded. */}
+      <p className="mb-10 text-center text-sm leading-relaxed text-muted">
+        <span className="font-medium text-ink">Fall / Spring</span> — both semesters
+        follow the same five stages.
+      </p>
 
       {/* ── md+ : horizontal rail ───────────────────────────────────────── */}
       <ol className="hidden md:grid md:grid-cols-5">
@@ -142,7 +152,7 @@ export default function ProjectTimeline() {
                   isActive ? "text-primary" : "text-muted"
                 }`}
               >
-                {term === "spring" ? m.spring : m.fall}
+                <Months fall={m.fall} spring={m.spring} />
               </p>
 
               <div className="relative mt-3 flex w-full items-center">
@@ -228,7 +238,7 @@ export default function ProjectTimeline() {
                     {m.title}
                   </span>
                   <span className="flex-none text-[11px] uppercase tracking-[0.18em] text-muted">
-                    {term === "spring" ? m.spring : m.fall}
+                    <Months fall={m.fall} spring={m.spring} />
                   </span>
                 </button>
 
