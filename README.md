@@ -86,6 +86,7 @@ The main landing page. Sections in order:
 | Committee preview (4 cards) | `CommitteeCard` | `content/committees.json` (featured only) |
 | Projects carousel (all projects) | `ProjectCarousel` | Airtable (Consulting + Social Good tables) → `content/projects.json` fallback |
 | Dual CTA (join + partner) | `DualCTA` | hardcoded in `DualCTA.tsx` |
+| "Two ways to get started" panels | `HomePaths` | hardcoded in `HomePaths.tsx` (`PATHS`) — photos are `/committee-group.jpg` and `/decal-class.jpg`, both pre-cropped to the frame's 4:3 at 1600x1200 |
 
 ### About — `app/about/page.tsx`
 
@@ -112,6 +113,7 @@ One page per committee (e.g. `/committees/consulting`, `/committees/social-good`
 
 - Page header (icon, name, blurb) from `content/committees.json` — if the committee's `heroImage` is set, the header becomes a full-bleed photo background (dark overlay, white text, Hero-like) instead of the plain surface header. All three committees have one, under `public/committees/<id>-hero.jpg`.
   - **`heroImage` feeds two places, not one.** Besides this header it is also the art band of that committee's `CommitteeCard` on the About page, so swapping the file changes both at once — there is no separate card image. (`public/committees/*-card.png` are leftovers from an earlier design and are no longer referenced anywhere.)
+  - The homepage "Find your committee" panel in `HomePaths.tsx` used to hardcode `/committees/social-good-hero.jpg` as a third consumer, so it silently changed whenever that hero was swapped. It now has its own `/committee-group.jpg` — **grep for the literal path, not just `heroImage`, before replacing any photo under `public/committees/`.**
   - **Adding/replacing a hero photo:** derive the original to `public/committees/<id>-hero.jpg` at **2560x1706 (3:2)** — `sharp(src).rotate().resize({ width: 2560, height: 1706, fit: "cover" }).jpeg({ quality: 82, mozjpeg: true })`, which lands around 500-950 KB. 3:2 is the widest source aspect that still survives both consumers: the header crops it to roughly 2:1 on a desktop viewport and the card crops it to 16/10, both from the centre. So **compose for the centre and leave headroom** — anything near the top or bottom edge (heads, hands, feet) is what those two crops eat first. Check a group photo at both aspects before committing it.
 - **What we do** — a two-column spread: the committee's `description` on the left (blank lines in the JSON split it into paragraphs; the first is set larger and darker as a lead), and a vertical committee photo (`CommitteePhoto`) on the right. Committees with no `description` show their focus-area chips in the left column instead.
   - Columns are proportional (`1.4fr / 1fr`), so the pair always fills the container — fixed widths left dead space to the right of the photo.
@@ -138,7 +140,7 @@ Industry partnership pitch page. Sections:
 - Logo carousel (same component as Home)
 - **Ways to partner** `(01)` — the full menu of partnership types from `content/offerings.json` via `getOfferings()`. The `featured` offering (consulting) renders as a filled-teal flagship card; the other four sit in a 2-col grid in the same card language as How-it-works. Icons come from `components/OfferingIcon.tsx`, keyed by each offering's `icon`. This is the same list that fills the inquiry form's dropdown, so the page and form can't drift apart
 - How-it-works section `(02)` (3 cards) — the deep-dive on the consulting flagship
-- Project timeline (`ProjectTimeline`)
+- Project timeline (`ProjectTimeline`) — five engagement stages on a clickable rail (horizontal from `md`, a vertical accordion below it); clicking a stage swaps the detail panel. Stages are hardcoded in `MILESTONES` at the top of the file and still carry a `TODO` to confirm timing with leadership. Each stage shows **both** semesters' months as `Aug / Jan` (fall first, spring second), explained by the legend above the rail — there is no Fall/Spring toggle, since both terms run identical stages and identical copy, so the toggle only ever swapped the labels. If the two semesters ever diverge, that's the point to bring a toggle back.
 - Closing panel repeating the inquiry form card
 
 **Inquiry form.** `PartnerInquiryCard` is the shared "Get in touch" panel, rendered twice (hero and closing panel) so the two can't drift apart; pass `headingLevel="h3"` for the second one to keep heading order nested. It reads `getOfferings()` and passes the offering titles to `PartnerInquiryForm` as the "I'm interested in" options, plus the contact address as `contactEmail`.
@@ -190,7 +192,7 @@ All components live in `components/`. Server Components by default; only interac
 | `EditorialButton.tsx` | — | Square-corner button for the editorial pages: 11px uppercase `tracking-[0.18em]` label, always renders a trailing `→`. Props: `variant` (solid/outline/**inverse** — inverse is white-on-green, for CTAs sitting on a gradient band, i.e. hero CTAs), `external` (plain `<a target="_blank">`, also the right choice for `mailto:`), `href`, `className` |
 | `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
 | `LogoCarousel.tsx` | — | Auto-scrolling CSS-keyframe marquee of partner logos. Purely decorative — no links, no hover effects; respects `prefers-reduced-motion`. Handles any partner count/logo shape from Airtable (fixed logo slots, list repeated to cover wide viewports) |
-| `CommitteeCard.tsx` | — | Committee card linking to `/committees/[id]`: `kicker` category, name (plus `fullName` when set), custom line-art glyph, blurb, and focus area tags. Per-committee accent colors are a presentation-only map in the file, all referencing existing tokens — Social Good uses `--color-accent-ink` because sage isn't AA-legible at small sizes |
+| `CommitteeCard.tsx` | — | Committee card linking to `/committees/[id]`: `kicker` category, title (`fullName` when set, otherwise `name`), custom line-art glyph, blurb, and focus area tags. The title shows one name only — the short name used to trail it as a small grey suffix ("Academic Development Acadev") and was dropped; the abbreviation still appears in the card's "View {name}" link. Per-committee accent colors are a presentation-only map in the file, all referencing existing tokens — Social Good uses `--color-accent-ink` because sage isn't AA-legible at small sizes |
 | `ProjectCard.tsx` | ✓ | Rounded, centered card: logo, bold partner name, semester, and a one-sentence hook (`firstSentence` in `lib/content.ts`), clamped to 2 lines. Background is a radial gradient tinted with `getProjectAccentColor()` — the partner's own brand color when known, else the site's teal. The whole card is a button that opens `ProjectModal` with the full project |
 | `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |
 | `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on the homepage and committee detail pages |
@@ -222,7 +224,7 @@ Four committees. Fields:
 {
   "id": "consulting",          // slug — keep stable
   "name": "Data Consulting",
-  "fullName": null,           // spelled-out name shown next to the abbreviation on CommitteeCard (e.g. "Academic Development" for "Acadev"); null when name is already full
+  "fullName": null,           // spelled-out name, used as the CommitteeCard title instead of the abbreviation (e.g. "Academic Development" rather than "Acadev"); null when name is already full
   "kicker": "Build",          // one-word category above the name on CommitteeCard (Learn / Build / Serve)
   "icon": "📊",               // emoji shown on the card
   "blurb": "...",             // short blurb shown in the page header
@@ -235,7 +237,7 @@ Four committees. Fields:
                               // A leading "TODO: ..." sentence marks draft copy and is stripped before rendering, so it never reaches a visitor.
   "workImage": null,           // path under /public — the vertical 2:3 photo beside the "What we do" copy. null renders the "Photo to come" placeholder frame
   "workImageAlt": null,        // alt text — required whenever workImage is set
-  "workCaption": null,         // caption under the frame, e.g. "The Social Good committee" (renders as "Fig. 01 — …"). Keep null while the photo is a placeholder
+  "workCaption": null,         // caption under the frame, e.g. "Spring 2026 Social Good Committee Members" (renders as "Fig. 01 — …", uppercased by CommitteePhoto). Convention is "<Semester> <Committee> Committee Members" — update it when the photo is reshot. Keep null while the photo is a placeholder
   "activities": [              // the "How we spend our time" tiles, or null. null/empty → that whole section doesn't render
     {
       "id": "skill-workshops", // slug — keep stable
@@ -412,7 +414,7 @@ If any of a function's required env vars are missing, it silently falls back to 
 | `One-liner` | AI field or text | `oneLiner` — the short hook shown on the Social Good card face. Leave blank and the card falls back to `description` |
 | `Logo` | attachment | `logo` (first attachment's URL) |
 | `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
-| `Additional Images/GIFS` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup) |
+| `Additional Images/GIFS` *or* `Additional Files` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup). Second column-name disagreement, same as the title above: Consulting calls it `Additional Files`, Social Good and Acadev `Additional Images/GIFS`. `fetchProjectTable()` reads **both** and concatenates, and `scripts/mirror-airtable.mjs` mirrors both. Consulting attachments were silently dropped until this was found — if a new project table appears, check its attachment column name before trusting the popup |
 | `Brand Color` | text (hex, e.g. `#FF3621`) | `brandColor` — optional; tints the `ProjectCard` background. Leave blank to use the built-in lookup by partner name (`getProjectAccentColor` in `lib/content.ts`), which falls back to the site's teal for unlisted partners |
 <<<<<<< Updated upstream
 | `Logo color palette` | AI field, text, or multi-select — hexes in any format | `logoPalette` — optional; the colors the logo is drawn in. Drives the Social Good project card's background (see **Logo-derived card tints** below). Leave blank and the card uses the site's own token palette |

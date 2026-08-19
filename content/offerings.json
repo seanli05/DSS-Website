@@ -3,11 +3,11 @@
     "id": "consulting",
     "icon": "consulting",
     "title": "Consulting projects",
-    "summary": "Bring us a real data problem and we build a dedicated student team to solve it — shipping production-quality models, pipelines, and dashboards within a single semester.",
+    "summary": "Bring us any data problem, model idea, or research question, and we'll match it with a dedicated student team. Within one semester, we take it from idea to a shipped solution.",
     "bullets": [
-      "Hand-picked team of 4–6 experienced members plus a senior advisor",
-      "A scoped, semester-long deliverable with weekly check-ins",
-      "You keep the code, models, and findings"
+      "Hand-picked team of 2 PMs, 3-4 consultants, and a senior advisor",
+      "Semester-long engagement with weekly/biweekly check-ins",
+      "All materials produced throughout the process belong to the client's IP"
     ],
     "featured": true
   },

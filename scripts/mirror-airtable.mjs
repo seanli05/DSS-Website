@@ -47,10 +47,17 @@ function loadLocalEnv() {
 /** Every table/field pair that holds an attachment the site renders. Keep in
  *  sync with the `attachmentUrls(...)` calls in lib/content.ts — a field missing
  *  here still renders, but via an expiring URL. */
+// The three project tables disagree on what the attachment column is called —
+// Consulting uses "Additional Files", the other two "Additional Images/GIFS" —
+// so every project table lists both. A field a table doesn't have is skipped
+// harmlessly (the cell reads back undefined), and listing both here means an
+// officer renaming one column can't quietly un-mirror it.
+const PROJECT_ATTACHMENTS = ["Logo", "Additional Images/GIFS", "Additional Files"];
+
 const SOURCES = [
-  { env: "CONSULTING_PROJECTS_TABLE", fields: ["Logo", "Additional Images/GIFS"] },
-  { env: "SOCIAL_GOOD_PROJECTS_TABLE", fields: ["Logo", "Additional Images/GIFS"] },
-  { env: "ACADEV_PROJECTS_TABLE", fields: ["Logo", "Additional Images/GIFS"] },
+  { env: "CONSULTING_PROJECTS_TABLE", fields: PROJECT_ATTACHMENTS },
+  { env: "SOCIAL_GOOD_PROJECTS_TABLE", fields: PROJECT_ATTACHMENTS },
+  { env: "ACADEV_PROJECTS_TABLE", fields: PROJECT_ATTACHMENTS },
   { env: "EXTERNAL_EVENTS_TABLE", fields: ["Image"] },
   { env: "LOGOWALL_TABLE", fields: ["Logo"] },
   { env: "EXEC_PROFILES_TABLE", fields: ["Headshot"] },

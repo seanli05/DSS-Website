@@ -115,11 +115,11 @@ export default function CommitteeCard({ committee }: CommitteeCardProps) {
         <p className={`mb-2 font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] ${accent.text}`}>
           {committee.kicker}
         </p>
+        {/* Title only — the short name used to trail this as a small grey suffix
+            ("Academic Development Acadev"), which read as a stray word rather than
+            a gloss. The abbreviation still appears in the "View {name}" link below. */}
         <p className="mb-2 text-xl font-bold tracking-tight text-ink">
           {committee.fullName ?? committee.name}
-          {committee.fullName && (
-            <span className="ml-1.5 text-sm font-medium text-muted">{committee.name}</span>
-          )}
         </p>
         <p className="text-sm leading-relaxed text-muted">{committee.blurb}</p>
 

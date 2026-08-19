@@ -17,7 +17,14 @@ const nextConfig: NextConfig = {
     return [
       // ── Committee pages moved to the site root: /committees/acadev → /acadev.
       // Keeps any existing link, bookmark, or search result working.
-      { source: "/committees/:id", destination: "/:id", permanent: true },
+      //
+      // `[^.]+` excludes anything containing a dot, which matters more than it
+      // looks: public/committees/ holds 14 image files (hero shots, cards,
+      // activity photos) whose URLs also start with /committees/. A bare `:id`
+      // matches those too and 308s them to a path that doesn't exist, silently
+      // breaking every committee image on the site. Nested assets like
+      // /committees/acadev/photo.jpg are already safe — `:id` spans one segment.
+      { source: "/committees/:id([^.]+)", destination: "/:id", permanent: true },
       // The old committees index has no equivalent; the home page is where the
       // committees are introduced.
       { source: "/committees", destination: "/#committees", permanent: true },

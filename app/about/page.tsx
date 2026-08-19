@@ -206,7 +206,7 @@ export default async function AboutPage() {
               <p className={EYEBROW}>(02) — Get involved</p>
               <h2 className={HEADING}>Find your committee</h2>
               <p className={SUBTEXT}>
-                We offer three different ways to get involved with data science and machine learning within our organization.
+                We offer three different ways for people of all backgrounds and interests to get involved with data science and machine learning within our organization.
               </p>
             </RevealOnScroll>
 
@@ -235,7 +235,7 @@ export default async function AboutPage() {
           <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 md:pt-20 lg:px-12 min-[1810px]:w-[63.75%] min-[1810px]:max-w-none min-[1810px]:px-0!">
             <RevealOnScroll delayMs={0}>
               <p className={EYEBROW}>(03) — Life at DSS</p>
-              <h2 className={HEADING}>More than a club</h2>
+              <h2 className={HEADING}>Our Community</h2>
               <p className={SUBTEXT}>
                 DSS has many traditions that help you feel included in a close and friendly community at Berkeley.
               </p>
