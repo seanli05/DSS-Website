@@ -64,7 +64,7 @@ data/                      Stats and partner fallback (lower-churn data)
   stats.json               Four headline numbers shown in the stats strip
   partners.json            Airtable fallback — shown when env vars are missing
 
-public/                    Static assets (images, logos, favicon)
+public/                    Static assets (images, logos)
 .env.example               Committed template listing required env var names
 .env.local                 Real secrets — gitignored, never commit this file
 .nvmrc                     Pinned Node version
@@ -365,6 +365,12 @@ All colors are CSS variables defined in `app/globals.css` inside `@theme {}`. Ta
 The brand gradient (`--gradient-brand`) runs teal → bright teal → sage. Applied via `.brand-gradient` (backgrounds) and `.brand-gradient-text` (gradient text). Used on Hero, About header, and the Join apply CTA.
 
 **Never hardcode hex values in components** — always use Tailwind classes that reference these tokens.
+
+### Browser tab icon
+
+`app/icon.png` (512), `app/apple-icon.png` (180), and `app/favicon.ico` (16/32/48 in one file) are Next's file conventions — drop them in `app/` and it emits the `<link rel="icon">` tags itself; there is nothing to wire up in `layout.tsx`. All three are derived from `public/dss-logo-gradient.png` on a transparent ground, except the Apple one, which sits on white because older iOS composites transparent touch icons onto black.
+
+**Every frame of the `.ico` must be RGBA.** Turbopack's image decoder rejects RGB frames outright — `Processing image failed … Format error decoding Ico: The PNG is not in RGBA format!` — and the page then fails to compile, so it's a build break rather than a cosmetic one. To regenerate, resize the logo into a square canvas per size and save all three sizes into one file, keeping the mode as RGBA throughout. The 16px frame is inevitably soft: the mark is two thin concentric rings, and at that size they're under a pixel wide. Retina tab bars use the 32px frame, which holds up.
 
 ### Typography
 

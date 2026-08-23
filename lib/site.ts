@@ -35,4 +35,4 @@ export const APPLICATION_URL =
  * `next.config.ts` both read it, so the flyer link and the site button can't
  * drift apart. Also changes every recruitment cycle.
  */
-export const COFFEE_CHAT_URL = "https://dssatberkeley.notion.site/dss-fall26-cc";
+export const COFFEE_CHAT_URL = "https://ripple-increase-bbd.notion.site/dss-fall26-cc";

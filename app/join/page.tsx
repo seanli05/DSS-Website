@@ -34,8 +34,17 @@ export default async function JoinPage() {
           {/* Two CTAs: the application itself, and the coffee chats that run
               alongside it. flex-wrap rather than a stack breakpoint — the pair
               sits on one line wherever it fits and drops the second button to
-              its own line where it doesn't, with no width to guess at. */}
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+              its own line where it doesn't, with no width to guess at.
+
+              items-stretch is what matches the two heights: the coffee chat
+              button keeps its smaller `default` type and padding (it stays the
+              secondary of the pair) but its box grows to Apply now's height.
+              Doing it here rather than by padding on the button avoids fighting
+              EditorialButton's own size classes, which share one class string
+              with anything the caller passes. Because stretch applies per flex
+              line, the button drops back to its natural height on phones, where
+              it wraps onto a line of its own. */}
+          <div className="mt-10 flex flex-wrap items-stretch gap-4">
             {/* The form URL lives in lib/site.ts, shared with the `/apply`
                 redirect in next.config.ts — update it there once per cycle.
                 rounded-full is a scoped exception here, matching the homepage's
