@@ -7,12 +7,13 @@ interface RecruitmentTimelineProps {
   events: RecruitmentEvent[];
 }
 
-// Column and card widths, the slot height, and the track's edge padding all live
-// together on `.timeline-track` in globals.css (as --tl-col / --tl-card /
-// --tl-slot) so they can shrink together on narrow screens. Nothing here hard-
-// codes them: the scroll-by amount is measured off a real column instead, which
-// keeps the arrows honest at every breakpoint.
-const FALLBACK_COL_WIDTH = 400;
+// Column and card widths and the track's edge padding all live together on
+// `.timeline-track` in globals.css (as --tl-col / --tl-card) so they can shrink
+// together on narrow screens. Card heights aren't set at all — the two card rows
+// of .timeline-grid size themselves to their tallest card. Nothing here hard-
+// codes any of it: the scroll-by amount is measured off a real column instead,
+// which keeps the arrows honest at every breakpoint.
+const FALLBACK_COL_WIDTH = 290;
 
 // Number of steps in the color ramp — must match the .tl-item[data-step="0".."4"]
 // rules in globals.css, which map each step onto a pair of --tl-ramp-* stops.
@@ -44,7 +45,7 @@ function parseDate(raw: string) {
 
 function ClockIcon() {
   return (
-    <svg viewBox="0 0 16 16" fill="none" className="h-[18px] w-[18px]" aria-hidden="true">
+    <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4" aria-hidden="true">
       <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.7" />
       <path d="M8 4.8V8l2.2 1.6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
@@ -53,7 +54,7 @@ function ClockIcon() {
 
 function PinIcon() {
   return (
-    <svg viewBox="0 0 16 16" fill="none" className="h-[18px] w-[18px]" aria-hidden="true">
+    <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4" aria-hidden="true">
       <path
         d="M8 14s4.5-4.2 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 9.8 8 14 8 14Z"
         stroke="currentColor"
@@ -71,7 +72,7 @@ function PinIcon() {
 // value in its own casing. The icon takes the column's ramp colour (.tl-meta-icon).
 function CardMeta({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <p className="flex items-center gap-2.5 text-[14px] font-medium leading-snug text-ink/75 sm:text-[15px]">
+    <p className="flex items-center gap-2 text-[13px] font-medium leading-snug text-ink/75 sm:text-[14px]">
       <span className="tl-meta-icon flex-none">{icon}</span>
       {children}
     </p>
@@ -86,22 +87,22 @@ function DateRail({ date }: { date: string }) {
   const parsed = parseDate(date);
 
   return (
-    <div className="tl-ramp flex w-[var(--tl-rail)] flex-none flex-col items-center justify-center px-2 py-5 text-white">
+    <div className="tl-ramp flex w-[var(--tl-rail)] flex-none flex-col items-center justify-center px-2 py-4 text-white">
       {parsed ? (
         <>
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/75">
+          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/75">
             {parsed.weekday}
           </span>
-          <span className="mt-1.5 text-[34px] font-bold leading-none tracking-tight sm:text-[38px]">
+          <span className="mt-1 text-[29px] font-bold leading-none tracking-tight sm:text-[32px]">
             {parsed.day}
           </span>
-          <span className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-white/75">
+          <span className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-white/75">
             {parsed.month}
           </span>
         </>
       ) : (
         // Free-text labels like "Week 1" — print them as-is, centered.
-        <span className="text-center font-mono text-[12px] uppercase leading-snug tracking-[0.14em]">
+        <span className="text-center font-mono text-[11px] uppercase leading-snug tracking-[0.14em]">
           {date}
         </span>
       )}
@@ -117,22 +118,23 @@ function TimelineCard({ event, above }: { event: RecruitmentEvent; above: boolea
   return (
     <div className="flex w-full flex-col items-center">
       {/* When the card is below the spine, the connector renders first (on top). */}
-      {!above && <div className="tl-connector tl-connector-bottom h-9 w-[3px] rounded-full" />}
+      {!above && <div className="tl-connector tl-connector-bottom h-8 w-[3px] rounded-full" />}
       {/* text-left is explicit: the Join page's Section is `centered`, which puts
-          text-center on the container this inherits from. The max-height is a
-          backstop, not the usual case: line-clamp already keeps cards well under
-          it, but Airtable copy is officer-edited, and a card taller than its slot
-          would push the spine off-centre for the whole timeline. 2rem is the
-          connector stub the card shares the slot with. */}
-      <article className="tl-card flex max-h-[calc(var(--tl-slot)-2.25rem)] w-[var(--tl-card)] overflow-hidden rounded-2xl border border-cream-border bg-cream text-left shadow-card">
+          text-center on the container this inherits from. No height cap and no
+          line-clamp: descriptions are officer-edited in Airtable and print in
+          full, however long. The card's row grows to fit the longest one, and
+          its twin row grows with it (see .timeline-grid in globals.css), so the
+          spine stays centred. overflow-hidden is only there to clip the date
+          rail's gradient to the rounded corners. */}
+      <article className="tl-card flex w-[var(--tl-card)] overflow-hidden rounded-2xl border border-cream-border bg-cream text-left shadow-card">
         <DateRail date={event.date} />
 
-        <div className="flex min-w-0 flex-1 flex-col px-5 pt-5 pb-6 sm:px-7 sm:pt-6 sm:pb-7">
-          <h3 className="text-[19px] font-semibold leading-snug text-ink sm:text-[21px]">
+        <div className="flex min-w-0 flex-1 flex-col px-4 pt-4 pb-5 sm:px-5 sm:pt-5 sm:pb-6">
+          <h3 className="text-[17px] font-semibold leading-snug text-ink sm:text-[18px]">
             {event.event}
           </h3>
           {event.description && (
-            <p className="mt-3 line-clamp-5 text-[14px] leading-[1.65] text-muted sm:line-clamp-4 sm:text-[15px]">
+            <p className="mt-2 text-[13px] leading-[1.6] text-muted sm:text-[14px]">
               {event.description}
             </p>
           )}
@@ -140,7 +142,7 @@ function TimelineCard({ event, above }: { event: RecruitmentEvent; above: boolea
             /* Tinted footer, bled to the card's edges — separates the "when and
                where" facts from the pitch above them. mt-auto pins it to the
                bottom so short and tall cards both close on the same block. */
-            <div className="-mx-5 -mb-6 mt-7 flex flex-col gap-2.5 border-t border-cream-border bg-cream-deep px-5 pt-4 pb-4.5 sm:-mx-7 sm:-mb-7 sm:px-7 sm:pt-5 sm:pb-5">
+            <div className="-mx-4 -mb-5 mt-5 flex flex-col gap-2 border-t border-cream-border bg-cream-deep px-4 pt-3.5 pb-3.5 sm:-mx-5 sm:-mb-6 sm:px-5 sm:pt-4 sm:pb-4">
               {event.time && <CardMeta icon={<ClockIcon />}>{event.time}</CardMeta>}
               {event.room && <CardMeta icon={<PinIcon />}>{event.room}</CardMeta>}
             </div>
@@ -148,7 +150,7 @@ function TimelineCard({ event, above }: { event: RecruitmentEvent; above: boolea
         </div>
       </article>
       {/* When the card is above the spine, the connector renders last (below it). */}
-      {above && <div className="tl-connector tl-connector-top h-9 w-[3px] rounded-full" />}
+      {above && <div className="tl-connector tl-connector-top h-8 w-[3px] rounded-full" />}
     </div>
   );
 }
@@ -218,9 +220,11 @@ export default function RecruitmentTimeline({ events }: RecruitmentTimelineProps
         className="timeline-track scrollbar-none overflow-x-auto"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        {/* w-max so the row is as wide as its columns — the spine below stretches
-            across all of them, not just the visible window. */}
-        <div className="relative flex w-max">
+        {/* w-max so the grid is as wide as its columns — the spine below stretches
+            across all of them, not just the visible window. .timeline-grid puts
+            every column's card slots on two shared `1fr` rows, so all cards on a
+            side share one height and neither side needs a fixed slot. */}
+        <div className="timeline-grid relative w-max">
           {/* Continuous spine, centered vertically between the two card slots */}
           <div className="timeline-spine pointer-events-none absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full" />
 
@@ -229,16 +233,14 @@ export default function RecruitmentTimeline({ events }: RecruitmentTimelineProps
             return (
               <div
                 key={event.id}
-                ref={(el) => { itemRefs.current[i] = el; }}
-                data-tl-item
-                data-index={i}
                 data-step={rampStep(i, events.length)}
                 data-revealed={revealed.has(i)}
-                className="tl-item relative flex w-[var(--tl-col)] flex-none flex-col items-center"
+                className="tl-item"
               >
                 {/* Card slot above the spine — empty on odd columns, which is what
-                    gives the timeline its alternating rhythm. */}
-                <div className="flex h-[var(--tl-slot)] w-full items-end justify-center">
+                    gives the timeline its alternating rhythm. Each slot is a grid
+                    item in its column, so its height comes from the shared row. */}
+                <div className="flex items-end justify-center">
                   {above && <TimelineCard event={event} above />}
                 </div>
 
@@ -246,14 +248,23 @@ export default function RecruitmentTimeline({ events }: RecruitmentTimelineProps
                     position on the line, and the card beside it carries the
                     content. An icon here would have to mean something — the
                     event data has no type to encode, so one would be either
-                    identical on every node or arbitrary. The container stays
-                    h-12 so the slot math above and below is unaffected. */}
-                <div className="relative z-10 flex h-12 items-center justify-center">
+                    identical on every node or arbitrary. The row it sits in is
+                    --tl-node-row tall, set in globals.css. */}
+                {/* Also the scroll-reveal observer's target and the width the
+                    arrows measure their step from: .tl-item is display:contents
+                    and has no box of its own, and this one is always rendered,
+                    always full column width, and centred in the column. */}
+                <div
+                  ref={(el) => { itemRefs.current[i] = el; }}
+                  data-tl-item
+                  data-index={i}
+                  className="relative z-10 flex items-center justify-center"
+                >
                   <div className="tl-node tl-ramp timeline-node h-10 w-10 rounded-full" />
                 </div>
 
                 {/* Card slot below the spine — mirror of the one above. */}
-                <div className="flex h-[var(--tl-slot)] w-full items-start justify-center">
+                <div className="flex items-start justify-center">
                   {!above && <TimelineCard event={event} above={false} />}
                 </div>
               </div>

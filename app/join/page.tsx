@@ -4,7 +4,8 @@ import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import RecruitmentTimeline from "@/components/RecruitmentTimeline";
 import NewbieExperience from "@/components/NewbieExperience";
-import { getNewbieExperience, getRecruitmentTimeline } from "@/lib/content";
+import { getFaq, getNewbieExperience, getRecruitmentTimeline } from "@/lib/content";
+import { APPLICATION_URL, COFFEE_CHAT_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Join",
@@ -12,32 +13,10 @@ export const metadata: Metadata = {
     "Join Data Science Society at UC Berkeley — apply now and become part of our community.",
 };
 
-const FAQ = [
-  {
-    q: "Do I need prior data science experience?",
-    a: "Not necessarily. We look for curiosity, drive, and a baseline technical foundation (e.g., some Python or statistics). Our Education committee is a great fit for students still building those skills.",
-  },
-  {
-    q: "How much time does it take each week?",
-    a: "Expect 5–8 hours per week — project meetings, weekly committee meetings, and independent work. It's a meaningful commitment, but most members say it's the most valuable thing they do at Berkeley.",
-  },
-  {
-    q: "Can I join multiple committees?",
-    a: "We ask that first-semester members focus on one committee. After that, cross-committee involvement is common and encouraged.",
-  },
-  {
-    q: "When is recruitment?",
-    a: "We recruit in the first two weeks of Fall and Spring semester. Follow us on Instagram and subscribe to our mailing list so you don't miss the announcement.", // TODO: add actual social links
-  },
-  {
-    q: "What if I'm rejected?",
-    a: "Re-applications are welcome and common. We also encourage you to attend our public workshops in the meantime — many members joined DSS after attending events first.",
-  },
-];
-
 export default async function JoinPage() {
   const timeline = await getRecruitmentTimeline();
   const newbieExperience = getNewbieExperience();
+  const faq = getFaq();
 
   return (
     <>
@@ -52,17 +31,35 @@ export default async function JoinPage() {
             Applications for Fall 2026 open in the first week of classes. Here&apos;s
             everything you need to know.
           </p>
-          <div className="mt-10">
-            {/* TODO: replace with the actual application link when it opens */}
-            {/* rounded-full is a scoped exception here, matching the homepage's
+          {/* Two CTAs: the application itself, and the coffee chats that run
+              alongside it. flex-wrap rather than a stack breakpoint — the pair
+              sits on one line wherever it fits and drops the second button to
+              its own line where it doesn't, with no width to guess at. */}
+          <div className="mt-10 flex flex-wrap items-center gap-4">
+            {/* The form URL lives in lib/site.ts, shared with the `/apply`
+                redirect in next.config.ts — update it there once per cycle.
+                rounded-full is a scoped exception here, matching the homepage's
                 pill CTAs — not a change to EditorialButton's square default. */}
             <EditorialButton
-              href="#"
+              href={APPLICATION_URL}
+              external
               variant="inverse"
               size="large"
               className="rounded-full"
             >
               Apply now
+            </EditorialButton>
+            {/* Also from lib/site.ts, shared with the `/coffeechat` redirect.
+                `default` size and the outline variant keep this clearly
+                secondary to Apply now. */}
+            <EditorialButton
+              href={COFFEE_CHAT_URL}
+              external
+              variant="inverse-outline"
+              size="default"
+              className="rounded-full"
+            >
+              Sign up for coffee chats
             </EditorialButton>
           </div>
         </div>
@@ -100,14 +97,20 @@ export default async function JoinPage() {
         {/* FAQ */}
         <Section index={3} eyebrow="FAQ" heading="Common questions">
           <dl className="flex max-w-2xl flex-col gap-8">
-            {FAQ.map((item, i) => (
+            {faq.map((item, i) => (
               <RevealOnScroll
-                key={item.q}
+                key={item.id}
                 delayMs={100 + i * 75}
                 className="flex flex-col gap-2"
               >
-                <dt className="font-semibold text-ink">{item.q}</dt>
-                <dd className="text-sm leading-relaxed text-muted">{item.a}</dd>
+                <dt className="font-semibold text-ink">{item.question}</dt>
+                {/* One <dd> per paragraph — a <dl> allows several per <dt>, so
+                    multi-paragraph answers need no wrapper element. */}
+                {item.answer.map((paragraph) => (
+                  <dd key={paragraph} className="text-sm leading-relaxed text-muted">
+                    {paragraph}
+                  </dd>
+                ))}
               </RevealOnScroll>
             ))}
           </dl>

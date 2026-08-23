@@ -239,12 +239,11 @@ body {
      opposite sides of the spine, so it reads as a tight zigzag rather than a
      collision. Keep --tl-col comfortably above --tl-card / 2 or a card will
      start covering its neighbour's node and connector. */
-  --tl-col: 320px;
-  --tl-card: 400px;
-  --tl-rail: 96px;
-  /* Tallest card plus its 36px connector, with headroom for a two-line event
-     name. Both slots share it so the spine stays centered. */
-  --tl-slot: 360px;
+  --tl-col: 290px;
+  --tl-card: 356px;
+  --tl-rail: 84px;
+  /* Height of the middle grid row, the one the spine and nodes live in. */
+  --tl-node-row: 3rem;
   --tl-inset: calc((var(--tl-col) - var(--tl-card)) / 2);
 
   margin-inline: calc(50% - 50vw);
@@ -259,10 +258,32 @@ body {
    the description into four-word lines. */
 @media (max-width: 30rem) {
   .timeline-track {
-    --tl-col: 240px;
-    --tl-card: 300px;
-    --tl-rail: 66px;
+    --tl-col: 222px;
+    --tl-card: 276px;
+    --tl-rail: 62px;
   }
+}
+
+/* The track's column grid. Cards used to sit in two fixed-height slots, which
+   meant a description longer than the slot had to be line-clamped. Here the two
+   card rows are `1fr` instead: in an auto-height grid, equal-factor fr rows all
+   resolve to the same height — the tallest card on either side — so every
+   description renders in full, the two rows stay mirror images, and the spine's
+   `top: 50%` still lands exactly on the middle row. Columns are laid out by
+   grid-auto-columns, so .tl-item is display:contents and its three children
+   (slot, node, slot) are the real grid items. */
+.timeline-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--tl-col);
+  grid-template-rows: 1fr var(--tl-node-row) 1fr;
+}
+
+/* Not a box of its own — see .timeline-grid. Its data-step/-revealed attributes
+   still drive the ramp variables and reveal states, which inherit and match by
+   descendant selector regardless. */
+.tl-item {
+  display: contents;
 }
 
 /* Each column takes one slice of the --tl-ramp-* ramp: its rail runs from its
@@ -348,6 +369,18 @@ body {
   opacity: 1;
   transform: none;
 }
+
+/* Caption tints for the Newbie Experience tiles. Each is a brand colour mixed
+   down onto the page white, so the captions read as a muted, colourful set
+   rather than four plain white blocks — and the tile needs no border to hold
+   its edge, because the tint draws it. Mix percentages are deliberately low:
+   --color-muted (the caption body) lands at 4.9–5.2:1 on these, just clear of
+   the 4.5:1 AA floor, so DON'T raise any of them. Colours live here, never in
+   the component (CLAUDE.md rule 2). */
+.tile-tint-0 { background: color-mix(in srgb, var(--color-primary) 9%, var(--color-bg)); }
+.tile-tint-1 { background: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg)); }
+.tile-tint-2 { background: color-mix(in srgb, var(--tl-ramp-2) 10%, var(--color-bg)); }
+.tile-tint-3 { background: color-mix(in srgb, var(--color-cream-deep) 75%, var(--color-bg)); }
 
 /* Hide scrollbar while keeping scroll behavior
    (EventCarousel, ProjectCarousel, RecruitmentTimeline) */

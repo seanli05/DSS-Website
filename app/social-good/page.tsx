@@ -194,15 +194,22 @@ export default async function SocialGoodCommitteePage() {
         )}
 
         {/* Apply CTA — closes every committee page. Unnumbered, matching how
-            Partners closes. */}
+            Partners closes. `closingCta` sizes it exactly like the shared
+            Section does on the other committee pages: this page's frozen
+            LegacySection has no `size="sm"`, so the sign-off heading was
+            rendering at the full section-heading clamp and towering over its
+            counterparts elsewhere. */}
         <LegacySection
           eyebrow="Interested?"
           heading={`Join ${committee.name} this semester.`}
           subtext="We recruit in the first two weeks of Fall and Spring semester. Check the Join page for dates, timelines, and how to apply."
           centered
+          closingCta
         >
           {/* TODO: update with current recruitment dates */}
-          <RevealOnScroll delayMs={100}>
+          {/* -mt-6 pulls the button up closer to the subtext, same as the shared
+              route's CTA does. */}
+          <RevealOnScroll delayMs={100} className="-mt-6">
             {/* rounded-full is a scoped exception here, matching the other
                 committee pages — not a change to EditorialButton's square default. */}
             <EditorialButton href="/join" className="rounded-full">

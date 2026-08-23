@@ -47,10 +47,15 @@ export default function CommitteeActivities({ activities }: CommitteeActivitiesP
               )}
             </div>
             <div className="flex flex-1 flex-col p-6">
-              <span className="surface-green-gradient ring-primary/10 flex h-9 w-9 items-center justify-center rounded-full font-mono text-[11px] font-semibold text-white ring-4">
+              {/* The number is an eyebrow, not a badge: same treatment Social Good
+                  uses (see app/social-good/LegacyCommitteeActivities.tsx), and the
+                  same one every other numbered label on the site gets. The gradient
+                  circle it replaced sat heavy at the top of the copy block and read
+                  as a step marker in a process, which these tiles aren't. */}
+              <span className="text-[11px] uppercase tracking-[0.18em] text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 className="mt-4 text-lg font-semibold tracking-tight text-ink">
+              <h3 className="mt-3 text-lg font-semibold tracking-tight text-ink">
                 {activity.title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">

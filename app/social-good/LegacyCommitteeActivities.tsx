@@ -17,9 +17,13 @@ interface LegacyCommitteeActivitiesProps {
 }
 
 /**
- * A frozen copy of `components/CommitteeActivities.tsx` as it stood before
- * the numbered badge was swapped for a gradient circle — see the note in
+ * A frozen copy of `components/CommitteeActivities.tsx` — see the note in
  * `./LegacySection.tsx` for why this duplicate exists.
+ *
+ * It was forked when the shared tile's numbered eyebrow became a gradient
+ * circle badge. That badge has since been reverted, so the two files render
+ * identically again; this one stays because the rest of the Legacy* set does,
+ * and because the shared component is free to diverge again.
  */
 export default function LegacyCommitteeActivities({ activities }: LegacyCommitteeActivitiesProps) {
   return (

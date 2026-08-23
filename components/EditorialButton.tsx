@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { type ReactNode } from "react";
 
-type Variant = "solid" | "outline" | "inverse";
+type Variant = "solid" | "outline" | "inverse" | "inverse-outline";
 type Size = "default" | "large";
 
 interface EditorialButtonProps {
@@ -35,6 +35,11 @@ const variantClasses: Record<Variant, string> = {
   // !text-primary` important-overrides the pill button needed to work on dark.
   inverse:
     "border-2 border-white bg-white text-primary hover:bg-transparent hover:text-white focus-visible:outline-white",
+  // `inverse` is to `inverse-outline` what `solid` is to `outline`: the same
+  // two colours, swapped. Use it for a secondary CTA sitting beside an
+  // `inverse` primary on a green band, so the pair reads as one hierarchy.
+  "inverse-outline":
+    "border-2 border-white bg-transparent text-white hover:bg-white hover:text-primary focus-visible:outline-white",
 };
 
 // Size lives here rather than being passed through `className` because the

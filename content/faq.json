@@ -1,0 +1,71 @@
+[
+  {
+    "id": "committees-and-interviews",
+    "question": "How many committees can I apply to? How many technical interviews can I get?",
+    "answer": [
+      "You can apply to up to 2 committees between Consulting, Social Good, and Acadev. Note that if you apply to both Consulting and Social Good, you can get max 1 interview."
+    ]
+  },
+  {
+    "id": "projects",
+    "question": "What projects does DSS do?",
+    "answer": [
+      "DSS works on a variety of projects relating to data science, machine learning, software engineering, and more. Feel free to check out our medium page for examples of some recent projects!"
+    ]
+  },
+  {
+    "id": "coffee-chats",
+    "question": "How many coffee chats should I do?",
+    "answer": [
+      "Up to three! In addition to members of our leadership team, we also heavily encourage you to chat with senior advisors and general members as they can provide a unique perspective on DSS."
+    ]
+  },
+  {
+    "id": "event-attendance",
+    "question": "Are attending events (Infosession, Meet the Society, etc.) mandatory?",
+    "answer": [
+      "Attendance at our events is totally optional. We would love for you to go, but missing events won't have any impact on your application. Also feel free to come by our table (we generally table from 8/26-9/2)."
+    ]
+  },
+  {
+    "id": "no-experience",
+    "question": "What if I don't have a lot of data science experience?",
+    "answer": [
+      "Feel free to apply still! While we recommend taking Data 8 first, many applicants, especially freshmen, join without it.",
+      "If you feel like you want more experience first, or want to explore whether tech is a good fit for you, our Decal introduces data science to students from non-traditional backgrounds, and we host many events every semester that are open to all students and provide exposure to the industry."
+    ]
+  },
+  {
+    "id": "technical-prep",
+    "question": "What are resources for preparing for the technical interview?",
+    "answer": ["Check out the Data 100 textbook and our case workshop online."]
+  },
+  {
+    "id": "acceptance-rate",
+    "question": "What is DSS' acceptance rate? Is it easier to get into certain committees?",
+    "answer": [
+      "DSS does not measure our acceptance rate, and it is similarly difficult to get into all three committees."
+    ]
+  },
+  {
+    "id": "good-applicant",
+    "question": "What makes a good applicant?",
+    "answer": [
+      "A strong applicant is curious about data science, eager to learn, and excited to collaborate with others. We welcome students from all backgrounds and value a willingness to grow and contribute to our community."
+    ]
+  },
+  {
+    "id": "time-commitment",
+    "question": "What is the time commitment for DSS?",
+    "answer": [
+      "6-10 hours for general members. Feel free to reach out to current members for their experience if you're concerned about balancing DSS with your workload."
+    ]
+  },
+  {
+    "id": "what-makes-dss-different",
+    "question": "What makes DSS different?",
+    "answer": [
+      "DSS is the oldest data science club at UC Berkeley. We helped plan courses like Data 8 and Data 100, and since then, we've extended our involvement on campus and in the industry through our decal, events (Datathon for Social Good, World of Data Career Fair, etc.), and our consulting projects. We have a tight-knit community of passionate members who are constantly looking to evolve our club and stay at the forefront of a fast moving field."
+    ]
+  }
+]

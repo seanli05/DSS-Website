@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { APPLICATION_URL, COFFEE_CHAT_URL } from "./lib/site";
 
 const nextConfig: NextConfig = {
   images: {
@@ -28,6 +29,18 @@ const nextConfig: NextConfig = {
       // The old committees index has no equivalent; the home page is where the
       // committees are introduced.
       { source: "/committees", destination: "/#committees", permanent: true },
+
+      // ── /apply → the application form. The short link for flyers, slides,
+      // and anywhere a URL has to be typed by hand or read off a poster.
+      // `permanent: false` (307) is load-bearing: the destination changes every
+      // recruitment cycle, and a 308 would be cached by browsers that followed
+      // it once, sending returning applicants to last semester's form. The form
+      // URL itself lives in lib/site.ts, shared with the Join page's button.
+      { source: "/apply", destination: APPLICATION_URL, permanent: false },
+      // Same arrangement for the coffee chat sign-up. No hyphen, matching the
+      // /joinus and /socialgood links this site already hands out — one less
+      // thing to get wrong when someone types it off a poster.
+      { source: "/coffeechat", destination: COFFEE_CHAT_URL, permanent: false },
 
       // ── Old Squarespace URLs (dssberkeley.org), from that site's sitemap.
       // 308s so search engines transfer ranking rather than treating these as
