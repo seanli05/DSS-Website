@@ -30,19 +30,20 @@
 - **Content layer:** `lib/content.ts` is the only file that knows where data comes from (JSON under `content/` + `data/`, plus Airtable)
 - See `CLAUDE.md` for the always-on ruleset and `PLAN.md` for the original brief
 
-### Routes currently built (13 pages)
+### Routes currently built (14 pages)
 
 ```
 /                    /about        /partners     /join
 /contact             /styleguide   /_not-found   /api/partner-inquiry (dynamic)
-/acadev              /consulting   /social-good
+/decal               /acadev       /consulting   /social-good
 ```
 
 **Committee pages live at the site root** (`/acadev`), not under `/committees` — moved 2026-08-18 so the new URLs match the old Squarespace ones exactly. `/committees/*` 308-redirects to the new paths.
 
 `app/[id]/page.tsx` is therefore a **root-level dynamic segment**. It sets `dynamicParams = false`, so only the committee ids from `committees.json` resolve and everything else 404s. When adding a committee, its `id` must not collide with an existing top-level route (`about`, `join`, `partners`, `contact`, `styleguide`, `api`) — Next resolves static routes first, so a committee called "about" would silently never render.
 
-There is **no `/decal` route**; that content moved onto the Acadev page.
+`/decal` is a streamlined course landing page. The Acadev page separately
+explains the committee that teaches the course.
 
 ---
 
@@ -158,8 +159,7 @@ All 308s, verified returning the right target at runtime:
 | `/home` | `/` | Squarespace |
 | `/joinus` | `/join` | Squarespace |
 | `/socialgood` | `/social-good` | Squarespace |
-| `/decalinfo` | `/acadev` | DeCal content now lives on the Acadev page |
-| `/decal` | `/acadev` | route was removed |
+| `/decalinfo` | `/decal` | old Squarespace DeCal URL |
 
 `/acadev` and `/consulting` need **no redirect** — moving the committee pages to the root made the new URLs identical to the old Squarespace ones, which is the main reason that move was worth doing.
 

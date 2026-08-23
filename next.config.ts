@@ -36,10 +36,8 @@ const nextConfig: NextConfig = {
       { source: "/home", destination: "/", permanent: true },
       { source: "/joinus", destination: "/join", permanent: true },
       { source: "/socialgood", destination: "/social-good", permanent: true },
-      // The DeCal had its own page on Squarespace; that content now lives on the
-      // Acadev committee page, which owns the DeCal portfolio.
-      { source: "/decalinfo", destination: "/acadev", permanent: true },
-      { source: "/decal", destination: "/acadev", permanent: true },
+      // The old Squarespace DeCal URL now points at the streamlined course page.
+      { source: "/decalinfo", destination: "/decal", permanent: true },
     ];
   },
 };

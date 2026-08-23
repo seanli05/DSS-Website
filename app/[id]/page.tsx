@@ -61,19 +61,18 @@ export default async function CommitteePage({
   const { id } = await params;
   const committee = getCommittees().find((c) => c.id === id);
   if (!committee) notFound();
-  // Acadev's portfolio showcases student DeCal projects, not client work, and is
-  // sourced separately from the Consulting/Social Good Airtable project feed.
-  const isAcadevProjects = committee.id === "acadev";
-  const projects = await getProjectsByCommittee(committee.id);
-  // Acadev alone has a SECOND portfolio: the client work it takes on alongside
-  // the DeCal, read from its own Airtable table. Empty for every other committee,
-  // and empty for Acadev too if that table isn't configured.
-  const clientProjects = isAcadevProjects ? await getAcadevClientProjects() : [];
+  const isAcadev = committee.id === "acadev";
+  // Student DeCal work lives on the dedicated /decal landing page. Committee
+  // pages here show the standard portfolio only for the other committees.
+  const projects = isAcadev ? [] : await getProjectsByCommittee(committee.id);
+  // Acadev's client work is distinct from the student projects it mentors.
+  // It remains optional because the Airtable table may not be configured.
+  const clientProjects = isAcadev ? await getAcadevClientProjects() : [];
   const paragraphs = getDescriptionParagraphs(committee.description);
   const activities = committee.activities ?? [];
-  // "What we do" is always 1. The two portfolios and the activities tiles are
-  // each optional and rendered in that order, so their numbers have to be
-  // derived rather than hardcoded — a committee with only some of them
+  // "What we do" is always 1. The portfolio, Acadev client work, and activities
+  // are optional and rendered in that order, so their numbers are derived.
+  // A committee with only some of them
   // shouldn't skip straight to "(03)".
   let sectionIndex = 1;
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
@@ -229,20 +228,12 @@ export default async function CommitteePage({
         {projects.length > 0 && (
           <Section
             index={projectsIndex}
-            eyebrow={isAcadevProjects ? "DeCal portfolio" : "Portfolio"}
-            heading={isAcadevProjects ? "DeCal Projects We've Mentored" : "Projects"}
-            subtext={
-              isAcadevProjects
-                ? "Here are a selection of student projects developed with mentorship from Acadev instructors throughout the DeCal."
-                : "A rotating look at what this committee has shipped. Click “See more” for the full story."
-            }
+            eyebrow="Portfolio"
+            heading="Projects"
+            subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
           >
             <RevealOnScroll delayMs={100}>
-              <ProjectCarousel
-                projects={projects}
-                circular={isAcadevProjects}
-                uniformTint={isAcadevProjects}
-              />
+              <ProjectCarousel projects={projects} />
             </RevealOnScroll>
           </Section>
         )}
