@@ -9,10 +9,6 @@ const links = [
   { label: "Partners", href: "/partners" },
 ];
 
-// The DeCal has its own site, so this nav item leaves dssberkeley.org entirely.
-// Opens in a new tab so people don't lose their place here.
-const DECAL_URL = "https://dssdecal.org/";
-
 const committeeLinks = [
   { label: "Acadev", href: "/acadev" },
   { label: "Consulting", href: "/consulting" },
@@ -86,14 +82,12 @@ export default function Nav() {
             </li>
 
             <li>
-              <a
-                href={DECAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/decal"
                 className="hover:text-white transition-colors duration-150"
               >
                 Decal
-              </a>
+              </Link>
             </li>
           </ul>
 
@@ -178,15 +172,13 @@ export default function Nav() {
             </li>
 
             <li>
-              <a
-                href={DECAL_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/decal"
                 className="block hover:text-white transition-colors"
                 onClick={() => setMenuOpen(false)}
               >
                 Decal
-              </a>
+              </Link>
             </li>
 
             <li>

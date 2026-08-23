@@ -51,8 +51,7 @@ const PATHS: Path[] = [
     title: "Start with the DeCal.",
     body:
       "New to Berkeley, or still deciding whether data science is for you? Our project-based DeCal is a low-stakes way to find out where no experience is required!",
-    href: "https://dssdecal.org/",
-    external: true,
+    href: "/decal",
     cta: "About the DeCal",
     imageLabel: "DeCal photo",
     image: {

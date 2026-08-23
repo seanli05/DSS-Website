@@ -12,7 +12,7 @@ set -uo pipefail
 
 URL="${1:-https://dss-website-fawn.vercel.app}"
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36"
-PAGES=(/ /about /partners /join /acadev /consulting /social-good /contact)
+PAGES=(/ /about /partners /join /decal /acadev /consulting /social-good /contact)
 pass=0; fail=0
 ok(){ printf "  \033[32mPASS\033[0m %s\n" "$1"; pass=$((pass+1)); }
 no(){ printf "  \033[31mFAIL\033[0m %s\n" "$1"; fail=$((fail+1)); }
@@ -85,7 +85,7 @@ check_redirect /committees/consulting /consulting
 check_redirect /home /
 check_redirect /joinus /join
 check_redirect /socialgood /social-good
-check_redirect /decalinfo /acadev
+check_redirect /decalinfo /decal
 
 echo
 echo "6. Static assets under /committees/ are NOT swallowed by the redirect"
