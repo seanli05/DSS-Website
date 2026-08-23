@@ -14,11 +14,11 @@
 | **Airtable image expiry** | ✅ **FIXED** — attachments mirrored locally at build time (§3) |
 | `merge-acadev` branch | ⚠️ Conflicts resolved, **uncommitted**, mid-merge |
 | Redirects (old Squarespace + moved routes) | ✅ Done — `next.config.ts` |
-| `metadataBase`, `sitemap.ts`, `robots.ts` | ⬜ Not started |
+| `metadataBase`, `sitemap.ts`, `robots.ts` | ✅ Done (§5c/5d) |
 | Rebuild cadence | ✅ **Manual by design** — no cron (§5e) |
 | Domain cutover to `dssberkeley.org` | ⬜ Not started — old Squarespace site still live |
 
-**Next action:** push the current work, then `metadataBase` + `sitemap.ts` + `robots.ts` (§5), then the domain cutover (§7).
+**Next action:** the domain cutover (§7). All code work is done; what remains is DNS.
 
 ---
 
@@ -165,13 +165,37 @@ All 308s, verified returning the right target at runtime:
 
 `/about` is unchanged on both sites.
 
-### 5c. `metadataBase`
+### 5c. ✅ `metadataBase` + Open Graph image — done
 
-`app/layout.tsx` sets `openGraph.siteName` but **no `metadataBase`**. Without it, OG image URLs resolve relative and links shared in Slack/Discord render without previews. Set to `https://www.dssberkeley.org`.
+`lib/site.ts` exports `SITE_URL` (`https://www.dssberkeley.org`) in one place;
+`app/layout.tsx`, `app/sitemap.ts`, and `app/robots.ts` all import it, so the
+domain appears once rather than three times.
 
-### 5d. `app/sitemap.ts` and `app/robots.ts`
+`app/layout.tsx` now sets `metadataBase` plus an `openGraph.images` entry
+(`/group-photo.jpg`, 2000x900, 0.7 MB) and `twitter.card: "summary_large_image"`.
+`metadataBase` alone would have produced a **text-only** preview card, since no
+image was ever configured — it's what turns the relative image path into the
+absolute URL scrapers require.
 
-Neither exists. Exclude `/styleguide` from both — it's currently in the build output and would otherwise get indexed.
+Verified in built output: `og:image` renders as
+`https://www.dssberkeley.org/group-photo.jpg`, with Twitter tags derived
+automatically.
+
+**These previews only work once DNS is cut over** — the URLs point at the
+production domain, which still serves Squarespace.
+
+### 5d. ✅ `sitemap.ts` and `robots.ts` — done
+
+`/sitemap.xml` lists all 8 real pages with absolute www URLs. Committee routes
+come from `getCommittees()`, the same helper `app/[id]/page.tsx` uses in
+`generateStaticParams`, so adding a committee to `content/committees.json`
+updates the sitemap automatically and the two can't disagree.
+
+`/robots.txt` allows everything except `/styleguide` (an internal design
+reference that was publicly indexable) and `/api/`, and links the sitemap.
+
+Submit `https://www.dssberkeley.org/sitemap.xml` to Google Search Console after
+the cutover.
 
 ### 5e. Rebuilds are MANUAL — decided 2026-08-18
 
@@ -265,7 +289,7 @@ Airtable pages at 100 records per request. Once the projects table crosses 100 r
 | **MX records** | **none** |
 | **TXT records** | **none** |
 | Registry expiry | 2027-01-16 |
-| Current TTL | 14400 (4 hours) |
+| Current TTL | 14400 (4 hours) on **both** the apex `A` and the `www` CNAME |
 | Canonical host | **`www`** (apex 301s to www) |
 
 **No MX and no TXT is the key fact** — no club email runs on this domain and there are no SPF/verification records to preserve. The usual migration disaster (breaking everyone's email) cannot happen here. The cutover is just repointing two records.
@@ -280,7 +304,12 @@ The domain was created **2025-01-16**, almost certainly bundled with the Squares
 
 1. Verify the new site fully on the `.vercel.app` URL (done — §2), **and confirm §3 is fixed**
 2. Ship the redirects, `metadataBase`, sitemap, robots (§5)
-3. Lower TTL in Squarespace DNS from 14400 → 300, then **wait 4+ hours** for the old TTL to age out
+3. Lower TTL 14400 → 300 in Squarespace DNS on **both the apex `A` records and
+   the `www` CNAME**, then **wait 4+ hours** for the old TTL to age out.
+   Lowering only the apex is a common miss: `www` is the canonical host and
+   carries the traffic, so leaving it at 14400 means the www swap still takes up
+   to 4 hours to propagate. This step is independent of any code change and can
+   be done first — it starts the clock while other work continues.
 4. In Vercel → Settings → Domains, add both `dssberkeley.org` and `www.dssberkeley.org`, set **`www` as primary**. Vercel displays the exact records to create — use those, not values from any blog post
 5. In Squarespace DNS: delete the four Squarespace `A` records and the `ext-sq` CNAME, add Vercel's. HTTPS provisions automatically via Let's Encrypt — no certificate to buy
 6. Verify, then raise TTL back to 3600

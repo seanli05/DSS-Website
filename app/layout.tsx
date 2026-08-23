@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono, Poppins } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -34,6 +35,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  // Without this, the relative image paths in `openGraph` below resolve
+  // relative to nothing and social previews come out blank — so a link posted
+  // in Slack, Discord, iMessage, or LinkedIn renders as a bare URL with no
+  // card. Next needs an absolute base to build those URLs from.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Data Science Society at UC Berkeley",
     template: "%s | DSS Berkeley",
@@ -44,6 +50,21 @@ export const metadata: Metadata = {
     siteName: "DSS Berkeley",
     locale: "en_US",
     type: "website",
+    // Without an image the preview card is text-only. 2000x900 is close enough
+    // to the 1.91:1 that Slack/Discord/iMessage/LinkedIn crop to, and at 0.7 MB
+    // it's well under their fetch limits. `metadataBase` above is what turns
+    // this relative path into the absolute URL those scrapers require.
+    images: [
+      {
+        url: "/group-photo.jpg",
+        width: 2000,
+        height: 900,
+        alt: "Members of the Data Science Society at UC Berkeley",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

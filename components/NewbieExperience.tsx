@@ -8,12 +8,18 @@ import { stripTodo, type NewbieExperiencePillar } from "@/lib/content";
 // No hover state: these tiles are read-only, so a lift and a brand border
 // advertised a click target that doesn't exist.
 //
-// A shadow rather than a hairline border holds the tile against the page.
-// --shadow-card is offset-free (0 0 20px), so it reads as an even halo on all
-// four edges rather than a drop shadow with a light source — which is what lets
-// it replace a border cleanly instead of looking like a card that's floating.
-const TILE = "flex h-full flex-col overflow-hidden bg-bg shadow-card";
+// Nothing draws the tile's edge — no border, no shadow. The tinted caption
+// block does it instead: it runs to all three of the tile's lower edges, so the
+// card's shape is read off the colour rather than off a line around it. That
+// only works with a generous corner radius, which is why rounded-3xl is on the
+// article and overflow-hidden clips both the photo and the tint into it.
+const TILE = "flex h-full flex-col overflow-hidden rounded-3xl bg-bg";
 const TILE_IMAGE_ZOOM = "object-cover";
+
+// One muted brand tint per caption block, rotated by position so no two tiles in
+// a row of the 2×2 grid share one. Defined in globals.css (CLAUDE.md rule 2) —
+// these are just the class names.
+const CAPTION_TINTS = ["tile-tint-0", "tile-tint-1", "tile-tint-2", "tile-tint-3"];
 
 interface NewbieExperienceProps {
   pillars: NewbieExperiencePillar[];
@@ -40,7 +46,9 @@ interface NewbieExperienceProps {
  *
  * The caption block is tighter than the `p-6` CommitteeActivities uses. Those
  * tiles are a third of the container wide; at half the width the same padding
- * reads as a lot of dead space around three short lines.
+ * reads as a lot of dead space around three short lines. It does carry a little
+ * more padding than a white block would need, though: a tinted panel wants some
+ * air between its colour and the text sitting on it.
  */
 export default function NewbieExperience({ pillars }: NewbieExperienceProps) {
   return (
@@ -61,7 +69,11 @@ export default function NewbieExperience({ pillars }: NewbieExperienceProps) {
                 <PhotoPlaceholder />
               )}
             </div>
-            <div className="flex flex-1 flex-col px-5 pt-4 pb-5">
+            <div
+              className={`flex flex-1 flex-col px-6 pt-5 pb-6 ${
+                CAPTION_TINTS[i % CAPTION_TINTS.length]
+              }`}
+            >
               <span className="text-[11px] uppercase tracking-[0.18em] text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>

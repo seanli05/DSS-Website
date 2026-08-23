@@ -9,6 +9,7 @@ import newbieExperienceData from "@/content/newbie-experience.json";
 import offeringsData from "@/content/offerings.json";
 import consultingProcessData from "@/content/consulting-process.json";
 import externalEventsData from "@/content/external-events.json";
+import faqData from "@/content/faq.json";
 import projectsData from "@/content/projects.json";
 import acadevProjectsData from "@/content/acadev-projects.json";
 import testimonialsData from "@/content/testimonials.json";
@@ -51,6 +52,13 @@ export interface NewbieExperiencePillar {
   body: string; // one short paragraph; a leading "TODO: …" note is stripped before rendering
   image: string | null; // path under /public — null renders the "photo to come" placeholder
   imageAlt: string | null; // required whenever image is set
+}
+
+/** One question and its answer in the Join page's FAQ. */
+export interface FaqItem {
+  id: string; // slug — keep stable
+  question: string;
+  answer: string[]; // one entry per paragraph, so a longer answer can breathe
 }
 
 /** A photo in a committee page's work/gallery carousel. */
@@ -242,6 +250,10 @@ export function getCommunityTraditions(): CommunityTradition[] {
 
 export function getNewbieExperience(): NewbieExperiencePillar[] {
   return newbieExperienceData as NewbieExperiencePillar[];
+}
+
+export function getFaq(): FaqItem[] {
+  return faqData as FaqItem[];
 }
 
 export function getCommunityPhotos(): CommunityPhoto[] {
