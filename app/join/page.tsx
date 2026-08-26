@@ -4,8 +4,20 @@ import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import RecruitmentTimeline from "@/components/RecruitmentTimeline";
 import NewbieExperience from "@/components/NewbieExperience";
-import { getFaq, getNewbieExperience, getRecruitmentTimeline } from "@/lib/content";
+import InterviewResources from "@/components/InterviewResources";
+import {
+  getFaq,
+  getInterviewResources,
+  getNewbieExperience,
+  getRecruitmentTimeline,
+} from "@/lib/content";
 import { APPLICATION_URL, COFFEE_CHAT_URL } from "@/lib/site";
+
+// The current DeCal's lecture slides, linked from the interview resources intro.
+// Page-local rather than in lib/site.ts for the same reason as the decal page's
+// article link: it's one page's link, not a URL other routes share. The path is
+// per-semester, so it needs updating alongside the recruitment copy each cycle.
+const DECAL_SLIDES_URL = "https://dssdecal.org/sp26/";
 
 export const metadata: Metadata = {
   title: "Join",
@@ -15,6 +27,7 @@ export const metadata: Metadata = {
 
 export default async function JoinPage() {
   const timeline = await getRecruitmentTimeline();
+  const interviewResources = getInterviewResources();
   const newbieExperience = getNewbieExperience();
   const faq = getFaq();
 
@@ -31,20 +44,14 @@ export default async function JoinPage() {
             Applications for Fall 2026 open in the first week of classes. Here&apos;s
             everything you need to know.
           </p>
-          {/* Two CTAs: the application itself, and the coffee chats that run
-              alongside it. flex-wrap rather than a stack breakpoint — the pair
-              sits on one line wherever it fits and drops the second button to
-              its own line where it doesn't, with no width to guess at.
-
-              items-stretch is what matches the two heights: the coffee chat
-              button keeps its smaller `default` type and padding (it stays the
-              secondary of the pair) but its box grows to Apply now's height.
-              Doing it here rather than by padding on the button avoids fighting
-              EditorialButton's own size classes, which share one class string
-              with anything the caller passes. Because stretch applies per flex
-              line, the button drops back to its natural height on phones, where
-              it wraps onto a line of its own. */}
-          <div className="mt-10 flex flex-wrap items-stretch gap-4">
+          {/* One CTA — the application — with coffee chats beside it as a plain
+              underlined link rather than a second button, so the hero reads as
+              a single primary action with a quieter alternative next to it.
+              flex-wrap rather than a stack breakpoint: the pair sits on one line
+              wherever it fits and the link drops to its own where it doesn't,
+              with no width to guess at. items-center rather than items-stretch —
+              there are no longer two boxes whose heights need matching. */}
+          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
             {/* The form URL lives in lib/site.ts, shared with the `/apply`
                 redirect in next.config.ts — update it there once per cycle.
                 rounded-full is a scoped exception here, matching the homepage's
@@ -59,17 +66,16 @@ export default async function JoinPage() {
               Apply now
             </EditorialButton>
             {/* Also from lib/site.ts, shared with the `/coffeechat` redirect.
-                `default` size and the outline variant keep this clearly
-                secondary to Apply now. */}
-            <EditorialButton
+                A plain <a>, not EditorialButton: this is a text link, and it
+                leaves the site like Apply now does. */}
+            <a
               href={COFFEE_CHAT_URL}
-              external
-              variant="inverse-outline"
-              size="default"
-              className="rounded-full"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lg font-medium text-white/80 underline underline-offset-4 transition-colors duration-150 hover:text-white"
             >
               Sign up for coffee chats
-            </EditorialButton>
+            </a>
           </div>
         </div>
       </section>
@@ -92,10 +98,35 @@ export default async function JoinPage() {
           <RecruitmentTimeline events={timeline} />
         </Section>
 
+        {/* Interview resources — what to read before a technical interview */}
+        <Section
+          index={2}
+          eyebrow="Prepare"
+          heading="Interview resources"
+          subtext={
+            <>
+              These resources cover the Social Good and Consulting technical case
+              interviews. To prepare for the Acadev interview, we recommend
+              looking through the Data 100 textbook and the{" "}
+              <a
+                href={DECAL_SLIDES_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary underline underline-offset-2 transition-colors duration-150 hover:text-primary-bright"
+              >
+                Spring 2026 DeCal lecture slides
+              </a>
+              .
+            </>
+          }
+        >
+          <InterviewResources resources={interviewResources} />
+        </Section>
+
         {/* The Newbie Experience — four pillars, content from
             content/newbie-experience.json */}
         <Section
-          index={2}
+          index={3}
           eyebrow="Your first semester"
           heading="The Newbie Experience"
         >
@@ -104,7 +135,7 @@ export default async function JoinPage() {
 
 
         {/* FAQ */}
-        <Section index={3} eyebrow="FAQ" heading="Common questions">
+        <Section index={4} eyebrow="FAQ" heading="Common questions">
           <dl className="flex max-w-2xl flex-col gap-8">
             {faq.map((item, i) => (
               <RevealOnScroll

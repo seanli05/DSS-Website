@@ -11,27 +11,33 @@
     "featured": true,
     "heroImage": "/committees/acadev-hero.jpg",
     "description": "We lead and teach the DeCal course, “Introduction to Real World Data Science,” helping students of all experience levels build practical data science skills beyond the classroom.\n\nThrough a project-based curriculum, mentorship from our committee members, and an end-to-end team project using a real-world dataset, students gain the hands-on experience needed to tackle real data science and machine learning problems.\n\nOur mission is to bridge the gap between classroom learning and industry practice, empowering students to build confidence and thrive in the rapidly evolving world of data science.",
-    "workImage": null,
-    "workImageAlt": null,
-    "workCaption": null,
-    "workImages": [
+    "workImage": "/committees/acadev/acadev-committee-spring26.jpg",
+    "workImageAlt": "The Acadev committee in business attire, posing and laughing together on the lawn outside a UC Berkeley campus building",
+    "workCaption": "The Acadev committee",
+    "workImages": null,
+    "activities": [
       {
-        "src": "/committees/acadev/acadev-committee.jpg",
-        "alt": "Members of the Acadev committee gathered for a group photo outside a UC Berkeley campus building",
-        "caption": "The Acadev committee"
+        "id": "teaching-the-decal",
+        "title": "Teaching the DeCal",
+        "body": "We plan and design the curriculum for Introduction to Real World Data Science, taking students through a full end-to-end project.",
+        "image": "/committees/acadev/decal-lecture-wide.jpg",
+        "imageAlt": "Students attending an Acadev lecture on data visualization in a UC Berkeley classroom"
       },
       {
-        "src": "/committees/acadev/decal-lecture-wide.jpg",
-        "alt": "Students attending an Acadev lecture on data visualization in a UC Berkeley classroom",
-        "caption": "Inside Introduction to Real World Data Science"
+        "id": "machine-learning-deep-dives",
+        "title": "Machine learning deep dives",
+        "body": "Our members give live lectures to dozens of students, practicing their teaching skills and reinforcing their understanding of complex concepts.",
+        "image": "/committees/acadev/decal-lecture-xgboost.jpg",
+        "imageAlt": "Acadev instructors teaching students about XGBoost during a DeCal lecture"
       },
       {
-        "src": "/committees/acadev/decal-lecture-xgboost.jpg",
-        "alt": "Acadev instructors teaching students about XGBoost during a DeCal lecture",
-        "caption": "Acadev instructors teaching machine learning"
+        "id": "committee-socials",
+        "title": "Socials and bonding",
+        "body": "We have dinners, games, and committee socials that give everyone a reason to spend time together away from their usual responsibilities.",
+        "image": "/committees/acadev/acadev-socials.jpg",
+        "imageAlt": "Acadev committee members gathered around a long outdoor table of noodle bowls at a Berkeley restaurant, turning to smile at the camera"
       }
-    ],
-    "activities": null
+    ]
   },
   {
     "id": "consulting",
@@ -91,21 +97,21 @@
       {
         "id": "discussions",
         "title": "Discussions on ethical issues",
-        "body": "Members meet to talk through the ethical and political questions behind the data they work with, and to practice making a case they can defend.",
+        "body": "We have open discussions about current events that have major social implications and debate the ethical questions behind the technology.",
         "image": "/committees/social-good-discussions.jpg",
         "imageAlt": "Committee members seated in a wide circle of desk chairs in a classroom, talking with a presentation on the screen behind them"
       },
       {
         "id": "skill-workshops",
         "title": "Skill workshops",
-        "body": "Hands-on sessions on the skills the committee leans on most — including decking, where members build and critique the slides that carry a project's findings.",
+        "body": "Hands-on sessions on the skills the committee leans on most, such as decking, public speaking, critical thinking, and more.",
         "image": "/committees/social-good-skill-workshops.jpg",
         "imageAlt": "The Social Good committee gathered for a group photo outside a campus building in the evening"
       },
       {
         "id": "bonding-games",
         "title": "Bonding games",
-        "body": "Games and socials that give the committee a reason to spend time together away from the work itself.",
+        "body": "We play light-hearted games and have fun socials that allow everyone in the committee to spend extra time bonding together.",
         "image": "/committees/social-good-bonding-games.jpg",
         "imageAlt": "Two committee members holding up sheets of paper covered in quick sketches during a drawing game in class"
       }

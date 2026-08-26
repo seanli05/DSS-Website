@@ -1,0 +1,24 @@
+[
+  {
+    "id": "data-100-course-notes",
+    "title": "Data 100 Course Notes",
+    "url": "https://ds100.org/course-notes",
+    "blurb": "Here are some chapters our technical questions relate to:",
+    "topics": [
+      "Data Cleaning and EDA",
+      "Visualizations",
+      "Modeling & SLR",
+      "Logistic Regression",
+      "Bias-Variance Tradeoff"
+    ],
+    "linkLabel": "Read the course notes"
+  },
+  {
+    "id": "casing-guide",
+    "title": "Casing Guide",
+    "url": "https://docs.google.com/document/d/10R9OK7E0YYoYAD2WXj6z0AWN_50XsUe_JhjL3COabfI/edit",
+    "blurb": "Here is a guide to what the technical case interview will look like. This document provides insight into what our questions typically look like as well as the important considerations when answering them.",
+    "topics": [],
+    "linkLabel": "Open the casing guide"
+  }
+]

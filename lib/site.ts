@@ -36,3 +36,23 @@ export const APPLICATION_URL =
  * drift apart. Also changes every recruitment cycle.
  */
 export const COFFEE_CHAT_URL = "https://ripple-increase-bbd.notion.site/dss-fall26-cc";
+
+/**
+ * The DeCal enrolment form, linked from the DeCal page's hero.
+ *
+ * Same deal as APPLICATION_URL: it changes every semester, and the `?usp=dialog`
+ * query Google appends when you copy the link out of the share dialog is dropped
+ * deliberately — an editor artifact, not part of the address.
+ */
+export const DECAL_APPLICATION_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSd6lE4Coe15kreXLwtJ2at7uBlp-AOB0MCijgbYz3k_KOkZmw/viewform";
+
+/**
+ * The DSS Medium publication, linked as "Blog" in the navbar.
+ *
+ * Note this is the *publication* (medium.com/data-science-society), which is
+ * not the same address as the `@dssberkeley` profile the Footer and Contact
+ * page link under "Medium". If the club has consolidated on one of the two,
+ * point all three at it.
+ */
+export const BLOG_URL = "https://medium.com/data-science-society";

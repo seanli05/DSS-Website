@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { BLOG_URL } from "@/lib/site";
 
 const links = [
   { label: "About", href: "/about" },
@@ -88,6 +89,19 @@ export default function Nav() {
               >
                 Decal
               </Link>
+            </li>
+
+            {/* The blog lives on Medium, so this leaves the site — a plain <a>
+                with target="_blank", not a client-side <Link>. */}
+            <li>
+              <a
+                href={BLOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors duration-150"
+              >
+                Blog
+              </a>
             </li>
           </ul>
 
@@ -179,6 +193,18 @@ export default function Nav() {
               >
                 Decal
               </Link>
+            </li>
+
+            <li>
+              <a
+                href={BLOG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-white transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                Blog
+              </a>
             </li>
 
             <li>

@@ -78,9 +78,11 @@ export default async function CommitteePage({
   const projectsIndex = projects.length > 0 ? ++sectionIndex : undefined;
   const clientProjectsIndex = clientProjects.length > 0 ? ++sectionIndex : undefined;
   const activitiesIndex = activities.length > 0 ? ++sectionIndex : undefined;
-  // Every committee's workImage is a vertical 2:3 shot except Consulting's,
-  // which is a wide group photo — see the `landscape` prop on CommitteePhoto.
-  const isLandscapePhoto = committee.id === "consulting";
+  // Consulting's and Acadev's workImages are wide group photos; every other
+  // committee's is a vertical 2:3 shot — see the `landscape` prop on
+  // CommitteePhoto. Both of these are 3:2, so the landscape frame fits them
+  // exactly and object-cover has nothing to crop.
+  const isLandscapePhoto = committee.id === "consulting" || isAcadev;
 
 
   return (
@@ -256,15 +258,22 @@ export default async function CommitteePage({
           </Section>
         )}
 
-        {/* Outside of projects — what the committee's weeks look like beyond the
-            client work itself. Only committees with activities in
-            committees.json render this at all. */}
+        {/* What the committee's weeks look like beyond the client work itself.
+            Only committees with activities in committees.json render this at
+            all. Acadev uses Social Good's wording for it verbatim (see
+            app/social-good/page.tsx) — its section is mostly teaching rather
+            than client work, so "Outside of projects" didn't describe it.
+            Consulting keeps the original heading. */}
         {activities.length > 0 && (
           <Section
             index={activitiesIndex}
             eyebrow="Committee life"
-            heading="Outside of projects"
-            subtext="Beyond client work, we make time to grow, learn, and have fun."
+            heading={isAcadev ? "How we spend our time" : "Outside of projects"}
+            subtext={
+              isAcadev
+                ? "Beyond the client work, this is what a semester in the committee looks like."
+                : "Beyond client work, we make time to grow, learn, and have fun."
+            }
           >
             <CommitteeActivities activities={activities} />
           </Section>
