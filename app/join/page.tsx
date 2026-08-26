@@ -19,6 +19,15 @@ import { APPLICATION_URL, COFFEE_CHAT_URL } from "@/lib/site";
 // per-semester, so it needs updating alongside the recruitment copy each cycle.
 const DECAL_SLIDES_URL = "https://dssdecal.org/sp26/";
 
+// Same emphasis treatment (and reasoning) as the decal page's own `B`: against
+// muted body copy, full --color-ink reads as a hard black and the bolded phrases
+// spike out of the column, so this softens to ink/80 — still AA, still a step
+// darker than the text around it. Duplicated rather than shared, per CLAUDE.md
+// rule 8; if a third page needs it, that's the point to lift it into components/.
+const B = ({ children }: { children: React.ReactNode }) => (
+  <strong className="font-semibold text-ink/80">{children}</strong>
+);
+
 export const metadata: Metadata = {
   title: "Join",
   description:
@@ -91,7 +100,15 @@ export default async function JoinPage() {
           index={1}
           eyebrow="Recruitment"
           heading="Recruitment timeline"
-          subtext="Here are all of our Fall 2026 events that we will be hosting or sharing at. Come to as many as you can to learn about the club and network with our members!"
+          subtext={
+            <>
+              Here are all of our Fall 2026 events that we will be hosting or
+              sharing at. Come to as many as you can to learn about the club and
+              network with our members! We will also be tabling around{" "}
+              <B>Dwinelle and Wheeler</B> every day for the next week from{" "}
+              <B>8am - 4pm</B>, so come by and say hi to our members!
+            </>
+          }
           firstOnPage
           centered
         >
