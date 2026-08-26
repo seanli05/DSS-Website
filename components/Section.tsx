@@ -13,7 +13,10 @@ interface SectionProps {
    *  `":"` renders `(01): Label`. */
   indexSeparator?: string;
   heading?: string;
-  subtext?: string;
+  /** Usually a plain string. Takes nodes so a section's intro can carry an
+   *  inline link (the Join page's interview resources points at the DeCal
+   *  slides); it still renders inside the one styled `<p>` either way. */
+  subtext?: ReactNode;
   /** Marks the page's FIRST section, which skips the top hairline seam because
    *  it meets the hero's own colour transition instead. */
   firstOnPage?: boolean;

@@ -9,6 +9,7 @@ import newbieExperienceData from "@/content/newbie-experience.json";
 import offeringsData from "@/content/offerings.json";
 import consultingProcessData from "@/content/consulting-process.json";
 import externalEventsData from "@/content/external-events.json";
+import interviewResourcesData from "@/content/interview-resources.json";
 import faqData from "@/content/faq.json";
 import projectsData from "@/content/projects.json";
 import acadevProjectsData from "@/content/acadev-projects.json";
@@ -52,6 +53,16 @@ export interface NewbieExperiencePillar {
   body: string; // one short paragraph; a leading "TODO: …" note is stripped before rendering
   image: string | null; // path under /public — null renders the "photo to come" placeholder
   imageAlt: string | null; // required whenever image is set
+}
+
+/** One link in the Join page's "Interview resources" list. */
+export interface InterviewResource {
+  id: string; // slug — keep stable
+  title: string;
+  url: string; // always external — rendered in a new tab
+  blurb: string; // one line; a leading "TODO: …" note is stripped before rendering
+  topics: string[]; // the specific chapters/sections worth reading; [] renders no list
+  linkLabel: string;
 }
 
 /** One question and its answer in the Join page's FAQ. */
@@ -250,6 +261,10 @@ export function getCommunityTraditions(): CommunityTradition[] {
 
 export function getNewbieExperience(): NewbieExperiencePillar[] {
   return newbieExperienceData as NewbieExperiencePillar[];
+}
+
+export function getInterviewResources(): InterviewResource[] {
+  return interviewResourcesData as InterviewResource[];
 }
 
 export function getFaq(): FaqItem[] {
