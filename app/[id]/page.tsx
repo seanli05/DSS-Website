@@ -231,7 +231,7 @@ export default async function CommitteePage({
           <Section
             index={projectsIndex}
             eyebrow="Portfolio"
-            heading="Projects"
+            heading="Recent Projects"
             subtext="A rotating look at what this committee has shipped. Click “See more” for the full story."
           >
             <RevealOnScroll delayMs={100}>
