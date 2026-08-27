@@ -38,6 +38,18 @@ export const APPLICATION_URL =
 export const COFFEE_CHAT_URL = "https://ripple-increase-bbd.notion.site/dss-fall26-cc";
 
 /**
+ * The mailing list sign-up, linked from the Join page's hero.
+ *
+ * Unlike APPLICATION_URL and COFFEE_CHAT_URL this one has no short-link
+ * redirect in `next.config.ts` — nothing off-site points at it yet. Add one the
+ * same way if it ever goes on a flyer. It also outlives a single cycle: it's a
+ * standing list for recruitment reminders, not a per-semester form, so there
+ * should be no need to touch it each fall.
+ */
+export const MAILING_LIST_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSe7qmYZKwBZy0h6UlhsiYLwKSJ3elED_1iWePOflYbUc_jEEg/viewform";
+
+/**
  * The DeCal enrolment form, linked from the DeCal page's hero.
  *
  * Same deal as APPLICATION_URL: it changes every semester, and the `?usp=dialog`
