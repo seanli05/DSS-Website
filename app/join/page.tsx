@@ -11,7 +11,7 @@ import {
   getNewbieExperience,
   getRecruitmentTimeline,
 } from "@/lib/content";
-import { APPLICATION_URL, COFFEE_CHAT_URL } from "@/lib/site";
+import { APPLICATION_URL, COFFEE_CHAT_URL, MAILING_LIST_URL } from "@/lib/site";
 
 // The current DeCal's lecture slides, linked from the interview resources intro.
 // Page-local rather than in lib/site.ts for the same reason as the decal page's
@@ -27,6 +27,11 @@ const DECAL_SLIDES_URL = "https://dssdecal.org/sp26/";
 const B = ({ children }: { children: React.ReactNode }) => (
   <strong className="font-semibold text-ink/80">{children}</strong>
 );
+
+// The hero's two secondary sign-ups, styled alike so neither reads as the more
+// important of the pair. Kept as a plain string per CLAUDE.md rule 8.
+const SECONDARY_LINK =
+  "text-lg font-medium text-white/80 underline underline-offset-4 transition-colors duration-150 hover:text-white";
 
 export const metadata: Metadata = {
   title: "Join",
@@ -53,13 +58,14 @@ export default async function JoinPage() {
             Applications for Fall 2026 open in the first week of classes. Here&apos;s
             everything you need to know.
           </p>
-          {/* One CTA — the application — with coffee chats beside it as a plain
-              underlined link rather than a second button, so the hero reads as
-              a single primary action with a quieter alternative next to it.
-              flex-wrap rather than a stack breakpoint: the pair sits on one line
-              wherever it fits and the link drops to its own where it doesn't,
-              with no width to guess at. items-center rather than items-stretch —
-              there are no longer two boxes whose heights need matching. */}
+          {/* One CTA — the application — with the two secondary sign-ups beside
+              it as plain underlined links rather than more buttons, so the hero
+              reads as a single primary action with quieter alternatives next to
+              it. flex-wrap rather than a stack breakpoint: the row sits on one
+              line wherever it fits and the links drop to their own where they
+              don't, with no width to guess at. items-center rather than
+              items-stretch — there are no longer two boxes whose heights need
+              matching. */}
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
             {/* The form URL lives in lib/site.ts, shared with the `/apply`
                 redirect in next.config.ts — update it there once per cycle.
@@ -81,9 +87,19 @@ export default async function JoinPage() {
               href={COFFEE_CHAT_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg font-medium text-white/80 underline underline-offset-4 transition-colors duration-150 hover:text-white"
+              className={SECONDARY_LINK}
             >
               Sign up for coffee chats
+            </a>
+            {/* The lowest-commitment option of the three, and last for that
+                reason: for anyone who lands here before applications open. */}
+            <a
+              href={MAILING_LIST_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={SECONDARY_LINK}
+            >
+              Join our mailing list
             </a>
           </div>
         </div>
