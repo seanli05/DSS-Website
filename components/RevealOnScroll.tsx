@@ -20,11 +20,9 @@ export default function RevealOnScroll({ children, className = "", delayMs = 0 }
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setVisible(true);
-      return;
-    }
+    // Under reduced motion the motion-reduce: classes below show the content
+    // immediately, so there's nothing to observe.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const el = ref.current;
     if (!el) return;
@@ -50,7 +48,7 @@ export default function RevealOnScroll({ children, className = "", delayMs = 0 }
       // ease-out, so this is set directly to match product.studentorg.berkeley.edu exactly
       // (verified via getComputedStyle there: "ease, ease", not "ease-out").
       style={{ transitionDelay: `${delayMs}ms`, transitionTimingFunction: "ease", willChange: "opacity, transform" }}
-      className={`transition-[opacity,transform] duration-[800ms] motion-reduce:transition-none ${
+      className={`transition-[opacity,transform] duration-[800ms] motion-reduce:transition-none motion-reduce:opacity-100! motion-reduce:translate-y-0! ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       } ${className}`}
     >

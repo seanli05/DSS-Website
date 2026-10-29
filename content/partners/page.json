@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "title": "Partners",
+    "description": "Partner with DSS — access Berkeley's top data science talent for consulting, research, and recruiting."
+  },
+
+  "hero": {
+    "heading": "Work with us",
+    "subtext": "We partner with companies on semester-long data science project engagements that allow our members to work through real industry problems from start to finish."
+  },
+
+  "inquiryForm": {
+    "heading": "Get in touch",
+    "subtext": "Tell us a little about your company and what you'd like to work on.",
+    "successHeading": "Thanks — we've got your inquiry.",
+    "successBody": "We'll be in touch within 48 hours."
+  },
+
+  "waysToPartner": {
+    "eyebrow": "Ways to partner",
+    "heading": "More than one way to work together.",
+    "subtext": "Consulting projects are our primary form of engaging with a company, but there are a handful of other ways to partner with DSS, from recruiting to speaker events and hackathons."
+  },
+
+  "process": {
+    "eyebrow": "Process",
+    "heading": "More Details About Our Process",
+    "subtext": "Projects run on a semester cadence with a dedicated team and a defined scope to work on.",
+    "cards": [
+      {
+        "icon": "team",
+        "title": "Team structure",
+        "paragraphs": [
+          "Each engagement gets a hand-picked team of students consisting of 2 project managers, 3-4 consultants, and a senior advisor. Students are picked for a project based on relevant experience in the project scope or the client’s industry. Weekly check-ins are also in place to keep clients in the loop without directly managing the project."
+        ],
+        "bullets": []
+      },
+      {
+        "icon": "scope",
+        "title": "Project scopes",
+        "paragraphs": ["Common scopes include, but are not limited to:"],
+        "bullets": [
+          "Generative AI, LLMs, NLP",
+          "Predictive modeling & ML",
+          "Computer Vision",
+          "Data Analytics & Visualization",
+          "Software/Cloud Development"
+        ]
+      },
+      {
+        "icon": "student",
+        "title": "Why student teams",
+        "paragraphs": [
+          "Our members intern across industry throughout their time at Berkeley and go on to full-time roles at leading technology, finance, and consulting firms.",
+          "Partnering is the best way to not only target a focused project scope but also build an early talent pipeline."
+        ],
+        "bullets": []
+      }
+    ]
+  },
+
+  "projectTimeline": {
+    "heading": "Project Timeline",
+    "subtext": "Click on a stage to view each portion of a project timeline.",
+    "legendTerms": "Fall / Spring",
+    "legendText": "— both semesters follow the same five stages.",
+    "stages": [
+      {
+        "icon": "scope",
+        "title": "Contracts & Scoping",
+        "fall": "Aug",
+        "spring": "Jan",
+        "detail": "We finalize the SOW + additional documents and lock the project scope together. Everything regarding projects, from legal forms to the problem statement are defined here before project work starts."
+      },
+      {
+        "icon": "start",
+        "title": "Work Begins",
+        "fall": "Sep",
+        "spring": "Feb",
+        "detail": "We start off with an onboarding call between the client’s POCs and our full DSS team to align on project deliverables/goals. Project work begins starting from here."
+      },
+      {
+        "icon": "flag",
+        "title": "Midpoint Deliverables",
+        "fall": "Oct",
+        "spring": "Mar",
+        "detail": "Around the halfway mark, the team shares project progress up to this point and a first preview of the deliverable. This is the point for the client to also reset expectations or change certain project aspects before the final deliverable."
+      },
+      {
+        "icon": "check",
+        "title": "Final Deliverables",
+        "fall": "Dec",
+        "spring": "May",
+        "detail": "The team presents the final work and product through a live demo and slideshow presentation. All materials will be packaged to be used by the client."
+      },
+      {
+        "icon": "handoff",
+        "title": "Materials Transfer",
+        "fall": "Jan",
+        "spring": "Jun",
+        "detail": "We hand off all code, data, and documentation, and close out access to any shared resources. We also do a final wrap-up call to make sure everything was received."
+      }
+    ]
+  }
+}

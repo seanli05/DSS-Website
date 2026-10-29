@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Section from "@/components/Section";
-import Button from "@/components/Button";
+import EditorialButton from "@/components/EditorialButton";
 import NodeGraph from "@/components/NodeGraph";
 
 export const metadata: Metadata = { title: "Styleguide" };
@@ -27,7 +27,7 @@ export default function StyleguidePage() {
           Design System
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
-          Primitives for Phase 1+. Not linked in the public nav.
+          Colors, type, and components used across the site. Not linked in the public nav, and hidden from search engines (app/robots.ts).
         </p>
       </div>
 
@@ -82,23 +82,21 @@ export default function StyleguidePage() {
       <div className="mx-auto max-w-6xl px-6 pt-16 md:px-8 lg:px-12">
         <p className="mb-6 text-[11px] uppercase tracking-[0.18em] text-primary">Buttons</p>
         <div className="flex flex-col gap-6 border border-border rounded-xl p-8">
-          {/* Variants */}
+          {/* Variants — the site's one button component, EditorialButton */}
           <div className="flex flex-wrap items-center gap-4">
-            <Button variant="primary">Primary</Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="primary" disabled>Disabled</Button>
+            <EditorialButton href="/join">Solid</EditorialButton>
+            <EditorialButton href="/join" variant="outline">Outline</EditorialButton>
+            <EditorialButton href="/join" className="rounded-full">Pill (rounded-full)</EditorialButton>
           </div>
-          {/* Sizes */}
-          <div className="flex flex-wrap items-center gap-4">
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
+          {/* Inverse variants sit on the green gradient (hero CTAs) */}
+          <div className="flex flex-wrap items-center gap-4 surface-green-gradient p-6">
+            <EditorialButton href="/join" variant="inverse">Inverse</EditorialButton>
+            <EditorialButton href="/join" variant="inverse-outline">Inverse outline</EditorialButton>
+            <EditorialButton href="/join" variant="inverse" size="large">Large</EditorialButton>
           </div>
-          {/* As links */}
+          {/* External links open in a new tab */}
           <div className="flex flex-wrap items-center gap-4">
-            <Button href="/join">Internal link</Button>
-            <Button href="https://berkeley.edu" external variant="outline">External link ↗</Button>
+            <EditorialButton href="https://berkeley.edu" external variant="outline">External link</EditorialButton>
           </div>
         </div>
       </div>
@@ -117,7 +115,7 @@ export default function StyleguidePage() {
           {["Projects", "Committees", "Partnerships"].map((label) => (
             <div key={label} className="rounded-xl border border-border p-6">
               <p className="font-semibold text-ink">{label}</p>
-              <p className="mt-2 text-sm text-muted">Placeholder card — Phase 2.</p>
+              <p className="mt-2 text-sm text-muted">Example card.</p>
             </div>
           ))}
         </div>
@@ -129,7 +127,7 @@ export default function StyleguidePage() {
         subtext="Sections are transparent so a page-long .fade-between-gradients wrapper can run behind them; use `centered` for closing CTAs."
         centered
       >
-        <Button href="/join" size="lg" className="mt-2">Join DSS</Button>
+        <EditorialButton href="/join" className="rounded-full">Join DSS</EditorialButton>
       </Section>
 
       {/* ── Node-graph motif ───────────────────────────────────────────────── */}
@@ -155,12 +153,8 @@ export default function StyleguidePage() {
             We turn Berkeley students into data scientists.
           </h2>
           <div className="flex gap-4">
-            <Button variant="outline" href="/join" className="border-white text-white hover:bg-white hover:text-primary">
-              Join DSS
-            </Button>
-            <Button variant="ghost" href="/partners" className="text-white hover:bg-white/10">
-              Partner with us →
-            </Button>
+            <EditorialButton variant="inverse" href="/join">Join DSS</EditorialButton>
+            <EditorialButton variant="inverse-outline" href="/partners">Partner with us</EditorialButton>
           </div>
         </div>
       </div>

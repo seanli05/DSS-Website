@@ -1,0 +1,31 @@
+{
+  "whatWeDo": {
+    "eyebrow": "Our work",
+    "heading": "What we do",
+    "leadLabel": "Committee Lead:"
+  },
+
+  "projects": {
+    "eyebrow": "Portfolio",
+    "heading": "Recent Projects",
+    "subtext": "A rotating look at what this committee has shipped. Click “See more” for the full story."
+  },
+
+  "clientProjects": {
+    "eyebrow": "Portfolio",
+    "heading": "Client Projects",
+    "subtext": "Alongside our teaching responsibilities, our committee also works on a client project during the semester. Here are some of the projects that have helped our members gain more project experience."
+  },
+
+  "activities": {
+    "eyebrow": "Committee life"
+  },
+
+  "closingCta": {
+    "eyebrow": "Interested?",
+    "heading": "Join {committee} this semester.",
+    "subtext": "We recruit in the first two weeks of Fall and Spring semester. Check the Join page for dates, timelines, and how to apply.",
+    "button": "Apply to {committee}",
+    "href": "/join"
+  }
+}

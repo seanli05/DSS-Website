@@ -5,7 +5,7 @@ import { stripTodo, type CommitteeActivity } from "@/lib/content";
 
 // Tile treatment lifted from the About page's tradition grid: the tile lifts and
 // picks up the brand border, and `group` lets the photo inside slow-zoom. Kept as
-// plain strings rather than a shared theme module, per CLAUDE.md rule 8.
+// plain strings rather than a shared theme module, so the component reads on its own.
 // No hover state: these tiles are read-only, so a lift and a brand border
 // advertised a click target that doesn't exist.
 const TILE =
@@ -47,11 +47,8 @@ export default function CommitteeActivities({ activities }: CommitteeActivitiesP
               )}
             </div>
             <div className="flex flex-1 flex-col p-6">
-              {/* The number is an eyebrow, not a badge: same treatment Social Good
-                  uses (see app/social-good/LegacyCommitteeActivities.tsx), and the
-                  same one every other numbered label on the site gets. The gradient
-                  circle it replaced sat heavy at the top of the copy block and read
-                  as a step marker in a process, which these tiles aren't. */}
+              {/* The number is an eyebrow, the same treatment every other
+                  numbered label on the site gets. */}
               <span className="text-[11px] uppercase tracking-[0.18em] text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>

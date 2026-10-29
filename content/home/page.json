@@ -1,0 +1,50 @@
+{
+  "hero": {
+    "heading": "Data Science Society",
+    "tagline": "@ Berkeley",
+    "subtext": "We turn passionate students into innovative leaders. Through hands-on projects with real industry partners and mentorship from experienced members, we'll help you build the skills and portfolio to break into the field.",
+    "primaryButton": { "label": "Join DSS", "href": "/join" },
+    "secondaryButton": { "label": "Learn more", "href": "/about" },
+    "partnersLabel": "Past partners"
+  },
+
+  "mission": {
+    "eyebrow": "Purpose",
+    "heading": "Our Mission",
+    "addressLines": ["Data Science Society", "Berkeley, California"],
+    "body": "DSS is UC Berkeley's premier student organization for data science and machine learning. We are a community where students learn by doing, grow through mentorship, and build careers by impactfully applying technology in the fields they most care about.",
+    "button": { "label": "Learn more about DSS", "href": "/about" },
+    "photo": {
+      "src": "/images/home/group-photo.jpg",
+      "alt": "DSS members on the UC Berkeley campus",
+      "caption": "DSS Spring 2025 Members"
+    }
+  },
+
+  "paths": {
+    "eyebrow": "Get involved",
+    "heading": "Two ways to get started.",
+    "items": [
+      {
+        "title": "Find your committee.",
+        "body": "Acadev, Consulting, and Social Good are the three committees within our organization. Pick the one that best fits your interest and apply to join it!",
+        "href": "/about#committees",
+        "cta": "Explore committees",
+        "image": {
+          "src": "/images/home/committee-group.jpg",
+          "alt": "DSS members gathered on the UC Berkeley campus"
+        }
+      },
+      {
+        "title": "Start with the DeCal.",
+        "body": "New to Berkeley, or still deciding whether data science is for you? Our project-based DeCal is a low-stakes way to find out, and no experience is required!",
+        "href": "/decal",
+        "cta": "About the DeCal",
+        "image": {
+          "src": "/images/home/decal-class.jpg",
+          "alt": "DeCal students presenting their final project to the class in a Berkeley lecture hall"
+        }
+      }
+    ]
+  }
+}

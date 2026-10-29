@@ -25,10 +25,10 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   // A looping clip is motion the visitor didn't ask for. Under
   // prefers-reduced-motion it gets controls and stays paused instead, which is
   // strictly better than the GIF it replaces — that could never be stopped.
-  const [reducedMotion, setReducedMotion] = useState(false);
-  useEffect(() => {
-    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
+  // Read once on open — the modal only ever mounts in the browser (after a click).
+  const [reducedMotion] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
   // Starts false so the first paint is the "hidden" state, then flips to true
   // a frame later — that's what makes the enter transition actually animate
   // instead of snapping straight to its final state.

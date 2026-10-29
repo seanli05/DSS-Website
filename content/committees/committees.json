@@ -1,0 +1,140 @@
+[
+  {
+    "id": "acadev",
+    "name": "Acadev",
+    "fullName": "Academic Development",
+    "kicker": "Teach",
+    "icon": "🎓",
+    "blurb": "The Acadev committee aims to make data science accessible by equipping students with practical skills and bridging the gap between classroom learning and real-world applications.",
+    "focusAreas": [
+      "Teaching",
+      "Curriculum",
+      "Project Mentorship"
+    ],
+    "lead": "TODO: Committee Lead",
+    "featured": true,
+    "heroImage": "/images/committees/acadev/hero.jpg",
+    "description": "We lead and teach the DeCal course, “Introduction to Real World Data Science,” helping students of all experience levels build practical data science skills beyond the classroom.\n\nThrough a project-based curriculum, mentorship from our committee members, and an end-to-end team project using a real-world dataset, students gain the hands-on experience needed to tackle real data science and machine learning problems.\n\nOur mission is to bridge the gap between classroom learning and industry practice, empowering students to build confidence and thrive in the rapidly evolving world of data science.",
+    "workImage": "/images/committees/acadev/committee.jpg",
+    "workImageAlt": "The Acadev committee in business attire, posing and laughing together on the lawn outside a UC Berkeley campus building",
+    "workCaption": "Spring 2026 Acadev Committee Members",
+    "workImageOrientation": "landscape",
+    "activitiesHeading": "How we spend our time",
+    "activitiesSubtext": "Beyond the client work, this is what a semester in the committee looks like.",
+    "activities": [
+      {
+        "id": "teaching-the-decal",
+        "title": "Teaching the DeCal",
+        "body": "We plan and design the curriculum for Introduction to Real World Data Science, taking students through a full end-to-end project.",
+        "image": "/images/committees/acadev/decal-lecture.jpg",
+        "imageAlt": "Students attending an Acadev lecture on data visualization in a UC Berkeley classroom"
+      },
+      {
+        "id": "machine-learning-deep-dives",
+        "title": "Machine learning deep dives",
+        "body": "Our members give live lectures to dozens of students, practicing their teaching skills and reinforcing their understanding of complex concepts.",
+        "image": "/images/committees/acadev/decal-lecture-xgboost.jpg",
+        "imageAlt": "Acadev instructors teaching students about XGBoost during a DeCal lecture"
+      },
+      {
+        "id": "committee-socials",
+        "title": "Socials and bonding",
+        "body": "We have dinners, games, and committee socials that give everyone a reason to spend time together away from their usual responsibilities.",
+        "image": "/images/committees/acadev/socials.jpg",
+        "imageAlt": "Acadev committee members gathered around a long outdoor table of noodle bowls at a Berkeley restaurant, turning to smile at the camera"
+      }
+    ]
+  },
+  {
+    "id": "consulting",
+    "name": "Consulting",
+    "fullName": null,
+    "kicker": "Build",
+    "icon": "📊",
+    "blurb": "The Consulting committee aims to attack some of the industry's most exciting problems by continuously adapting to new technologies and strategies.",
+    "focusAreas": [
+      "Industry Clients",
+      "Machine Learning",
+      "Analytics"
+    ],
+    "lead": "Rakshan Reddy",
+    "featured": true,
+    "heroImage": "/images/committees/consulting/hero.jpg",
+    "description": "We partner with Big Tech and Fortune 500 clients, developing end-to-end technical solutions across machine learning, agentic AI, data science, and software.\n\nWe focus our efforts not only on building effective, production-ready solutions, but also on communicating that work clearly, regularly presenting progress and results in client-facing update meetings to build confidence and professionalism alongside technical skill.\n\nIn our committee, we strive to instill a mindset of continuous growth within our members, encouraging them to stay curious, keep learning, and sharpen their technical abilities as they prepare to pursue their professional endeavors.",
+    "workImage": "/images/committees/consulting/what-we-do.jpg",
+    "workImageAlt": "Consulting committee members posing together outside a UC Berkeley campus building",
+    "workCaption": "Spring 2026 Consulting Committee Members",
+    "workImageOrientation": "landscape",
+    "activitiesHeading": "Outside of projects",
+    "activitiesSubtext": "Beyond client work, we make time to grow, learn, and have fun.",
+    "activities": [
+      {
+        "id": "case-practice",
+        "title": "Professional Growth",
+        "body": "In our biweekly committee meetings, we also grow together through interview prep, AI building sessions, and skills development.",
+        "image": "/images/committees/consulting/professional-development.jpg",
+        "imageAlt": "Consulting committee members posing together during a committee meeting"
+      },
+      {
+        "id": "alumni-chats",
+        "title": "Network Building",
+        "body": "Consulting members help source new projects, which means speaking directly with tech leaders, and we host in-committee alumni and networking panels.",
+        "image": "/images/committees/consulting/network-building.jpg",
+        "imageAlt": "Consulting members speaking on an alumni panel during a committee meeting"
+      },
+      {
+        "id": "committee-socials",
+        "title": "Committee socials",
+        "body": "We also take the time to step away from everything else and just have fun through bigger committee socials and smaller group activities.",
+        "image": "/images/committees/consulting/committee-socials.jpg",
+        "imageAlt": "Consulting committee members watching the sunset together on a hike overlooking the Bay Area"
+      }
+    ]
+  },
+  {
+    "id": "social-good",
+    "name": "Social Good",
+    "fullName": null,
+    "kicker": "Serve",
+    "icon": "🌱",
+    "blurb": "The Social Good committee is focused on data done right. We care deeply about modern issues the rapid pace of technology comes with and how to tackle them.",
+    "focusAreas": [
+      "Nonprofits",
+      "Data Ethics",
+      "Social Impact"
+    ],
+    "lead": "Manav Kumar",
+    "featured": true,
+    "heroImage": "/images/committees/social-good/hero.jpg",
+    "description": "We provide pro-bono support for non-profit organizations, developing advanced analytical insights to recognize uplifting initiatives around the globe.\n\nBy using ‘tech for social good’, our diverse team of talented individuals prides itself on the impact it makes working on meaningful projects across the societal, healthcare, and environmental domains.\n\nWe focus our efforts not only on providing effective solutions to real-world issues, but also on addressing ethical challenges within the tech landscape — a need made increasingly evident by the rapid advancement of technology and the prevalence of data in today’s world. In our committee, we strive to instill a passion for ethical commitment within our members as they prepare to pursue their professional endeavors.",
+    "workImage": "/images/committees/social-good/work.jpg",
+    "workImageAlt": "Social Good committee members cheering as they lift one member up, outside a campus building at UC Berkeley",
+    "workCaption": "Spring 2026 Social Good Committee Members",
+    "workImageOrientation": "portrait",
+    "activitiesHeading": "How we spend our time",
+    "activitiesSubtext": "Beyond the client work, this is what a semester in the committee looks like.",
+    "activities": [
+      {
+        "id": "discussions",
+        "title": "Discussions on ethical issues",
+        "body": "We have open discussions about current events that have major social implications and debate the ethical questions behind the technology.",
+        "image": "/images/committees/social-good/discussions.jpg",
+        "imageAlt": "Committee members seated in a wide circle of desk chairs in a classroom, talking with a presentation on the screen behind them"
+      },
+      {
+        "id": "skill-workshops",
+        "title": "Skill workshops",
+        "body": "Hands-on sessions on the skills the committee leans on most, such as decking, public speaking, critical thinking, and more.",
+        "image": "/images/committees/social-good/skill-workshops.jpg",
+        "imageAlt": "The Social Good committee gathered for a group photo outside a campus building in the evening"
+      },
+      {
+        "id": "bonding-games",
+        "title": "Bonding games",
+        "body": "We play light-hearted games and have fun socials that allow everyone in the committee to spend extra time bonding together.",
+        "image": "/images/committees/social-good/bonding-games.jpg",
+        "imageAlt": "Two committee members holding up sheets of paper covered in quick sketches during a drawing game in class"
+      }
+    ]
+  }
+]

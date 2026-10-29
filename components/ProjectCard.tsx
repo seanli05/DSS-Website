@@ -28,10 +28,6 @@ interface ProjectCardProps {
  * blocks rather than a grid of identical white boxes — the same trick the
  * Partners page uses for its offering cards — and, being tokens from
  * `globals.css`, it's always on-brand.
- *
- * Mirrors the Social Good committee page's card exactly (see
- * `app/committees/social-good/LegacyProjectCard.tsx`) so every committee's
- * project showcase reads as one consistent system.
  */
 const PALETTE = [
   { panel: "bg-primary/[0.045]", body: "bg-primary/[0.11]", mark: "text-primary" },

@@ -19,7 +19,7 @@
  * a URL-keyed manifest would miss on the very next build.
  *
  * No token (preview/dev builds) => exits quietly. lib/content.ts then falls back
- * to the committed JSON, which references local images already.
+ * to the committed JSON fallbacks under content/, which use local images.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -28,7 +28,7 @@ import Airtable from "airtable";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const OUT_DIR = path.join(ROOT, "public", "airtable");
-const MANIFEST = path.join(ROOT, "content", "airtable-manifest.json");
+const MANIFEST = path.join(ROOT, "lib", "generated", "airtable-manifest.json");
 
 /** Vercel injects env vars directly; local runs read .env.local. Hand-parsed to
  *  avoid a dependency and to work on any Node 20.x (--env-file landed in 20.6). */

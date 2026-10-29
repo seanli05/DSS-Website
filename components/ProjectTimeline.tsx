@@ -19,49 +19,20 @@ import { useState } from "react";
  * Each stage now prints both months as "Aug / Jan" (fall first), with a legend
  * above the rail saying so.
  */
-// TODO: confirm milestone timing and detail copy with DSS leadership.
-const MILESTONES = [
-  {
-    title: "Contracts & Scoping",
-    fall: "Aug",
-    spring: "Jan",
-    icon: "scope",
-    detail:
-      "	We finalize the SOW + additional documents and lock the project scope together. Everything regarding projects, from legal forms to the problem statement are defined here before project work starts.",
-  },
-  {
-    title: "Work Begins",
-    fall: "Sep",
-    spring: "Feb",
-    icon: "start",
-    detail:
-      "We start off with an onboarding call between the client’s POCs and our full DSS team to align on project deliverables/goals. Project work begins starting from here.",
-  },
-  {
-    title: "Midpoint Deliverables",
-    fall: "Oct",
-    spring: "Mar",
-    icon: "flag",
-    detail:
-      "Around the halfway mark, the team shares project progress up to this point and a first preview of the deliverable. This is the point for the client to also reset expectations or change certain project aspects before the final deliverable.",
-  },
-  {
-    title: "Final Deliverables",
-    fall: "Dec",
-    spring: "May",
-    icon: "check",
-    detail:
-      "The team presents the final work and product through a live demo and slideshow presentation. All materials will be packaged to be used by the client.",
-  },
-  {
-    title: "Materials Transfer",
-    fall: "Jan",
-    spring: "Jun",
-    icon: "handoff",
-    detail:
-      "We hand off all code, data, and documentation, and close out access to any shared resources. We also do a final wrap-up call to make sure everything was received.",
-  },
-] as const;
+export interface TimelineStage {
+  icon: string; // one of the keys in ICONS below
+  title: string;
+  fall: string; // month label, e.g. "Aug"
+  spring: string;
+  detail: string;
+}
+
+interface ProjectTimelineProps {
+  /** From `projectTimeline.stages` in content/partners/page.json. */
+  stages: TimelineStage[];
+  legendTerms: string;
+  legendText: string;
+}
 
 const iconProps = {
   viewBox: "0 0 24 24",
@@ -74,7 +45,7 @@ const iconProps = {
   "aria-hidden": true,
 };
 
-const ICONS: Record<(typeof MILESTONES)[number]["icon"], React.ReactNode> = {
+const ICONS: Record<string, React.ReactNode> = {
   scope: (
     <svg {...iconProps}>
       <rect x="6" y="4" width="12" height="16" rx="1.5" />
@@ -127,9 +98,9 @@ function Months({ fall, spring }: { fall: string; spring: string }) {
   );
 }
 
-export default function ProjectTimeline() {
+export default function ProjectTimeline({ stages, legendTerms, legendText }: ProjectTimelineProps) {
   const [selected, setSelected] = useState(0);
-  const active = MILESTONES[selected];
+  const active = stages[selected];
 
   return (
     <div>
@@ -137,13 +108,12 @@ export default function ProjectTimeline() {
           "Fall / Spring" order the month pairs use, so the format explains
           itself rather than needing to be decoded. */}
       <p className="mb-10 text-center text-sm leading-relaxed text-muted">
-        <span className="font-medium text-ink">Fall / Spring</span> — both semesters
-        follow the same five stages.
+        <span className="font-medium text-ink">{legendTerms}</span> {legendText}
       </p>
 
       {/* ── md+ : horizontal rail ───────────────────────────────────────── */}
       <ol className="hidden md:grid md:grid-cols-5">
-        {MILESTONES.map((m, i) => {
+        {stages.map((m, i) => {
           const isActive = i === selected;
           return (
             <li key={m.title} className="flex flex-col items-center">
@@ -173,10 +143,10 @@ export default function ProjectTimeline() {
                   {ICONS[m.icon]}
                 </button>
 
-                {i !== MILESTONES.length - 1 && (
+                {i !== stages.length - 1 && (
                   <span aria-hidden="true" className="h-px flex-1 bg-border" />
                 )}
-                {i === MILESTONES.length - 1 && <span className="flex-1" />}
+                {i === stages.length - 1 && <span className="flex-1" />}
               </div>
 
               <button
@@ -205,11 +175,11 @@ export default function ProjectTimeline() {
 
       {/* ── mobile : vertical accordion ─────────────────────────────────── */}
       <ol className="flex flex-col md:hidden">
-        {MILESTONES.map((m, i) => {
+        {stages.map((m, i) => {
           const isActive = i === selected;
           return (
             <li key={m.title} className="relative flex gap-5 pb-8 last:pb-0">
-              {i !== MILESTONES.length - 1 && (
+              {i !== stages.length - 1 && (
                 <span
                   aria-hidden="true"
                   className="absolute bottom-0 left-6 top-12 w-px bg-border"

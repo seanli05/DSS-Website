@@ -2,15 +2,15 @@
 # Post-deploy verification. Costs ZERO Airtable API calls — it only makes HTTP
 # requests to the deployed site.
 #
-#   ./scripts/verify-deploy.sh                      # defaults to the vercel.app URL
-#   ./scripts/verify-deploy.sh https://www.dssberkeley.org
+#   ./scripts/verify-deploy.sh                      # defaults to https://www.dssberkeley.org
+#   ./scripts/verify-deploy.sh https://<preview>.vercel.app
 #
 # The important check is #2: if the page still contains Airtable CDN URLs, those
 # images WILL break within hours (that was the original production bug). Zero
 # Airtable URLs means nothing left in the page can expire.
 set -uo pipefail
 
-URL="${1:-https://dss-website-fawn.vercel.app}"
+URL="${1:-https://www.dssberkeley.org}"
 UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36"
 PAGES=(/ /about /partners /join /decal /acadev /consulting /social-good /contact)
 pass=0; fail=0

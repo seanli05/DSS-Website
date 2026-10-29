@@ -5,13 +5,12 @@ interface GalleryProps {
   photos: CommunityPhoto[];
 }
 
-// Each tile is a 288px slot plus the 20px flex gap.
-const SLOT_PX = 308;
 // 6.5s per slot ≈ 47px/s — deliberately calmer than LogoCarousel's ~80px/s,
 // which reads as restless at photo size.
 const SECONDS_PER_TILE = 6.5;
 // Each half of the track must out-measure any viewport, or the seam scrolls
-// into frame. 16 slots ≈ 4930px, safely past 4K.
+// into frame. Each slot is a 288px tile plus the 20px gap, so 16 slots ≈ 4930px,
+// safely past 4K.
 const MIN_SLOTS_PER_HALF = 16;
 
 /**

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "bootcamp",
+    "title": "Bootcamp",
+    "body": "All new members go through a two-week bootcamp together, with lectures on technical skills and fun socials to bond with your new class.",
+    "image": "/images/join/newbie-experience/bootcamp.jpg",
+    "imageAlt": "New DSS members out together on Durant Avenue in Berkeley at night, holding cups of frozen yogurt"
+  },
+  {
+    "id": "professional-development",
+    "title": "Professional Development",
+    "body": "Workshops and prep sessions built around what students are actually recruiting for, run with people who've recently been through it.",
+    "image": "/images/join/newbie-experience/professional-development.jpg",
+    "imageAlt": "A DSS project team in business attire presenting their work to seated members in a classroom"
+  },
+  {
+    "id": "networking",
+    "title": "Networking",
+    "body": "Time with alumni, industry partners, and members across every committee — the relationships that outlast any one semester.",
+    "image": "/images/join/newbie-experience/networking.jpg",
+    "imageAlt": "DSS members seated around tables listening to speakers at an evening alumni and industry event"
+  },
+  {
+    "id": "community",
+    "title": "Community",
+    "body": "Socials, traditions, and the people you'll be around every week — the part members say kept them here.",
+    "image": "/images/join/newbie-experience/community.jpg",
+    "imageAlt": "DSS members covered head to toe in coloured powder, crowded together and smiling at an outdoor Holi celebration"
+  }
+]
