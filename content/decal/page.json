@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "DeCal",
+    "description": "Learn about Introduction to Real-World Data Science, DSS's student-taught DeCal at UC Berkeley."
+  },
+
+  "hero": {
+    "heading": "Introduction to Real-World Data Science.",
+    "subtext": "A student-taught, project-based course for anyone who wants practical data science experience. No prior experience is required.",
+    "applyButton": "Apply to the DeCal"
+  },
+
+  "overview": {
+    "eyebrow": "Course overview",
+    "heading": "Learn by building.",
+    "columns": [
+      {
+        "label": "What you will learn",
+        "heading": "Work through the full data science life cycle.",
+        "body": "Learn how to **transform a question about anything into a thoughtful result**. The course covers project scoping, data cleaning, exploratory analysis, data visualization, machine learning, model evaluation, and deep learning, with an emphasis on understanding **why each decision matters**. Throughout the course, we connect these principles to **real-world problems** and show how data science teams apply them in industry."
+      },
+      {
+        "label": "What to expect from your project",
+        "heading": "Turn an idea into a finished project.",
+        "body": "Choose a real-world question you care about and develop an **end-to-end team project** around it. You will define the scope, work with a dataset, build and evaluate an approach, and turn your findings into a **clear final presentation**. Throughout the process, Acadev instructors provide **feedback and mentorship** to help your team work through technical challenges, make thoughtful decisions, and communicate what you learned."
+      }
+    ],
+    "footnote": "Any questions or want to learn more? Read the [Q&A guide on Medium](https://medium.com/data-science-society/what-is-the-introduction-to-real-world-data-science-decal-a-q-a-guide-9a6e6adef2cb) that one of our members wrote."
+  },
+
+  "photos": {
+    "eyebrow": "Inside the course",
+    "heading": "What students get",
+    "items": [
+      {
+        "src": "/images/decal/guest-lecture.jpg",
+        "alt": "A guest lecturer speaking to DeCal students in a Berkeley lecture hall, slides projected on two screens behind him.",
+        "caption": "Hear guest lectures directly from faculty at UC Berkeley, including professors like Josh Grossman and Eric Van Dusen, as well as accomplished students working in the field.",
+        "objectPosition": null
+      },
+      {
+        "src": "/images/decal/project-group.jpg",
+        "alt": "A DeCal project group standing together at the front of their classroom after class.",
+        "caption": "Form a close bond with your project group and work closely with DSS mentors at every stage of the project.",
+        "objectPosition": "50% 85%"
+      }
+    ]
+  },
+
+  "studentWork": {
+    "eyebrow": "Student work",
+    "heading": "See what students have built.",
+    "subtext": "These featured projects show the range of questions students explore across domains with guidance from Acadev instructors."
+  },
+
+  "closingCta": {
+    "eyebrow": "Interested?",
+    "heading": "Learn more about the DeCal.",
+    "subtext": "Visit the course site to see the syllabus and course materials from previous years.",
+    "button": { "label": "Visit the DeCal site", "href": "https://dssdecal.org/" }
+  }
+}

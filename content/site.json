@@ -1,0 +1,76 @@
+{
+  "name": "Data Science Society",
+  "fullName": "Data Science Society at UC Berkeley",
+  "shortName": "DSS Berkeley",
+  "url": "https://www.dssberkeley.org",
+  "description": "Data Science Society (DSS) is UC Berkeley's premier student organization for data science. Join us to work on real projects, connect with industry partners, and grow as a data scientist.",
+  "socialPreviewImage": {
+    "src": "/images/home/group-photo.jpg",
+    "width": 2000,
+    "height": 900,
+    "alt": "Members of the Data Science Society at UC Berkeley"
+  },
+  "email": "dss.berkeley@gmail.com",
+  "partnersEmail": "dss.berkeley@gmail.com",
+  "links": {
+    "application": "https://docs.google.com/forms/d/e/1FAIpQLSe98Tv-YMlseOfZsSoF6Ad0vqZmup_gZLWi06fMSboyW3UZsA/viewform",
+    "coffeeChat": "https://ripple-increase-bbd.notion.site/dss-fall26-cc",
+    "mailingList": "https://docs.google.com/forms/d/e/1FAIpQLSe7qmYZKwBZy0h6UlhsiYLwKSJ3elED_1iWePOflYbUc_jEEg/viewform",
+    "decalApplication": "https://docs.google.com/forms/d/e/1FAIpQLSd6lE4Coe15kreXLwtJ2at7uBlp-AOB0MCijgbYz3k_KOkZmw/viewform"
+  },
+  "nav": {
+    "links": [
+      {
+        "label": "About",
+        "href": "/about"
+      },
+      {
+        "label": "Partners",
+        "href": "/partners"
+      },
+      {
+        "label": "Committees",
+        "dropdown": "committees"
+      },
+      {
+        "label": "DeCal",
+        "href": "/decal"
+      },
+      {
+        "label": "Blog",
+        "href": "https://medium.com/data-science-society"
+      }
+    ],
+    "cta": {
+      "label": "Join",
+      "href": "/join"
+    }
+  },
+  "socials": [
+    {
+      "platform": "Instagram",
+      "handle": "@dssberkeley",
+      "href": "https://www.instagram.com/dssberkeley/",
+      "footerIcon": "/icons/instagram.svg",
+      "emoji": "📸"
+    },
+    {
+      "platform": "LinkedIn",
+      "handle": "UC Berkeley Data Science Society",
+      "href": "https://www.linkedin.com/company/dssberkeley/",
+      "footerIcon": "/icons/linkedin.png",
+      "emoji": "💼"
+    },
+    {
+      "platform": "Medium",
+      "handle": "@dssberkeley",
+      "href": "https://medium.com/@dssberkeley",
+      "footerIcon": "/icons/medium.svg",
+      "emoji": "✍️"
+    }
+  ],
+  "footer": {
+    "disclaimer": "We are a student group acting independently of the University of California. We take full responsibility for our organization and this website.",
+    "copyright": "Data Science Society at UC Berkeley. All rights reserved."
+  }
+}

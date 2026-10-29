@@ -15,7 +15,6 @@
   --color-primary-bright: #1D8C89;  /* teal — large headings/decoration only (4.1:1) */
   --color-accent:         #8FB573;  /* sage green — decorative only, never small text */
   --color-accent-ink:     #5F8A46;  /* darkened sage — the AA-legible variant of --color-accent, for text/icons that need the sage identity (e.g. Social Good's card accent) */
-  --color-blossom:        #FFF9EF;  /* warm cream — decorative only (GrowingSapling petals) */
 
   /* Warm card surfaces (recruitment timeline). A pure-white card on a white page
      has nothing to hold it; these give the cards their own warmth without
@@ -138,20 +137,6 @@ body {
     color-mix(in srgb, var(--color-primary) 10%, transparent) 91%,
     color-mix(in srgb, var(--color-primary) 26%, transparent) 100%
   );
-}
-
-/* Blossom "pop" for GrowingSapling — scale is set inline by JS; only the
-   one-way bloom is transitioned (scroll-scrubbed properties get no transition). */
-.sapling-blossom {
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Final "pulse" for GrowingNetwork once the graph fully connects — only opacity
-   and glow are transitioned here, deliberately never transform (that's already
-   doing scroll-scrubbed grow-in via inline style; transitioning it too would
-   fight the scrub, same pitfall .sapling-blossom's comment calls out). */
-.network-pulse {
-  transition: opacity 0.5s ease-out, filter 0.5s ease-out;
 }
 
 /* ProjectTimeline's detail panel: a small rise-in on every stage swap, so
@@ -422,12 +407,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora-a, .hero-aurora-b, .hero-halo, .hero-logo-breathe, .hero-logo-intro {
     animation: none;
-  }
-  .sapling-blossom {
-    transition: none;
-  }
-  .network-pulse {
-    transition: none;
   }
   .timeline-detail-in {
     animation: none;

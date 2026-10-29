@@ -12,7 +12,7 @@ import { SITE_URL } from "@/lib/site";
  *
  * Committee routes come from `getCommittees()` — the same helper
  * app/[id]/page.tsx uses in generateStaticParams — so adding a committee to
- * content/committees.json puts it in the sitemap automatically and the two can
+ * content/committees/committees.json puts it in the sitemap automatically and the two can
  * never disagree about which pages exist.
  *
  * Deliberately excluded: /styleguide (an internal design reference, also
@@ -29,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/join", priority: 0.9, changeFrequency: "weekly" as const },
     { path: "/about", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/partners", priority: 0.8, changeFrequency: "monthly" as const },
+    { path: "/decal", priority: 0.7, changeFrequency: "monthly" as const },
     { path: "/contact", priority: 0.5, changeFrequency: "yearly" as const },
   ];
 

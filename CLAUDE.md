@@ -1,96 +1,47 @@
 # CLAUDE.md
 
-Context for Claude Code working on the **Data Science Society (UC Berkeley)** website.
-Read `PLAN.md` for the full brief, audiences, page specs, and phased task list. This file is the always-on ruleset.
+Context for AI coding assistants working on the **Data Science Society (UC Berkeley)** website.
+Read `README.md` first, then `docs/development.md` for architecture and conventions.
 
-## What we're building
-A clean, modern, mostly-static marketing site for a top Berkeley data science club. Two audiences: prospective student members and industry partners. Static now; advanced features deferred. Optimize for **maintainability by future student officers**, not cleverness.
+## What this is
+A mostly-static Next.js (App Router) + TypeScript + Tailwind v4 marketing site, deployed on
+Vercel. Two audiences: prospective student members and industry partners. It is maintained
+by student officers who change every year — **optimize for maintainability by beginners,
+not cleverness.**
 
-## Stack
-- **Next.js (App Router) + TypeScript** + **Tailwind CSS**.
-- Server Components by default; mark interactive leaves with `"use client"` (StatCounter, Gallery, mobile nav, typing hero).
-- Content in local **JSON** under `content/` (optional MDX for long-form), plus `data/` for stats and the Airtable fallback.
-- Partner logos read from **Airtable** via the REST API at build time, with a local JSON fallback.
-- Images via `next/image`. Deploy: Vercel via GitHub auto-deploy.
-
-> If migrating to Astro later: keep the same tokens, content layer (`lib/content.ts`), components, and sitemap. Only data-fetching and file extensions change.
-
-## Project structure
-```
-app/
-  layout.tsx            root layout: fonts, metadata, Nav, Footer
-  globals.css           Tailwind + design tokens (CSS variables)
-  page.tsx              home
-  about/page.tsx  committees/page.tsx  projects/page.tsx
-  partners/page.tsx  join/page.tsx  contact/page.tsx
-  sitemap.ts
-components/             Nav, Footer, Hero, Section, Button, StatCounter*, LogoCarousel,
-                        CommitteeCard, ProjectCard, ExecCard, Testimonial, DualCTA, Gallery*
-                        (* = "use client")
-lib/content.ts          the ONLY place that knows where data comes from
-content/                committees.json, projects.json, testimonials.json
-data/                   stats.json, partners.json (Airtable fallback)
-public/                 images, logos, favicon
-.nvmrc                  pinned Node version (e.g. 20)
-.env.example            committed template listing required env vars (no real values)
-.env.local              real secrets — gitignored, never committed
-```
+## Where things live
+- `content/` — ALL user-visible text, links, and lists, as JSON, one folder per page.
+  `content/site.json` holds site-wide settings (sign-up links, emails, socials, nav).
+  `content/README.md` is the editor's map — keep it accurate.
+- `lib/content.ts` — the only import surface for content (page copy, lists, and
+  re-exported Airtable fetchers). `lib/airtable.ts` — Airtable fetchers with fallbacks.
+  `lib/types.ts` — content shapes. `lib/site.ts` — typed access to `content/site.json`.
+- `public/images/<page>/` — web-sized photos. `assets/photo-originals/<page>/` — originals.
+- `docs/` — development, Airtable, and deployment guides.
 
 ## Hard rules
-1. **No hardcoded content in components.** Everything flows through `lib/content.ts`.
-2. **Colors only in `app/globals.css`** (CSS variables) and the Tailwind theme that references them. Never inline hex values in components.
-3. **`getPartners()` runs server-side only**, must try the Airtable REST API, then fall back to `data/partners.json` in a try/catch. A failed fetch must never break the build.
-4. **Secrets stay server-side.** `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID`, `AIRTABLE_TABLE` are env vars, never imported into client components. Commit `.env.example` (names only); never commit `.env.local`. `.gitignore` covers `node_modules/`, `.next/`, `.env.local`.
-5. **Default to Server Components.** Add `"use client"` only to genuinely interactive leaves.
-6. **Placeholder content** is expected — mark it `TODO`. Use realistic but clearly fake copy and images.
-7. **Footer must include** the Berkeley independent-org disclaimer (see PLAN §8). Don't remove it.
-8. Keep components small, named clearly, readable by a beginner. Prefer duplication over a confusing abstraction.
-9. **Never kill the dev server.** If `npm run dev` is already running, leave it running — it is the user's live localhost preview, and stopping it blanks the browser tab they are watching. Do not run `kill`, `pkill -f next`, `lsof -ti:3000 | xargs kill`, `Ctrl-C`, or anything else that stops it, and do not stop-and-restart it to "pick up" a change: Next.js hot-reloads edits on its own. Only stop it when the user explicitly asks you to. If a change genuinely needs a restart (editing `next.config`, `.env.local`, or installing a package), say so and let the user do it. If port 3000 is occupied, assume that is their preview and use another port rather than freeing 3000.
+1. **No user-visible copy in components or pages.** Add it to the page's
+   `content/<page>/page.json` (or a list file) and read it via `@/lib/content`.
+   Inline formatting in copy uses `**bold**` and `[label](url)`, rendered by `RichText`.
+2. **Components never import JSON directly** — only through `lib/content.ts` / `lib/site.ts`.
+3. **Colors only in `app/globals.css`** (CSS variables → Tailwind classes). No hex in components.
+4. **Airtable is server-side only** and every fetcher must fall back (JSON or `[]`) inside a
+   try/catch — a failed fetch must never break the build. Never import `lib/airtable.ts`
+   into a `"use client"` component.
+5. **Secrets stay in `.env.local` / Vercel.** Commit `.env.example` (names only).
+6. **Server Components by default**; `"use client"` only for genuinely interactive leaves.
+7. **Footer disclaimer is required** (independent student org). Don't remove it.
+8. Don't invent facts about the club. If copy is unknown, leave a `TODO:` note (one sentence,
+   no internal periods — see `stripTodo` in `lib/content.ts`) rather than making something up.
+9. **Never kill the user's dev server** (`npm run dev` on port 3000). Next hot-reloads; if a
+   change needs a restart (`next.config.ts`, `.env.local`, new package), tell the user. If
+   3000 is busy, use another port.
+10. **Mind the Airtable API quota.** Builds cost ~13 calls. To verify a build without spending
+    quota: `AIRTABLE_TOKEN= AIRTABLE_BASE_ID= npx next build`.
 
-## Brand (sampled from the logo)
-Teal → sage-green gradient. Tokens:
-- `--color-primary: #0C706E` (deep teal) — OK for body text/links (5.9:1 on white).
-- `--color-primary-bright: #1D8C89` (teal) — large headings/decoration only (4.1:1).
-- `--color-accent: #8FB573` (sage) — decorative only, never small text on white.
-- `--gradient-brand: linear-gradient(135deg, #0C706E 0%, #1D8C89 45%, #AAC48E 100%)` — hero, dividers, highlights.
-- Ink `#0B1D1C`, muted `#5A6B68`, surface `#F5F8F7`, border `#E2E8E6`.
+## After structural changes
+Update the relevant doc: `content/README.md` (new content files/fields), `docs/development.md`
+(components, architecture), `docs/airtable.md` (tables, env vars), `README.md` (setup, commands).
 
-The node-graph icon and the gradient are the signature — reuse the node-graph as a subtle accent, apply the gradient to the hero/dividers rather than everywhere. Generate the favicon from the logo.
-
-## Design intent
-Whitespace-heavy; eyebrow → heading → body → action pattern. Modern grotesk headings, Inter body, a **monospace** for small eyebrow labels and stat numbers (the "data science" accent). Subtle, tasteful motion only; respect `prefers-reduced-motion`. WCAG AA contrast; alt text on every image.
-
-## Environment & getting started
-This is a Node/React project — there is **no Python virtualenv**. The "environment" is local Node + `node_modules` (created by `npm install`) + env vars in `.env.local`.
-
-First-time setup:
-```bash
-nvm use                          # match the Node version in .nvmrc (install Node 20 LTS if needed)
-npm install                      # creates node_modules/ (the project's dependency sandbox)
-cp .env.example .env.local       # then fill in real values (Airtable etc.); .env.local is gitignored
-npm run dev                      # http://localhost:3000
-```
-
-Pin the environment so every officer is reproducible:
-- `.nvmrc` with the Node version (e.g. `20`) and an `engines` field in `package.json`.
-- Commit `.env.example` (variable names only, no secrets). Never commit `.env.local`.
-- `.gitignore` must include `node_modules/`, `.next/`, `.env.local`.
-
-Commands:
-```bash
-npm run dev      # local dev server
-npm run build    # production build (Airtable fetched here)
-npm run start    # serve the production build
-# For static hosting (OCF/GitHub Pages): set output: 'export' in next.config + images unoptimized
-```
-
-## Airtable setup (Phase 5)
-- Base table `Partners`: `Name`, `Logo` (attachment), `Website`, `Featured` (checkbox), `Order` (number).
-- Fetch with `fetch(url, { headers: { Authorization: \`Bearer \${TOKEN}\` }, next: { revalidate: 3600 } })`.
-- Set env vars in `.env.local` (gitignored) and in Vercel project settings.
-- Add an Airtable automation → Vercel **deploy hook URL** so logo edits can trigger a rebuild.
-
-## Working approach
-- Build in the phase order from `PLAN.md` (0 → 6). Confirm each phase renders before moving on.
-- When unsure about copy, content shape, or a club-specific detail, leave a `TODO` rather than inventing facts about the club.
-- **Always update `README.md`** after any structural change: new pages, new components, new content fields, new env vars, or changes to data sources. The README is the primary reference for future editors.
+## Checks
+`npm run lint`, `npm run typecheck`, and a build must pass before handing work back.

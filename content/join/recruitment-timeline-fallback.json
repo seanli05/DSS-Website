@@ -1,0 +1,42 @@
+[
+  {
+    "id": "fallback-info-session",
+    "event": "Info Session",
+    "date": "Week 1",
+    "description": "Meet the exec board, learn what DSS does, and hear about every committee. Open to everyone — no application needed.",
+    "time": "6:00–7:30 PM",
+    "room": "Soda 306"
+  },
+  {
+    "id": "fallback-workshop",
+    "event": "Skills Workshop",
+    "date": "Week 1",
+    "description": "A hands-on intro to the tools our members use — Python, pandas, and the data science lifecycle. Come build something.",
+    "time": "6:00–8:00 PM",
+    "room": "Cory 540"
+  },
+  {
+    "id": "fallback-coffee-chats",
+    "event": "Coffee Chats",
+    "date": "Week 2",
+    "description": "Casual 1:1 conversations with current members. Ask anything about projects, committees, and life in DSS.",
+    "time": "Various",
+    "room": "Free Speech Movement Café"
+  },
+  {
+    "id": "fallback-apps-due",
+    "event": "Applications Due",
+    "date": "Week 2",
+    "description": "Submit your written application by 11:59 PM. We review on a rolling basis, so earlier is better.",
+    "time": "11:59 PM",
+    "room": null
+  },
+  {
+    "id": "fallback-decisions",
+    "event": "Decisions & Onboarding",
+    "date": "Week 3",
+    "description": "Offers go out by email, followed by our kickoff social and committee placement. Welcome to DSS.",
+    "time": "TBA",
+    "room": null
+  }
+]

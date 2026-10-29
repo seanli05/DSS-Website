@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import NodeGraph from "./NodeGraph";
-import type { Partner, Project } from "@/lib/content";
+import { homePage, type Partner, type Project } from "@/lib/content";
+
+const copy = homePage.hero;
 
 interface HeroProps {
   partners: Partner[];
@@ -33,29 +35,26 @@ export default function Hero({ partners, projects }: HeroProps) {
             {/* nowrap from lg up keeps the wordmark on a single line at desktop; below
                 that the column is too narrow and it wraps, which is fine. */}
             <h1 className="text-[32px] md:text-[40px] lg:text-[44px] xl:text-[52px] font-bold text-white tracking-tight leading-[0.95] lg:whitespace-nowrap">
-              Data Science Society
+              {copy.heading}
             </h1>
             <p className="mt-4 text-lg md:text-xl font-semibold tracking-wide text-white/80">
-              @ Berkeley
+              {copy.tagline}
             </p>
-            {/* TODO: finalize this copy with DSS leadership — placeholder so the section reads at full length */}
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-lg leading-relaxed">
-              We turn passionate students into innovative leaders. Through hands-on projects with
-              real industry partners and mentorship from experienced members, we&apos;ll help
-              you build the skills and portfolio to break into the field.
+              {copy.subtext}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/join"
+                href={copy.primaryButton.href}
                 className="inline-flex items-center rounded-full bg-white px-7 py-3 text-base font-semibold text-primary shadow-lg hover:bg-white/90 transition-opacity"
               >
-                Join DSS
+                {copy.primaryButton.label}
               </Link>
               <Link
-                href="/about"
+                href={copy.secondaryButton.href}
                 className="group inline-flex items-center gap-2 rounded-full border border-white/60 px-7 py-3 text-base font-semibold text-white hover:border-white hover:bg-white/10 transition-all"
               >
-                Learn more
+                {copy.secondaryButton.label}
                 <span
                   aria-hidden="true"
                   className="transition-transform duration-150 group-hover:translate-x-1 motion-reduce:transition-none"
@@ -75,7 +74,7 @@ export default function Hero({ partners, projects }: HeroProps) {
               matching side without touching Nav.tsx at all. */}
           <div className="relative flex items-center justify-end">
             <div className="relative h-[260px] w-[260px] md:h-[410px] md:w-[410px]">
-              {/* Spinning conic-gradient halo, masked down to a thin ring — matches the sean branch's homepage. */}
+              {/* Spinning conic-gradient halo, masked down to a thin ring. */}
               <div
                 className="hero-halo absolute inset-0 rounded-full opacity-50"
                 style={{
@@ -92,7 +91,7 @@ export default function Hero({ partners, projects }: HeroProps) {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="hero-logo-intro hero-logo-breathe relative h-[190px] w-[190px] md:h-[325px] md:w-[325px] drop-shadow-[0_0_45px_rgba(255,255,255,0.5)]">
                   <Image
-                    src="/dss-logo-white.png"
+                    src="/brand/dss-logo-white.png"
                     alt="Data Science Society logo"
                     fill
                     priority
@@ -113,7 +112,7 @@ export default function Hero({ partners, projects }: HeroProps) {
       {partners.length > 0 && (
         <div className="relative z-10 pb-8 mt-4">
           <p className="mb-1.5 text-center text-sm uppercase tracking-widest text-white/50">
-            Past partners
+            {copy.partnersLabel}
           </p>
           <div className="relative overflow-hidden marquee-mask">
             <div className="marquee-track" style={{ animationDuration: marqueeDuration }}>

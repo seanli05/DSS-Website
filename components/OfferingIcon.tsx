@@ -3,7 +3,7 @@ import type { SVGProps } from "react";
 /**
  * A small, consistent line-icon set for the Partners offerings menu — one
  * lucide-style 24×24 stroke glyph per offering `icon` key from
- * content/offerings.json. Replaces the earlier emoji so the page reads polished
+ * content/partners/offerings.json. Replaces the earlier emoji so the page reads polished
  * to an industry audience. Icons inherit `currentColor`, so set color/opacity on
  * a parent. Unknown keys fall back to the consulting glyph rather than crashing.
  */

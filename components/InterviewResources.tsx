@@ -5,7 +5,7 @@ interface InterviewResourcesProps {
   resources: InterviewResource[];
 }
 
-// Kept as plain strings rather than a shared theme module, per CLAUDE.md rule 8.
+// Kept as plain strings rather than a shared theme module, to keep each component readable on its own.
 //
 // Same card language as CommitteeCard — hairline border, white field, a lift on
 // hover — since these are also whole-card links, just to somewhere off-site.

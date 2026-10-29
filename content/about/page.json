@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "About",
+    "description": "Learn about Data Science Society — our mission, values, and the community we're building at UC Berkeley."
+  },
+
+  "hero": {
+    "heading": "About DSS",
+    "subtext": "Learn more about our origins, the values we stand by, our 3 different committees for you to join, the tight-knit community that we've fostered, our campus involvement, and our current executive board."
+  },
+
+  "story": {
+    "eyebrow": "Our story",
+    "heading": "Our background and values",
+    "photo": {
+      "src": "/images/about/campanile-group.jpg",
+      "alt": "DSS members gathered in front of Sather Tower on the UC Berkeley campus",
+      "caption": "DSS Fall 2025 Members"
+    },
+    "paragraphs": [
+      "Founded in 2016, Data Science Society at Berkeley is UC Berkeley's **first undergraduate student organization** focused on data science.",
+      "Throughout the past decade, we have taken on **90+ client projects**, taught thousands of students through our DeCal, and hosted dozens of inclusive events on campus, all while watching the Data Science major grow into the **largest major at Berkeley**.",
+      "We've continually evolved to stay at the forefront of a rapidly changing field, ensuring that our members and the broader Berkeley community develop the skills they need to succeed as data scientists, machine learning researchers, and software engineers."
+    ],
+    "values": [
+      {
+        "icon": "unlock",
+        "title": "Open to all",
+        "body": "We welcome students from **every major, background, and skill level**. We want to help anyone who's **curious about technology** achieve their goals."
+      },
+      {
+        "icon": "handshake",
+        "title": "Community first",
+        "body": "DSS is a tight-knit support network. We grow together through **mentorship**, **hard work**, and **celebrating our shared successes**."
+      },
+      {
+        "icon": "wrench",
+        "title": "Skill development",
+        "body": "Through our client projects, teaching, and new member development, we aim to **transform beginners** into **leaders** and innovators in industry."
+      },
+      {
+        "icon": "compass",
+        "title": "Forward looking",
+        "body": "Technology is rapidly changing. Our curriculum, projects, and mindset are constantly evolving to ensure we **stay ahead** of where the field is heading."
+      }
+    ]
+  },
+
+  "committees": {
+    "eyebrow": "Get involved",
+    "heading": "Find your committee",
+    "subtext": "We offer three different ways for people of all backgrounds and interests to get involved with data science and machine learning within our organization."
+  },
+
+  "community": {
+    "eyebrow": "Life at DSS",
+    "heading": "Our Community",
+    "subtext": "DSS has many traditions that help you feel included in a close and friendly community at Berkeley.",
+    "galleryLabel": "Moments from the year"
+  },
+
+  "events": {
+    "eyebrow": "Campus involvement",
+    "heading": "Events We Host",
+    "subtext": "Our club hosts events for members and the wider Berkeley community alike. From career fairs to hackathons, we give students the chance to build real technical skills and find their way within the industry.",
+    "emptyMessage": "Event photos are on their way — check back soon."
+  },
+
+  "execBoard": {
+    "eyebrow": "Leadership",
+    "heading": "Our Executive Board",
+    "emptyMessage": "Exec board profiles are on their way — check back soon."
+  }
+}

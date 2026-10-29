@@ -10,7 +10,10 @@
     "prebuild": "node scripts/mirror-airtable.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "mirror": "node scripts/mirror-airtable.mjs",
+    "photo": "node scripts/prepare-photo.mjs"
   },
   "dependencies": {
     "@tsparticles/react": "^4.3.1",

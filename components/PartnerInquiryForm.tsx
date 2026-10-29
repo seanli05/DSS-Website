@@ -4,10 +4,12 @@ import { useState } from "react";
 
 interface PartnerInquiryFormProps {
   /** Dropdown options for "I'm interested in" — passed from getOfferings() so
-   *  the form never drifts from the offerings listed in content/offerings.json. */
+   *  the form never drifts from the offerings listed in content/partners/offerings.json. */
   interests: string[];
   /** Shown as the fallback if a submission fails. */
   contactEmail: string;
+  successHeading: string;
+  successBody: string;
 }
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -19,7 +21,12 @@ const FIELD_BASE =
 
 const LABEL_BASE = "block text-[11px] font-medium uppercase tracking-[0.18em] text-muted";
 
-export default function PartnerInquiryForm({ interests, contactEmail }: PartnerInquiryFormProps) {
+export default function PartnerInquiryForm({
+  interests,
+  contactEmail,
+  successHeading,
+  successBody,
+}: PartnerInquiryFormProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -74,12 +81,9 @@ export default function PartnerInquiryForm({ interests, contactEmail }: PartnerI
           <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <h3 className="text-lg font-semibold tracking-tight text-ink">
-          Thanks — we&apos;ve got your inquiry.
+          {successHeading}
         </h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted">
-          {/* TODO: verify response time with DSS leadership */}
-          We&apos;ll be in touch within 48 hours.
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{successBody}</p>
       </div>
     );
   }

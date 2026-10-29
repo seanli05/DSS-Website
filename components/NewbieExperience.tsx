@@ -3,7 +3,7 @@ import PhotoPlaceholder from "./PhotoPlaceholder";
 import RevealOnScroll from "./RevealOnScroll";
 import { stripTodo, type NewbieExperiencePillar } from "@/lib/content";
 
-// Kept as plain strings rather than a shared theme module, per CLAUDE.md rule 8.
+// Kept as plain strings rather than a shared theme module, to keep each component readable on its own.
 //
 // No hover state: these tiles are read-only, so a lift and a brand border
 // advertised a click target that doesn't exist.

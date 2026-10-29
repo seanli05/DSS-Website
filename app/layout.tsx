@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono, Poppins } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { SITE_URL } from "@/lib/site";
+import { getCommittees } from "@/lib/content";
+import { SITE_URL, site } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,31 +36,24 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  // Without this, the relative image paths in `openGraph` below resolve
-  // relative to nothing and social previews come out blank — so a link posted
-  // in Slack, Discord, iMessage, or LinkedIn renders as a bare URL with no
-  // card. Next needs an absolute base to build those URLs from.
+  // Absolute base for the relative image path below — without it, link
+  // previews in Slack/iMessage/LinkedIn come out as a bare URL with no card.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Data Science Society at UC Berkeley",
-    template: "%s | DSS Berkeley",
+    default: site.fullName,
+    template: `%s | ${site.shortName}`,
   },
-  description:
-    "Data Science Society (DSS) is UC Berkeley's premier student organization for data science. Join us to work on real projects, connect with industry partners, and grow as a data scientist.",
+  description: site.description,
   openGraph: {
-    siteName: "DSS Berkeley",
+    siteName: site.shortName,
     locale: "en_US",
     type: "website",
-    // Without an image the preview card is text-only. 2000x900 is close enough
-    // to the 1.91:1 that Slack/Discord/iMessage/LinkedIn crop to, and at 0.7 MB
-    // it's well under their fetch limits. `metadataBase` above is what turns
-    // this relative path into the absolute URL those scrapers require.
     images: [
       {
-        url: "/group-photo.jpg",
-        width: 2000,
-        height: 900,
-        alt: "Members of the Data Science Society at UC Berkeley",
+        url: site.socialPreviewImage.src,
+        width: site.socialPreviewImage.width,
+        height: site.socialPreviewImage.height,
+        alt: site.socialPreviewImage.alt,
       },
     ],
   },
@@ -79,7 +73,8 @@ export default function RootLayout({
       className={`${inter.variable} ${ibmPlexMono.variable} ${poppins.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-bg text-ink antialiased">
-        <Nav />
+        {/* The Committees dropdown is built from content/committees/committees.json. */}
+        <Nav committees={getCommittees().map((c) => ({ label: c.name, href: `/${c.id}` }))} />
         <main className="flex-1 pt-16">{children}</main>
         <Footer />
       </body>

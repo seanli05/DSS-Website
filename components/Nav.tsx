@@ -3,114 +3,120 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { BLOG_URL } from "@/lib/site";
+import { isExternal, site, type NavItem } from "@/lib/site";
 
-const links = [
-  { label: "About", href: "/about" },
-  { label: "Partners", href: "/partners" },
-];
+interface NavLink {
+  label: string;
+  href: string;
+}
 
-const committeeLinks = [
-  { label: "Acadev", href: "/acadev" },
-  { label: "Consulting", href: "/consulting" },
-  { label: "Social Good", href: "/social-good" },
-];
+interface NavProps {
+  /** The Committees dropdown entries — passed from the root layout, built from committees.json. */
+  committees: NavLink[];
+}
 
-export default function Nav() {
+// The link list and the Join button come from `nav` in content/site.json.
+// An item with `"dropdown": "committees"` renders the committee list instead of a link.
+
+function Chevron({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      className={`transition-transform duration-150 ${className}`}
+      aria-hidden="true"
+    >
+      <path d="M2 4l4 4 4-4" />
+    </svg>
+  );
+}
+
+/** A plain nav link: client-side <Link> inside the site, new tab for anything external. */
+function NavAnchor({
+  href,
+  className,
+  onClick,
+  children,
+}: NavLink & { className: string; onClick?: () => void; children?: React.ReactNode }) {
+  if (isExternal(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className} onClick={onClick}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className} onClick={onClick}>
+      {children}
+    </Link>
+  );
+}
+
+const hasHref = (item: NavItem): item is NavItem & { href: string } => "href" in item;
+
+export default function Nav({ committees }: NavProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [committeeOpen, setCommitteeOpen] = useState(false);
+  const { links, cta } = site.nav;
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-hero-canvas/60 backdrop-blur-md">
       <nav className="mx-auto flex max-w-[1200px] items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 font-semibold text-white">
-          <Image src="/dss-logo-white.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
-          <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">
-            Data Science Society
-          </span>
+          <Image src="/brand/dss-logo-white.png" alt="" width={28} height={28} className="h-7 w-7" aria-hidden="true" />
+          <span className="whitespace-nowrap text-base font-bold tracking-tight sm:text-lg">{site.name}</span>
         </Link>
 
-        {/* Desktop links + Join, grouped together on the right so the logo stands alone on the left */}
+        {/* Desktop links + Join, grouped on the right so the logo stands alone on the left */}
         <div className="hidden md:flex items-center gap-8">
           <ul className="flex items-center gap-8 text-sm font-medium text-white/70">
-            {links.map(({ label, href }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="hover:text-white transition-colors duration-150"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-
-            {/* Committees dropdown */}
-            <li className="relative group">
-              <button
-                className="flex items-center gap-1 hover:text-white transition-colors duration-150 cursor-pointer"
-                aria-haspopup="true"
-              >
-                Committees
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="transition-transform duration-150 group-hover:rotate-180"
-                  aria-hidden="true"
-                >
-                  <path d="M2 4l4 4 4-4" />
-                </svg>
-              </button>
-              {/* Dropdown panel — visible on group hover */}
-              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
-                <ul className="rounded-xl border border-white/10 bg-hero-canvas-deep/85 backdrop-blur-xl shadow-lg py-1.5 min-w-[160px]">
-                  {committeeLinks.map(({ label, href }) => (
-                    <li key={href}>
-                      <Link
-                        href={href}
-                        className="block px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors duration-150"
-                      >
-                        {label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-
-            <li>
-              <Link
-                href="/decal"
-                className="hover:text-white transition-colors duration-150"
-              >
-                Decal
-              </Link>
-            </li>
-
-            {/* The blog lives on Medium, so this leaves the site — a plain <a>
-                with target="_blank", not a client-side <Link>. */}
-            <li>
-              <a
-                href={BLOG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white transition-colors duration-150"
-              >
-                Blog
-              </a>
-            </li>
+            {links.map((item) =>
+              hasHref(item) ? (
+                <li key={item.label}>
+                  <NavAnchor href={item.href} label={item.label} className="hover:text-white transition-colors duration-150">
+                    {item.label}
+                  </NavAnchor>
+                </li>
+              ) : (
+                <li key={item.label} className="relative group">
+                  <button
+                    className="flex items-center gap-1 hover:text-white transition-colors duration-150 cursor-pointer"
+                    aria-haspopup="true"
+                  >
+                    {item.label}
+                    <Chevron className="group-hover:rotate-180" />
+                  </button>
+                  {/* Dropdown panel — visible on hover */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 hidden group-hover:block">
+                    <ul className="rounded-xl border border-white/10 bg-hero-canvas-deep/85 backdrop-blur-xl shadow-lg py-1.5 min-w-[160px]">
+                      {committees.map((c) => (
+                        <li key={c.href}>
+                          <Link
+                            href={c.href}
+                            className="block px-4 py-2 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors duration-150"
+                          >
+                            {c.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              )
+            )}
           </ul>
 
-          {/* Join CTA */}
           <Link
-            href="/join"
+            href={cta.href}
             className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Join
+            {cta.label}
           </Link>
         </div>
 
@@ -136,84 +142,49 @@ export default function Nav() {
       {menuOpen && (
         <div className="md:hidden border-t border-white/10 bg-hero-canvas-deep/85 backdrop-blur-xl px-6 pb-6 pt-2">
           <ul className="flex flex-col gap-4 text-sm font-medium text-white/70">
-            {links.map(({ label, href }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="block hover:text-white transition-colors"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-
-            {/* Committees expandable in mobile */}
-            <li>
-              <button
-                className="flex w-full items-center justify-between hover:text-white transition-colors"
-                onClick={() => setCommitteeOpen((o) => !o)}
-              >
-                Committees
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className={`transition-transform duration-150 ${committeeOpen ? "rotate-180" : ""}`}
-                  aria-hidden="true"
-                >
-                  <path d="M2 4l4 4 4-4" />
-                </svg>
-              </button>
-              {committeeOpen && (
-                <ul className="mt-2 ml-4 flex flex-col gap-3">
-                  {committeeLinks.map(({ label, href }) => (
-                    <li key={href}>
-                      <Link
-                        href={href}
-                        className="block hover:text-white transition-colors"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        {label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
+            {links.map((item) =>
+              hasHref(item) ? (
+                <li key={item.label}>
+                  <NavAnchor
+                    href={item.href}
+                    label={item.label}
+                    className="block hover:text-white transition-colors"
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                  </NavAnchor>
+                </li>
+              ) : (
+                <li key={item.label}>
+                  <button
+                    className="flex w-full items-center justify-between hover:text-white transition-colors"
+                    onClick={() => setCommitteeOpen((o) => !o)}
+                  >
+                    {item.label}
+                    <Chevron className={committeeOpen ? "rotate-180" : ""} />
+                  </button>
+                  {committeeOpen && (
+                    <ul className="mt-2 ml-4 flex flex-col gap-3">
+                      {committees.map((c) => (
+                        <li key={c.href}>
+                          <Link href={c.href} className="block hover:text-white transition-colors" onClick={closeMenu}>
+                            {c.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              )
+            )}
 
             <li>
               <Link
-                href="/decal"
-                className="block hover:text-white transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Decal
-              </Link>
-            </li>
-
-            <li>
-              <a
-                href={BLOG_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block hover:text-white transition-colors"
-                onClick={() => setMenuOpen(false)}
-              >
-                Blog
-              </a>
-            </li>
-
-            <li>
-              <Link
-                href="/join"
+                href={cta.href}
                 className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
-                Join
+                {cta.label}
               </Link>
             </li>
           </ul>

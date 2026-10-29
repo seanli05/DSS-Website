@@ -1,551 +1,104 @@
-# DSS Berkeley — Website
+# Data Science Society at UC Berkeley — Website
 
-The marketing website for **Data Science Society at UC Berkeley**. Built with Next.js (App Router), TypeScript, and Tailwind CSS v4. Deployed on Vercel via GitHub auto-deploy.
+The website for [Data Science Society (DSS)](https://www.dssberkeley.org), UC
+Berkeley's first undergraduate data science organization. It introduces the club
+to prospective members, showcases our committees and client projects, and gives
+industry partners a way to reach us.
 
-Two audiences: **prospective student members** and **industry partners**.
+Built with [Next.js](https://nextjs.org) (App Router), TypeScript, and Tailwind CSS,
+with some content managed in Airtable. Hosted on Vercel.
+
+**Pages:** Home · About · Committees (Acadev, Consulting, Social Good) · DeCal ·
+Partners · Join · Contact
 
 ---
 
-## Quick start
+## I just want to change some text or a photo
+
+You don't need to touch any code. **Every word on the site lives in
+[`content/`](content/)**, organized by page:
+
+```
+content/
+  site.json        ← links, emails, socials, nav — update sign-up links here each semester
+  home/  about/  committees/  join/  partners/  decal/  contact/
+```
+
+Open [`content/README.md`](content/README.md) — it has a table of exactly which
+file controls which part of the site, a checklist for the start of each semester,
+and how to add photos.
+
+You can edit these files directly on GitHub (open the file → pencil icon →
+commit). The site redeploys automatically a minute or two later. If you break the
+JSON formatting, the deploy fails and the live site stays as it was — check the
+error in Vercel, fix it, and commit again.
+
+Some sections (projects, exec board, partner logos, events, recruitment timeline)
+are edited in **Airtable** instead, and need a [rebuild](docs/deployment.md#rebuilding-after-content-changes)
+to show up.
+
+---
+
+## Running the site on your computer
+
+You'll need [Node.js 20](https://nodejs.org) (if you use `nvm`, run `nvm use`).
 
 ```bash
-nvm use                    # match the Node version in .nvmrc (Node 20 LTS)
+git clone <this repo>
+cd DSS-Website
 npm install
-cp .env.example .env.local # then fill in Airtable credentials (optional — falls back to local JSON)
-npm run dev                # http://localhost:3000
+cp .env.example .env.local   # optional: add Airtable keys (ask the current webmaster)
+npm run dev                  # → http://localhost:3000
 ```
 
-```bash
-npm run build   # production build (Airtable data is fetched at build time)
-npm run start   # serve the production build locally
-```
+Without Airtable keys the site still runs, using sample/fallback data for the
+Airtable-backed sections.
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Local dev server with live reload |
+| `npm run build` | Production build (downloads Airtable images first) |
+| `npm run start` | Serve the production build |
+| `npm run lint` / `npm run typecheck` | Code checks — run before pushing |
+| `npm run photo -- <in> <out.jpg>` | Resize/crop a photo for the site ([details](content/README.md#photos)) |
+| `npm run mirror` | Re-download Airtable attachments only |
 
 ---
 
-## Project structure
-
-```
-app/                       Next.js App Router — one folder per route
-  layout.tsx               Root layout: fonts, global metadata, Nav, Footer
-  globals.css              ALL design tokens (CSS variables) + Tailwind theme
-  page.tsx                 Home (/)
-  about/page.tsx           About (/about)
-  committees/[id]/page.tsx Committee detail (/committees/[id]) — includes a projects carousel
-                           (there is no /committees index; the Nav dropdown links straight to each)
-  partners/page.tsx        Partners (/partners)
-  join/page.tsx            Join (/join)
-  contact/page.tsx         Contact (/contact)
-  styleguide/page.tsx      Internal style reference (/styleguide)
-  api/partner-inquiry/route.ts
-                           POST endpoint — writes Partners-page inquiries to
-                           Airtable at request time (the only non-static route)
-
-components/                Reusable UI components (see Components section below)
-
-lib/
-  content.ts               The ONLY file that reads data. All components call
-                           these functions — never import JSON directly.
-
-content/                   JSON files editors update to change site content
-  committees.json          The four committees (name, blurb, focus areas, lead)
-  community.json           About page traditions (Big Little, House, Retreats…)
-  community-photos.json    About page Gallery photos. `category` is retained for
-                           grouping/ordering but is no longer shown on the tiles
-  external-events.json     Airtable fallback for the About page events carousel
-  faq.json                 Join-page FAQ (question + answer paragraphs)
-  interview-resources.json Join-page interview prep links (title, url, blurb,
-                           topics, link label)
-  newbie-experience.json   The four Join-page pillars (title, body, photo)
-  offerings.json           What DSS offers partners — also fills the inquiry
-                           form's "I'm interested in" dropdown
-  consulting-process.json  Read by getConsultingProcess(); not yet rendered
-  projects.json            Airtable fallback — shown when project env vars are missing
-  testimonials.json        Partner/member quotes
-
-data/                      Stats and partner fallback (lower-churn data)
-  stats.json               Four headline numbers shown in the stats strip
-  partners.json            Airtable fallback — shown when env vars are missing
-
-public/                    Static assets (images, logos)
-.env.example               Committed template listing required env var names
-.env.local                 Real secrets — gitignored, never commit this file
-.nvmrc                     Pinned Node version
-```
-
----
-
-## Pages
-
-### Home — `app/page.tsx`
-
-The main landing page. Sections in order:
-
-| Section | Component(s) | Data source |
-|---|---|---|
-| Hero (gradient + typing animation) | `Hero` | hardcoded in `Hero.tsx` |
-| Mission one-liner | inline `<Section>` | hardcoded (TODO: finalize copy) |
-| Stats strip | `StatCounter` | `data/stats.json` |
-| Partner logo carousel (marquee) | `LogoCarousel` | Airtable → `data/partners.json` fallback |
-| Committee preview (4 cards) | `CommitteeCard` | `content/committees.json` (featured only) |
-| Projects carousel (all projects) | `ProjectCarousel` | Airtable (Consulting + Social Good tables) → `content/projects.json` fallback |
-| Dual CTA (join + partner) | `DualCTA` | hardcoded in `DualCTA.tsx` |
-| "Two ways to get started" panels | `HomePaths` | hardcoded in `HomePaths.tsx` (`PATHS`) — photos are `/committee-group.jpg` and `/decal-class.jpg`, both pre-cropped to the frame's 4:3 at 1600x1200 |
-
-### About — `app/about/page.tsx`
-
-Tells the club's story.
-
-**Theming.** This page uses the same editorial system as the homepage and Partners page rather than the shared `<Section>` component: `font-poppins`, numbered uppercase eyebrows (`(01) — Our story`) in `text-primary`, light-weight `clamp()` headings, square corners with hairline borders, `Fig. NN —` photo captions, and `RevealOnScroll` staggering. Everything below the hero sits inside one `fade-between-gradients` wrapper so the page eases out of the hero's green and back into the footer's; child sections stay transparent. The eyebrow/heading/caption class strings are constants at the top of the page file. `Gallery`, `EventCarousel`, and `ExecCard` are About-only and were squared to match; `CommitteeCard` is deliberately kept as-is, so its focus-area chips are still pills.
-
-Sections:
-
-- Static gradient page header (left-aligned heading/subtext, matching the Partners/Join header pattern). The bordered uppercase page label that used to sit above the `h1` was removed site-wide — every hero now opens on the heading itself.
-- Mission / founding story
-- Values list (4 rows, numbered, hardcoded in the page file under `VALUES`) — icons come from `lucide-react`
-- Committee preview (`CommitteeCard` grid, each card links to `/committees/[id]`) — `content/committees.json`, featured only. **This `<Section>` carries `id="committees"`**; the homepage "Find your committee" card links to `/about#committees`, so don't drop the id.
-- **Community** — traditions from `content/community.json` via `getCommunityTraditions()`:
-  - Bento tradition grid (Big Little, House System, Chummings, Retreats, Socials) — three card layouts for visual variety. **Each card shows exactly one cover image** (`CommunityTradition.image`), and falls back to an icon-on-gradient placeholder when that field is `null`. Retreats is the only card on the placeholder today. The grid widens to **75% of the viewport from `2xl` up** (gated there because 75% only exceeds `max-w-6xl` past 1536px, so narrower screens keep the shared column rather than shrinking); the section heading sits in the same wrapper so it stays aligned with the cards. Tiles reveal in a staggered cascade (`RevealOnScroll` with increasing `delayMs`) and lift + slow-zoom on hover via the shared `TILE_HOVER`/`TILE_IMAGE_ZOOM` class strings; both back off under `prefers-reduced-motion`. Socials lists its sub-events as plain text labels, not photos
-  - **Adding a cover:** drop one image into `Culture pics/<Category>/Cover/`, re-derive `public/community/` (see below), then point that tradition's `image` at `/community/<slug>/cover.jpg`. Retreats is the only tradition still on the placeholder
-  - "Moments from the year" gallery (`Gallery`, photos from `content/community-photos.json` via `getCommunityPhotos()`) — two rows drifting continuously in opposite directions, purely decorative (no filter, no arrows, no lightbox, no captions, nothing clickable). Photos alternate between the rows, since the JSON is category-ordered and a straight split would leave one row single-category. The strip is inset to 90% and sits outside the section's `max-w-6xl` column so it reads wider than the text without running to the window edge. To change the pace, edit `SECONDS_PER_TILE` in `components/Gallery.tsx`
-- **Campus involvement** — `EventCarousel` of large photo tiles from the Airtable `External Events` table via `getExternalEvents()`, falling back to `content/external-events.json`. Hover/focus darkens the photo and shows the event name
-- Executive board grid (`ExecCard`) — fetched from Airtable (Exec Profiles table); shows a friendly empty-state message if the fetch fails
-
-### Committee detail — `app/committees/[id]/page.tsx`
-
-One page per committee (e.g. `/committees/consulting`, `/committees/social-good`). Sections:
-
-- Page header (icon, name, blurb) from `content/committees.json` — if the committee's `heroImage` is set, the header becomes a full-bleed photo background (dark overlay, white text, Hero-like) instead of the plain surface header. All three committees have one, under `public/committees/<id>-hero.jpg`.
-  - **`heroImage` feeds two places, not one.** Besides this header it is also the art band of that committee's `CommitteeCard` on the About page, so swapping the file changes both at once — there is no separate card image. (`public/committees/*-card.png` are leftovers from an earlier design and are no longer referenced anywhere.)
-  - The homepage "Find your committee" panel in `HomePaths.tsx` used to hardcode `/committees/social-good-hero.jpg` as a third consumer, so it silently changed whenever that hero was swapped. It now has its own `/committee-group.jpg` — **grep for the literal path, not just `heroImage`, before replacing any photo under `public/committees/`.**
-  - **Adding/replacing a hero photo:** derive the original to `public/committees/<id>-hero.jpg` at **2560x1706 (3:2)** — `sharp(src).rotate().resize({ width: 2560, height: 1706, fit: "cover" }).jpeg({ quality: 82, mozjpeg: true })`, which lands around 500-950 KB. 3:2 is the widest source aspect that still survives both consumers: the header crops it to roughly 2:1 on a desktop viewport and the card crops it to 16/10, both from the centre. So **compose for the centre and leave headroom** — anything near the top or bottom edge (heads, hands, feet) is what those two crops eat first. Check a group photo at both aspects before committing it.
-- **What we do** — a two-column spread: the committee's `description` on the left (blank lines in the JSON split it into paragraphs; the first is set larger and darker as a lead), and a vertical committee photo (`CommitteePhoto`) on the right. Committees with no `description` show their focus-area chips in the left column instead.
-  - Columns are proportional (`1.4fr / 1fr`), so the pair always fills the container — fixed widths left dead space to the right of the photo.
-  - The grid row **stretches** (no `items-start`): the photo takes its height from the copy beside it and crops via `object-cover`, so both columns end on exactly the same line. The committee-lead byline uses `lg:mt-auto` to pin itself to the bottom of the copy column, so it meets the photo's caption even when the copy above is short.
-  - Two columns only from `lg`. In the `md` band the column is narrow enough that copy runs tall, and a photo stretched to match came out a 292×753 sliver — so tablets and phones stack instead, photo last, at its natural 2:3.
-  - Where copy is *shorter* than the frame's `lg:min-h-[30rem]` floor, the floor wins and the photo hangs below the copy. That's a copy-length problem, not a layout one — it currently affects Consulting, pending a real write-up. It can't affect Consulting's or Acadev's photos themselves: both are `landscape` (below), which replaces the stretching frame with a fixed 3:2 box and drops the floor entirely.
-  - `CommitteePhoto` takes an optional `landscape` prop, set on the page for the committees whose "What we do" photo is a wide group shot rather than the usual vertical 2:3 — currently **Consulting and Acadev**, both 3:2 sources. It swaps the stretch-to-the-row frame for a fixed `aspect-[3/2]` box sized from its own width, so `object-cover` has nothing to crop, and pairs with `lg:items-center` on the grid so the shorter photo centres against the copy.
-  - It also takes an optional `images` array (`workImages` in the JSON), which turns the slot into a 4:3 fading carousel with arrows, dots, keyboard and swipe support, and 4s autoplay that pauses on hover and respects `prefers-reduced-motion`. **No committee uses it today** — Acadev did until its two DeCal photos moved down into "How we spend our time" — but the code path stays for the next committee with a set of photos rather than one.
-- **Recent Projects** (`ProjectCarousel`) — its own section under the `Portfolio` eyebrow, shown only when `getProjectsByCommittee(committee.id)` returns results. The heading is set in both `app/[id]/page.tsx` and `app/social-good/page.tsx`, so renaming it means editing both — Acadev's separate **Client Projects** section keeps its own name, since that work is distinct from the student projects the committee mentors. `committee` (`"consulting"` or `"social-good"`) comes from which Airtable table the project was fetched from (see Airtable section below); no `/projects` archive page exists anymore, this carousel plus the homepage carousel are the only places projects are browsable.
-- **How we spend our time** (`CommitteeActivities`) — three tiles across, each a landscape 4:3 photo over a numbered title and short description, describing what a semester in the committee is actually like (as opposed to what it produces). Sits *after* Projects: the work the committee produces leads, and committee life follows it. Rendered only for committees with a non-empty `activities` array; currently Consulting and Acadev (on the shared `/[id]` route) and Social Good (through its frozen `LegacyCommitteeActivities` copy). **The heading is per-committee**: Acadev and Social Good read "How we spend our time"; Consulting keeps the older "Outside of projects" with its own subtext. The split is a one-line conditional on `isAcadev` in `app/[id]/page.tsx` — Acadev's section is mostly teaching rather than client work, so "Outside of projects" didn't describe it. A tile whose `image` is `null` renders the shared `PhotoPlaceholder` at the same 4:3 shape, so the row keeps its three-across rhythm while a photo is pending. The number above each title is an eyebrow — `text-[11px] uppercase tracking-[0.18em] text-primary`, the site's standard numbered-label treatment. It was briefly a gradient circle badge on the shared component; that was reverted so Consulting matches Social Good again.
-- Apply CTA linking to `/join` — closes every committee page, unnumbered. Its heading uses `Section`'s `size="sm"` so the sign-off doesn't compete with the page's real headings, and the button's wrapper carries `-mt-6`. Social Good gets the same treatment through `LegacySection`'s `closingCta` flag, which is the one place that frozen component is allowed to track the shared one — the two CTAs now measure identically (393px vs 394px at 1280, the 1px being the seam `Section` draws and this page doesn't).
-
-**Section numbering is derived, not hardcoded.** Projects is always (02); the activities index is computed (`projects.length > 0 ? 3 : 2`), since a committee with activities but no projects would otherwise render "(01) … (03)" with a gap. Social Good reads (01) (02) (03); Consulting reads (01) (02); Acadev has no projects carousel (its DeCal work lives on `/decal`), so its activities section lands at (02) — or (03) when the Airtable client-projects table is configured and returns rows. `divider` stays on section (01) only, per the site-wide convention.
-
-**Theming.** Every committee sits on the standard light editorial field — there is no dark band. All three pages now share the same structure, with no per-committee layout special-casing left.
-
-**Adding a committee photo.** Drop a portrait (2:3, ~1400×2100 is plenty — `next/image` resizes down) into `public/committees/`, then set `workImage`, `workImageAlt`, and `workCaption` in `content/committees.json`. Until then the slot renders `CommitteePhoto`'s "Photo to come" placeholder frame, so the layout is already correct.
-
-**Adding an activity photo.** Same idea, landscape 4:3 (~1200×900). Drop it in `public/committees/`, then set `image` and `imageAlt` on that entry in the committee's `activities` array. Until then the tile shows the shared `PhotoPlaceholder` frame at the same 4:3 shape, so nothing shifts when the real photo lands.
-
-### Partners — `app/partners/page.tsx`
-
-Industry partnership pitch page. Sections:
-
-- Gradient hero ("Let's work together.") with the inquiry form card beside the headline
-- Logo carousel (same component as Home)
-- **Ways to partner** `(01)` — the full menu of partnership types from `content/offerings.json` via `getOfferings()`. The `featured` offering (consulting) renders as a filled-teal flagship card; the other four sit in a 2-col grid in the same card language as How-it-works. Icons come from `components/OfferingIcon.tsx`, keyed by each offering's `icon`. This is the same list that fills the inquiry form's dropdown, so the page and form can't drift apart
-- How-it-works section `(02)` (3 cards) — the deep-dive on the consulting flagship
-- Project timeline (`ProjectTimeline`) — five engagement stages on a clickable rail (horizontal from `md`, a vertical accordion below it); clicking a stage swaps the detail panel. Stages are hardcoded in `MILESTONES` at the top of the file and still carry a `TODO` to confirm timing with leadership. Each stage shows **both** semesters' months as `Aug / Jan` (fall first, spring second), explained by the legend above the rail — there is no Fall/Spring toggle, since both terms run identical stages and identical copy, so the toggle only ever swapped the labels. If the two semesters ever diverge, that's the point to bring a toggle back.
-- Closing panel repeating the inquiry form card
-
-**Inquiry form.** `PartnerInquiryCard` is the shared "Get in touch" panel, rendered twice (hero and closing panel) so the two can't drift apart; pass `headingLevel="h3"` for the second one to keep heading order nested. It reads `getOfferings()` and passes the offering titles to `PartnerInquiryForm` as the "I'm interested in" options, plus the contact address as `contactEmail`.
-
-`PartnerInquiryForm` is a `"use client"` leaf that POSTs JSON to `/api/partner-inquiry`, which writes one row per submission to Airtable (see the Airtable section). Notes for future editors:
-
-- The card supplies the panel chrome — the form itself renders no card wrapper. Don't add one back or you'll get nested panels.
-- A hidden `website` honeypot field catches bots: if it's filled, the route returns success and writes nothing.
-- On failure the form shows an inline error plus a `mailto:` fallback, so a misconfigured Airtable still leaves visitors a way to reach us. It never fakes success.
-- The contact address lives in `CONTACT_EMAIL` in `PartnerInquiryCard.tsx` (`dss@berkeley.edu` — verify this address).
-
-### Join — `app/join/page.tsx`
-
-Member recruitment page. Sections:
-
-- Page header with one CTA — "Apply now" (`inverse`, `large`) — followed by two plain underlined text links, "Sign up for coffee chats" and "Join our mailing list", in a `flex-wrap` row so they drop to their own line on phones. All three open in a new tab and read their URLs from `lib/site.ts` — `APPLICATION_URL`, `COFFEE_CHAT_URL`, `MAILING_LIST_URL`. The two secondary links share one `SECONDARY_LINK` class string at the top of the page file so neither reads as the more important of the pair. Unlike the first two constants, `MAILING_LIST_URL` has **no short-link redirect** in `next.config.ts` and is not per-semester — it's a standing list
-
-**The short links for flyers are `/apply` and `/coffeechat`.** Both are redirects in `next.config.ts` pointing at those same two constants, so a printed link and the Join page's button can never drift apart — update `lib/site.ts` once per cycle and everything follows. Both are deliberately `permanent: false` (307): a 308 gets cached by the browser, and every returning applicant would be sent to whichever form was live the first time they used the link. No hyphen in `/coffeechat`, matching the `/joinus` and `/socialgood` links this site already hands out. Note the short links only work once the domain cutover in DEPLOYMENT.md §7 is done — until then `dssberkeley.org` still serves Squarespace
-- **Recruitment timeline** (`RecruitmentTimeline`) — events come from the Airtable `Recruitment Timeline` table via `getRecruitmentTimeline()`, no longer hardcoded. A horizontal scroll track with a continuous spine; cards alternate above/below it and reveal as they scroll into view (an `IntersectionObserver` flips `data-revealed`, driving the `.tl-*` / `.timeline-*` transitions in `app/globals.css`). All motion is disabled under `prefers-reduced-motion`. The track is full-bleed — `.timeline-track` escapes the section's `max-w-6xl` container and spans the viewport, which is why the page body is wrapped in `overflow-x-clip`.
-  - **Sizing lives in CSS, not the component.** `.timeline-track` in `app/globals.css` defines `--tl-col`, `--tl-card`, `--tl-rail` (the gradient date rail), and `--tl-node-row` (the middle row the spine and nodes sit in); a `max-width: 30rem` media query shrinks them for phones. Note `--tl-col` is the spacing between consecutive **nodes**, not the visible gap between cards — since cards alternate above/below, two cards on the same side sit two columns apart, so the gap you see is `(2 × --tl-col) − --tl-card`. It's deliberately smaller than the card width (neighbouring cards overlap horizontally but sit on opposite sides of the spine); keep it comfortably above `--tl-card / 2` or a card will start covering its neighbour's node. Card **heights** are not set anywhere: the track is a CSS grid (`.timeline-grid`) whose two card rows are `1fr`, and equal-factor `fr` rows in an auto-height grid all resolve to the same height — the tallest card on either side. That keeps the two rows mirror images (so the spine stays centred on the nodes) while letting every description print in full, however long the officer-written Airtable copy runs. There is no `line-clamp` and no `max-h`; a long description makes its row taller and adds whitespace around the shorter cards, which is the intended trade. Because the columns are laid out by `grid-auto-columns`, `.tl-item` is `display: contents` and has no box of its own — the scroll-reveal observer and the arrows' column measurement both target the node wrapper instead.
-  - **Dates**: the Airtable `Date` field is split into weekday / day / month for the rail when it's an ISO date (`2026-08-31`); any other value (`Week 1`) is printed as typed.
-  - **Color encodes progression.** Events are spread evenly across a six-stop ramp (`--tl-ramp-0`…`--tl-ramp-5` in `globals.css`, deep teal → ochre): the component writes a `data-step` (0–4) on each column, and the card rail, the node, the connector, and the meta icons all read their color from that step. The spine runs the same ramp end to end. Adding or removing events reflows the ramp automatically — no per-event color to maintain. **Every ramp stop must stay dark enough for white text (≥4.5:1); the rails print the date in white, so don't lighten them.**
-- **Interview resources** (`InterviewResources`) — a short list of things to read before a technical interview, from `content/interview-resources.json` via `getInterviewResources()`. Each entry is one card that links out (Data 100 course notes, the casing guide); `topics` lists the specific chapters and can be `[]` for a plain link. The section's subtext states that these apply to the **Social Good and Consulting** technical interviews only — Acadev runs a separate process — so keep that caveat if the copy is reworded. `blurb` goes through `stripTodo()`, so the same single-sentence, one-period TODO rule as the pillars below applies
-- **The Newbie Experience** (`NewbieExperience`) — four pillars (Bootcamp, Professional Development, Networking, Community), each a landscape 5:3 photo over a numbered title and a short paragraph. The tiles are `rounded-3xl` with **no border and no shadow**: a muted tint on the caption block draws the card's edge instead. The four tints are `.tile-tint-0`…`-3` in `globals.css` (brand colours mixed down onto `--color-bg`), rotated by position so neighbours differ; the mix percentages are kept low because `--color-muted` only clears AA on them by a small margin, so don't deepen them. Content lives in `content/newbie-experience.json` via `getNewbieExperience()`; it replaced the old hardcoded `BENEFITS` array. 2x2 from `sm` up, stacked on phones. Pillars with `image: null` render the shared `PhotoPlaceholder` frame, so the layout is already right and going live is one image plus two JSON fields. All four have photos today.
-  - **Adding a photo:** drop it into `Newbie Experience/<Pillar>/` at the repo root (a committed source folder, same convention as `Culture pics/` — the originals are kept so photos can be re-derived at a different size or crop without hunting for them again), derive it into `public/newbie-experience/<slug>.jpg` at **1200x720 (5:3)**, then set that pillar's `image` and `imageAlt`. To derive: `sharp(src).rotate().resize({ width: 1200, height: 720, fit: "cover", position }).jpeg({ quality: 82, mozjpeg: true })` — `sharp` ships with Next, so no extra install. The frame is 5:3 rather than the 4:3 `CommitteeActivities` uses because these tiles are half the container wide, where 4:3 came out ~390px tall and swamped the copy. Every source so far has been 4:3, so a fifth of the height goes — all four use `position: "bottom"`, which **keeps** the bottom of the frame and therefore crops from the top. That suits photos with sky or ceiling above and people below, which is all of them today; a shot composed the other way needs `"top"`. Always eyeball the result, since this trim is large enough to decapitate someone
-  - **Editing the copy — watch the TODO marker.** `stripTodo()` removes a leading `TODO: ... .` note before rendering, and its regex (`/^TODO:[^.]*\.\s*/i`) stops at the **first period in the string**. So a TODO note must be a single sentence, must end in a period, and must contain no internal periods — no `e.g.`, no abbreviations. Get that wrong and the regex runs past the note and silently eats the real copy instead (an `e.g.` in the Professional Development note did exactly that during authoring). Same rule applies to `content/committees.json`
-- Gradient apply CTA section (application link currently `#` — **must be updated each semester**)
-- FAQ list — `content/faq.json` via `getFaq()`, replacing the old hardcoded `FAQ` array. `answer` is an **array of paragraphs**, so a longer answer can be split into several without embedded newlines; each paragraph renders as its own `<dd>` under the question's `<dt>` (a `<dl>` allows several, so no wrapper element is needed)
-
-### Contact — `app/contact/page.tsx`
-
-Contact methods and socials. Sections:
-
-- Page header
-- Three contact method cards: Email, Location (TBD), Mailing list (link TBD)
-- Social links (Instagram, LinkedIn, Medium, GitHub — under `SOCIALS`; the GitHub org name is still unverified)
-- Email CTA
-
-### DeCal — `app/decal/page.tsx`
-
-The Acadev-run course, "Introduction to Real-World Data Science". Sections:
-
-- Page header — hero CTA is **Apply to the DeCal**, pointing at `DECAL_APPLICATION_URL` in `lib/site.ts` (changes every semester, same as the membership form; the `?usp=dialog` Google appends to a copied form link is dropped deliberately)
-- (01) Course overview — two columns of copy, closing on a link to the member-written Q&A on Medium (`DECAL_QA_ARTICLE_URL`, local to the page: one article, not a URL other routes share). Key phrases in both paragraphs are wrapped in the local `B` helper — `text-ink/80`, a dark grey rather than full `--color-ink`, which reads as a hard black against this section's muted body copy
-- (02) Inside the course — two captioned photos side by side
-- (03) Student work — the Acadev project carousel, Airtable-backed
-- Closing CTA → dssdecal.org (`DECAL_URL`) for the syllabus and past course materials
-
-**Adding/replacing one of the two photos.** Both sit in the same `aspect-[4/3]` frame so the pair reads as one row. Derive into `public/decal/` at 1600px on the long edge, quality ~82. **Bake in the EXIF rotation and strip the tag** — `IMG_0794 2.HEIC` was orientation-6, and `sips` converts the raw pixels without applying it, which lands a sideways landscape file that browsers then render portrait. `sharp(src).rotate()` does this for you; so does PIL's `ImageOps.exif_transpose`. Verify the stored dimensions match what you see. `project-group.jpg` is a portrait original in a landscape frame, hence `object-[50%_85%]` — the crop keeps the students and drops the empty wall above them. A landscape source needs no `object-position`.
-
----
-
-## Components
-
-All components live in `components/`. Server Components by default; only interactive leaves are marked `"use client"`.
-
-| Component | Client? | What it does |
-|---|---|---|
-| `Nav.tsx` | ✓ | Fixed top nav with scroll shadow + mobile hamburger drawer |
-| `Footer.tsx` | — | Site footer with nav links, socials, Berkeley disclaimer. Socials live in the `socials` array at the top of the file: Instagram, LinkedIn, Medium, and a `mailto:` — all live links. There is deliberately no Facebook entry (DSS has no Facebook), so `public/facebook-icon-white.png` is now unused. Medium uses `public/medium-icon-white.svg` (its three-ellipse "M", drawn as a white glyph): all three Medium PNGs in `public/` are the same bad crop of a wordmark lockup and rendered as a white box with a half-cut "Me". **The brand row and the icon row stack below `lg`** — the three-column bar needs ~1170px before the wordmark fits in one third of it, and narrower than that the wordmark wrapped and the icons printed straight through it |
-| `Hero.tsx` | ✓ | Gradient hero with typewriter animation cycling role names |
-| `Section.tsx` | — | Standard page section wrapper: eyebrow → heading → subtext → optional divider → children. Renders the editorial system (Poppins, `max-w-6xl`, `(01) — Label` eyebrow, light-weight `clamp()` heading) that the home/About/Partners pages hand-roll. Props: `index` (adds the `(01) — ` number), `divider` (the rule under the header — first section of a page only), `dark`, `centered`, `id`, `className`. **Has no background** — pages wrap their body in `fade-between-gradients`, and an opaque section would punch a hole in it. Header is auto-wrapped in `RevealOnScroll`. |
-| `Button.tsx` | — | Polymorphic rounded-full pill button/link. Props: `variant` (primary/outline/ghost), `size` (sm/md/lg), `href`, `external`. Still used by `/styleguide`; the editorial pages use `EditorialButton` instead — don't mix the two systems within a page |
-| `EditorialButton.tsx` | — | Square-corner button for the editorial pages: 11px uppercase `tracking-[0.18em]` label, always renders a trailing `→`. Props: `variant` (solid/outline/**inverse**/**inverse-outline** — inverse is white-on-green, for CTAs sitting on a gradient band, i.e. hero CTAs; inverse-outline is its transparent counterpart, for a secondary CTA beside an inverse primary), `size` (default/large), `external` (plain `<a target="_blank">`, also the right choice for `mailto:`), `href`, `className` |
-| `StatCounter.tsx` | ✓ | Count-up animation triggered by IntersectionObserver; respects `prefers-reduced-motion` |
-| `LogoCarousel.tsx` | — | Auto-scrolling CSS-keyframe marquee of partner logos. Purely decorative — no links, no hover effects; respects `prefers-reduced-motion`. Handles any partner count/logo shape from Airtable (fixed logo slots, list repeated to cover wide viewports) |
-| `CommitteeCard.tsx` | — | Committee card linking to `/committees/[id]`: `kicker` category, title (`fullName` when set, otherwise `name`), custom line-art glyph, blurb, and focus area tags. The title shows one name only — the short name used to trail it as a small grey suffix ("Academic Development Acadev") and was dropped; the abbreviation still appears in the card's "View {name}" link. Per-committee accent colors are a presentation-only map in the file, all referencing existing tokens — Social Good uses `--color-accent-ink` because sage isn't AA-legible at small sizes |
-| `ProjectCard.tsx` | ✓ | Rounded, centered card: logo, bold partner name, semester, and a one-sentence hook (`firstSentence` in `lib/content.ts`), clamped to 2 lines. Background is a radial gradient tinted with `getProjectAccentColor()` — the partner's own brand color when known, else the site's teal. The whole card is a button that opens `ProjectModal` with the full project |
-| `ProjectModal.tsx` | ✓ | Centered popup (rendered via `createPortal` to `document.body`) showing the full project: logo, title, full description, an image/gif mini carousel (when `images` is non-empty), tags, and link. Closes on Escape, backdrop click, or the close button |
-| `ProjectCarousel.tsx` | ✓ | Horizontally scrollable, snap-scrolling row of `ProjectCard`s with prev/next buttons. Used on the homepage and committee detail pages |
-| `ExecCard.tsx` | — | Exec board card: square headshot (centered crop), name, position, grad year. When the member has a LinkedIn URL the whole card is a link and a "View LinkedIn" overlay appears on hover/focus; initials tile when no headshot |
-| `DualCTA.tsx` | — | Two-column CTA strip: "Join DSS" (students) + "Partner with us" (industry) |
-| `Gallery.tsx` | — | About page photo strip: **two decorative rows** looping forever in opposite directions. Reuses the `animate-marquee` / `marquee-mask` pattern from `LogoCarousel` (track rendered twice, `translateX(0 → -50%)`), so it is pure CSS with no scroll handlers — hence no `"use client"`. Photos alternate between rows so both carry every category. `aria-hidden` and `pointer-events-none`: nothing to click or scroll. Static under `prefers-reduced-motion` |
-| `EventCarousel.tsx` | ✓ | About page "Campus involvement" strip of large photo tiles from `getExternalEvents()`. Hover/focus darkens the photo and overlays the event name; prev/next arrows scroll the track |
-| `InterviewResources.tsx` | | Join page "Interview resources" — one bordered card per external link, from `content/interview-resources.json`. The whole card is the anchor; an optional `topics` list names the specific chapters worth reading |
-| `NewbieExperience.tsx` | | Join page "The Newbie Experience" — four photo tiles over numbered titles, from `content/newbie-experience.json`. Falls back to `PhotoPlaceholder` per pillar. Rounded, borderless tiles whose captions carry the `.tile-tint-*` surfaces from `globals.css` |
-| `RecruitmentTimeline.tsx` | ✓ | Join page horizontal timeline: a full-bleed spine with cards alternating above/below, each card led by a gradient date rail. Column/card/rail widths come from the `--tl-*` custom properties on `.timeline-track` in `globals.css`; card heights come from the `1fr` rows of the `.timeline-grid` track, so descriptions are never clamped. An IntersectionObserver rooted to the scroll track flips `data-revealed`, driving the `.tl-*` transitions; all items render revealed under `prefers-reduced-motion` |
-| `OfferingIcon.tsx` | — | Line-icon set keyed by `Offering.icon`. **Not currently rendered** — kept for a future Partners offerings menu |
-| `NodeGraph.tsx` | — | Decorative SVG node-graph used in the Hero and About page header |
-| `CommitteeActivities.tsx` | — | The "How we spend our time" grid: three tiles across, each a 4:3 photo over an eyebrow number, title, and description. `sm:auto-rows-fr` is load-bearing — it holds all three to the same height when descriptions differ in length, keeping the row of photos on one line. Markup is identical to `app/social-good/LegacyCommitteeActivities.tsx` again as of the badge revert |
-| `PhotoPlaceholder.tsx` | — | Shared "Photo to come" fill for an image frame with no photo yet — corner-to-corner SVG hairlines behind a centered label. Absolutely positioned; the caller owns the frame, border, and aspect ratio. Used by `CommitteePhoto` (2:3) and `CommitteeActivities` (4:3) |
-| `CommitteePhoto.tsx` | — | The vertical photo beside a committee's "What we do" copy — hairline frame, slow zoom on hover, `Fig. NN — …` caption, same treatment as the About page's Fig. 01. Keeps a 2:3 frame while stacked; from `lg` it fills its grid row so its bottom edge lands level with the copy, cropping via `object-cover`. When `src` is null it renders a "Photo to come" placeholder frame of the same shape |
-| `GrowingSapling.tsx` | ✓ | Decorative line-art root system: roots grow downward from a soil line in sync with scroll (reversible); blossoms pop open at the root tips at full growth and stay open. Renders fully bloomed for reduced-motion/no-JS. **Not currently rendered** — was the Social Good "What we do" graphic before the committee photo replaced it; kept for reuse (e.g. as a background watermark) |
-| `GrowingNetwork.tsx` | ✓ | Decorative line-art node graph echoing the site's logo motif. Nodes and edges draw in scrubbed to scroll, then pulse. Drawn in `stroke-primary`/`fill-primary` for the white editorial field — not white-on-green. **Not currently rendered** — was the Consulting "What we do" graphic before the committee photo replaced it |
-
----
-
-## Content & data files
-
-These are the files most editors will touch. **All content flows through `lib/content.ts`** — components never import JSON directly.
-
-### `content/committees.json`
-
-Four committees. Fields:
-
-```jsonc
-{
-  "id": "consulting",          // slug — keep stable
-  "name": "Data Consulting",
-  "fullName": null,           // spelled-out name, used as the CommitteeCard title instead of the abbreviation (e.g. "Academic Development" rather than "Acadev"); null when name is already full
-  "kicker": "Build",          // one-word category above the name on CommitteeCard (Learn / Build / Serve)
-  "icon": "📊",               // emoji shown on the card
-  "blurb": "...",             // short blurb shown in the page header
-  "focusAreas": ["Business Analytics", "..."],  // shown as chips in "What we do" — only used when description is null
-  "lead": "First Last",       // shown on the committee detail page; leave TODO if unknown
-  "featured": true,           // true → shown on the Home page preview (keep all 4 featured)
-  "heroImage": null,           // path under /public, or null. When set, /committees/[id]'s header becomes a full-bleed photo background instead of the plain surface header
-  "description": null,         // longer write-up for the "What we do" section, or null. When set, replaces the focusAreas chips.
-                              // Separate paragraphs with a blank line (\n\n) — the first renders as a larger, darker lead.
-                              // A leading "TODO: ..." sentence marks draft copy and is stripped before rendering, so it never reaches a visitor.
-  "workImage": null,           // path under /public — the vertical 2:3 photo beside the "What we do" copy. null renders the "Photo to come" placeholder frame
-  "workImageAlt": null,        // alt text — required whenever workImage is set
-  "workCaption": null,         // caption under the frame, e.g. "Spring 2026 Social Good Committee Members" (renders as "Fig. 01 — …", uppercased by CommitteePhoto). Convention is "<Semester> <Committee> Committee Members" — update it when the photo is reshot. Keep null while the photo is a placeholder
-  "activities": [              // the "How we spend our time" tiles, or null. null/empty → that whole section doesn't render
-    {
-      "id": "skill-workshops", // slug — keep stable
-      "title": "Skill workshops",
-      "body": "...",           // one short paragraph; a leading "TODO: ..." note is stripped before rendering
-      "image": null,           // landscape 4:3 path under /public, or null for the placeholder frame
-      "imageAlt": null         // required whenever image is set
-    }
-  ]
-}
-```
-
-### `content/projects.json`
-
-**Fallback only.** `getProjects()` fetches live from two Airtable tables (Consulting Projects, Social Good Projects — see Airtable section below) and only falls back to this file if the env vars are missing or the request fails. Shown on the homepage and each committee's detail page (`/committees/[id]`) in a `ProjectCarousel`. Fields:
-
-```jsonc
-{
-  "id": "unique-slug",        // Airtable-sourced projects use the Airtable record id instead
-  "title": "Project Title",
-  "semester": "Fall 2024",    // shown on the card; not used for grouping
-  "partner": "Company Name",
-  "committee": "consulting",  // must match a Committee.id — which committee page shows this project
-  "tags": ["NLP", "Python"],
-  "description": "...",       // the card always clamps this to 3 lines; "See more" opens the full text in a popup
-  "logo": null,                // path under /public, or a hosted URL, or null for a placeholder
-  "images": [],                 // extra image/gif URLs shown as a mini carousel in the "See more" popup
-  "link": null,                // external URL or null
-<<<<<<< Updated upstream
-  "brandColor": null,          // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
-  "logoPalette": [],           // optional hexes for the logo's own colors; drives the Social Good card tint (lib/logoTint.ts). Omit and the card uses the site's token palette
-  "oneLiner": null             // optional short hook for the card face; when null the card falls back to `description`
-=======
-  "brandColor": null           // hex (e.g. "#FF3621"), or null — tints the ProjectCard background. When null, ProjectCard falls back to a small built-in lookup by partner name (lib/content.ts, getProjectAccentColor), then to the site's teal
->>>>>>> Stashed changes
-}
-```
-
-Add new projects anywhere in the array — order doesn't matter.
-
-### Exec board profiles (Airtable only)
-
-The `/about` executive board grid has **no local JSON file** — it comes entirely from the Airtable `Exec Profiles` table (see the Airtable section below). If the fetch fails, the section renders an empty-state message instead of cards.
-
-### `content/testimonials.json`
-
-Partner or member quotes (not yet wired to a page — available via `getTestimonials()`).
-
-```jsonc
-{
-  "id": "unique",
-  "quote": "...",
-  "name": "First Last",
-  "org": "Company",
-  "role": "Head of Data"
-}
-```
-
-### `data/stats.json`
-
-The four numbers in the stats strip on Home and About.
-
-```jsonc
-[
-  { "value": 200, "label": "Active members", "suffix": "+" },
-  ...
-]
-```
-
-### `data/partners.json`
-
-Fallback partner list used when Airtable env vars are absent or the request fails. Fields match the `Partner` type in `lib/content.ts`. Add `logoUrl` once logos are hosted.
-
----
-
-## Data layer — `lib/content.ts`
-
-Single source of truth for all data access. Key functions:
-
-| Function | Returns | Source |
-|---|---|---|
-| `getStats()` | `Stat[]` | `data/stats.json` |
-| `getCommittees()` | `Committee[]` | `content/committees.json` |
-| `getFeaturedCommittees()` | `Committee[]` | filtered by `featured: true` |
-| `stripTodo(text)` | `string` | drops a leading `TODO: …` sentence, so draft markers stay visible to officers editing the JSON but never reach a visitor |
-| `getDescriptionParagraphs(description)` | `string[]` | splits a committee `description` on blank lines and runs each through `stripTodo()` |
-| `getOfferings()` | `Offering[]` | `content/offerings.json` — titles fill the inquiry form's interest dropdown |
-| `getCommunityTraditions()` | `CommunityTradition[]` | `content/community.json` — the About page's bento tradition grid |
-| `getCommunityPhotos()` | `CommunityPhoto[]` | `content/community-photos.json` — the About page's `Gallery` |
-| `getConsultingProcess()` | `ConsultingStep[]` | `content/consulting-process.json` — **not currently rendered by any page** |
-| `getProjects()` | `Promise<Project[]>` | Airtable REST API (Consulting + Social Good tables) → `content/projects.json` fallback |
-| `getExternalEvents()` | `Promise<ExternalEvent[]>` | Airtable (External Events table) → `content/external-events.json` fallback; About page carousel |
-| `getNewbieExperience()` | `NewbieExperiencePillar[]` | `content/newbie-experience.json`; Join page pillars |
-| `getInterviewResources()` | `InterviewResource[]` | `content/interview-resources.json`; Join page interview prep links |
-| `getFaq()` | `FaqItem[]` | `content/faq.json`; Join page FAQ |
-| `getRecruitmentTimeline()` | `Promise<RecruitmentEvent[]>` | Airtable (Recruitment Timeline table); Join page timeline |
-| `getProjectsByCommittee(id)` | `Promise<Project[]>` | `getProjects()` filtered by `committee === id`; powers the carousel on `/committees/[id]` |
-| `getTestimonials()` | `Testimonial[]` | `content/testimonials.json` |
-| `getPartners()` | `Promise<Partner[]>` | Airtable REST API → `data/partners.json` fallback |
-| `getExecProfiles()` | `Promise<ExecProfile[]>` | Airtable REST API (Exec Profiles table) → empty array fallback |
-
-`getPartners()`, `getProjects()`, `getProjectsByCommittee()`, `getExecProfiles()`, `getExternalEvents()`, and `getRecruitmentTimeline()` are `async` and **server-side only** — never call them from a `"use client"` component. All others are synchronous.
-
----
-
-## Design system
-
-### Colors
-
-All colors are CSS variables defined in `app/globals.css` inside `@theme {}`. Tailwind auto-generates utility classes from these (e.g., `bg-primary`, `text-muted`, `border-border`).
-
-| Token | Hex | Use |
-|---|---|---|
-| `--color-bg` | `#FFFFFF` | Default page background |
-| `--color-surface` | `#F5F8F7` | Alternate surface fill (cards, inset panels). No longer used for alternating section backgrounds — sections are transparent under `fade-between-gradients` |
-| `--color-ink` | `#0B1D1C` | Primary text |
-| `--color-muted` | `#5A6B68` | Secondary / caption text |
-| `--color-border` | `#E2E8E6` | Dividers and card borders |
-| `--color-primary` | `#0C706E` | Deep teal — buttons, links, active states (5.9:1 contrast) |
-| `--color-primary-bright` | `#1D8C89` | Lighter teal — large headings only (4.1:1) |
-| `--color-accent` | `#8FB573` | Sage green — decorative only, never on small text |
-
-The brand gradient (`--gradient-brand`) runs teal → bright teal → sage. Applied via `.brand-gradient` (backgrounds) and `.brand-gradient-text` (gradient text). Used on Hero, About header, and the Join apply CTA.
-
-**Never hardcode hex values in components** — always use Tailwind classes that reference these tokens.
-
-### Browser tab icon
-
-`app/icon.png` (512), `app/apple-icon.png` (180), and `app/favicon.ico` (16/32/48 in one file) are Next's file conventions — drop them in `app/` and it emits the `<link rel="icon">` tags itself; there is nothing to wire up in `layout.tsx`. All three are derived from `public/dss-logo-gradient.png` on a transparent ground, except the Apple one, which sits on white because older iOS composites transparent touch icons onto black.
-
-**Every frame of the `.ico` must be RGBA.** Turbopack's image decoder rejects RGB frames outright — `Processing image failed … Format error decoding Ico: The PNG is not in RGBA format!` — and the page then fails to compile, so it's a build break rather than a cosmetic one. To regenerate, resize the logo into a square canvas per size and save all three sizes into one file, keeping the mode as RGBA throughout. The 16px frame is inevitably soft: the mark is two thin concentric rings, and at that size they're under a pixel wide. Retina tab bars use the 32px frame, which holds up.
-
-### Typography
-
-- **Sans-serif body**: Inter (via `next/font`) — `font-sans`
-- **Monospace accent**: IBM Plex Mono (via `next/font`) — `font-mono`
-
-The monospace font is used for eyebrow labels, stat numbers, and small data-science-flavored accents.
-
-### Layout patterns
-
-- Max content width: `mx-auto max-w-6xl px-6 md:px-8 lg:px-12` for page content. `max-w-[1200px]` is now only Nav, Footer, and the home Hero (whose logo column is deliberately aligned to the nav's Join button)
-- Page sections use the `Section` component (handles font, padding, container, and header reveal automatically)
-- Section header pattern: `(01) — Eyebrow` in `text-[11px] uppercase tracking-[0.18em] text-primary` → `font-normal` `clamp(2rem,4vw,3.125rem)` heading → muted subtext → optional divider rule
-- Every page opens with a full-bleed `-mt-16 pt-16 surface-green-gradient` hero that slides under the fixed nav, then wraps everything below it in one `fade-between-gradients` div
-- Cards are square-cornered `border border-border bg-bg` with `hover:-translate-y-1 hover:border-primary hover:shadow-card`
-
----
-
-## Airtable (partner logos + projects + exec profiles + events + timeline + inquiries)
-
-Partner logos, project data, and exec board profiles are fetched from Airtable at build time, all from the same base. Partner inquiries are **written** back to the same base at request time. Required env vars (set in `.env.local` and in Vercel project settings):
+## How the project is organized
 
 ```
-AIRTABLE_TOKEN=...
-AIRTABLE_BASE_ID=...
-LOGOWALL_TABLE=...
-CONSULTING_PROJECTS_TABLE=...
-SOCIAL_GOOD_PROJECTS_TABLE=...
-EXEC_PROFILES_TABLE=...
-EXTERNAL_EVENTS_TABLE=...
-RECRUITMENT_TIMELINE_TABLE=...
-PARTNER_INQUIRIES_TABLE=...
+app/          Pages — one folder per URL. app/[id] is the shared committee page.
+components/   Reusable UI pieces (hero, sections, cards, carousels, nav, footer)
+content/      All text and lists, as JSON — start here for edits
+lib/          content.ts is the one place pages get data from; airtable.ts fetches Airtable
+public/       Files served as-is: brand/, icons/, images/<page>/
+assets/       Full-size original photos and logo masters (not served)
+scripts/      Build-time Airtable image mirroring; the photo resizing tool
+docs/         Guides for developers (below)
 ```
 
-The token needs **write** access to `PARTNER_INQUIRIES_TABLE`; every other table is read-only.
+## Documentation
 
-If any of a function's required env vars are missing, it silently falls back to the matching local JSON file (`data/partners.json` or `content/projects.json`); exec profiles have no JSON fallback and render an empty-state message instead. A failed Airtable fetch never breaks the build.
+| Read this | If you want to |
+|---|---|
+| [`content/README.md`](content/README.md) | Change text, links, lists, or photos |
+| [`docs/development.md`](docs/development.md) | Change code: architecture, components, conventions, design system |
+| [`docs/airtable.md`](docs/airtable.md) | Understand or change the Airtable tables |
+| [`docs/deployment.md`](docs/deployment.md) | Deploy, rebuild, set up the domain, hand over accounts |
+| [`CLAUDE.md`](CLAUDE.md) | Instructions for AI coding assistants working in this repo |
 
-**Row ordering:** every fetcher reads records through the table's default **Grid view**, so the site shows rows in exactly the order they appear in Airtable — drag rows in the grid to reorder them on the site. Don't rename the "Grid view" view (the fetch would fail and fall back), and note that rows hidden by view filters won't appear on the site.
+## Handing the site over
 
-**API call budget:** the free plan caps API calls per workspace per month. Deployed pages are prerendered, so browsing costs zero calls — only builds (~13 calls each), local dev, and inquiry-form submissions (1 write each) consume quota. All three Airtable fetchers are memoized for the lifetime of the process (`memoizeOnce` in `lib/content.ts`), so a whole `npm run dev` session costs ~4 calls total no matter how many pages you reload. To pull fresh Airtable data in dev, restart the dev server.
+At the end of your term, walk your successor through:
 
-**Projects tables** (`CONSULTING_PROJECTS_TABLE`, `SOCIAL_GOOD_PROJECTS_TABLE`) — same schema in both, fetched in parallel by `getProjects()` in `lib/content.ts`. Which table a project came from becomes its `committee` (`"consulting"` or `"social-good"`) — there's no committee column in Airtable itself.
-
-| Airtable column | Type | Maps to |
-|---|---|---|
-| `Project Name` *or* `Project Title` | text | `title` — the two tables disagree on this column's name (Consulting uses the first, Social Good the second); `getProjects()` reads whichever is present |
-| `Client` | text | `partner` |
-| `Semester` | text | `semester` |
-| `Project Summary` | AI field or text | `description` — the **full** write-up, shown in the "See more" popup |
-| `One-liner` | AI field or text | `oneLiner` — the short hook shown on the Social Good card face. Leave blank and the card falls back to `description` |
-| `Logo` | attachment | `logo` (first attachment's URL) |
-| `Tech Stack` | multi-select or comma text | `tags` (both formats are parsed) |
-| `Additional Images/GIFS` *or* `Additional Files` | attachment | `images` (all attachment URLs — shown as a mini carousel in the "See more" popup). Second column-name disagreement, same as the title above: Consulting calls it `Additional Files`, Social Good and Acadev `Additional Images/GIFS`. `fetchProjectTable()` reads **both** and concatenates, and `scripts/mirror-airtable.mjs` mirrors both. Consulting attachments were silently dropped until this was found — if a new project table appears, check its attachment column name before trusting the popup |
-| `Brand Color` | text (hex, e.g. `#FF3621`) | `brandColor` — optional; tints the `ProjectCard` background. Leave blank to use the built-in lookup by partner name (`getProjectAccentColor` in `lib/content.ts`), which falls back to the site's teal for unlisted partners |
-<<<<<<< Updated upstream
-| `Logo color palette` | AI field, text, or multi-select — hexes in any format | `logoPalette` — optional; the colors the logo is drawn in. Drives the Social Good project card's background (see **Logo-derived card tints** below). Leave blank and the card uses the site's own token palette |
-
-### Logo-derived card tints
-
-The Social Good project cards (`app/committees/social-good/LegacyProjectCard.tsx`) colour themselves from the partner's own logo. The logic lives in **`lib/logoTint.ts`**:
-
-1. `parseHexPalette()` pulls hexes out of the `Logo color palette` cell. That column is currently an *AI-generated* field, so Airtable returns `{ state, value, isStale }` rather than a string — the parser walks whatever shape it gets, so switching the column to plain text or a multi-select later needs no code change.
-2. `getLogoTint()` converts them to OKLCh, ignores near-neutrals (a pure-black wordmark has no hue to borrow), and picks the entry most likely to be the brand's identity colour — highest chroma, discounted for being very dark or very pale.
-3. That **hue** is then re-rendered at a *fixed* lightness and chroma. This is the important part: the tone constants at the top of the file are measured off the site's own token tints, so a neon-red logo and a navy one come out equally soft and a derived card sits happily next to a fallback card.
-4. If every colour in the palette is too light to be seen on white (a white wordmark, a bright yellow mark), the logo panel goes **dark** instead of pale. The lower text band stays light in both cases, so text colours never change.
-5. Anything unusable — empty cell, greyscale logo, unparseable text — returns `null`, and the card falls back to the three-tint token palette (teal / sage / cream) cycling down the row.
-
-**To retune the look**, edit the constants at the top of `lib/logoTint.ts` — `BODY_C` is the one that matters most; pushing it much past `0.02` is what makes the cards look garish rather than muted.
-=======
->>>>>>> Stashed changes
-
-**Exec Profiles table** (`EXEC_PROFILES_TABLE`) — fetched by `getExecProfiles()` in `lib/content.ts`, shown as the executive board grid on `/about`. Rows with a blank `Name` are skipped. Records render in the table's Grid-view row order (see **Row ordering** above).
-
-| Airtable column | Type | Maps to |
-|---|---|---|
-| `Name` | text | `name` |
-| `Position` | text | `position` |
-| `Headshot` | attachment | `headshot` (first attachment's URL; initials tile shown when empty) |
-| `LinkedIn Link` | text/URL | `linkedin` (a missing `https://` prefix is added automatically; empty → card is not clickable) |
-| `Grad Year` | number or text | `gradYear` (shown as "Class of ...") |
-
-**External Events table** (`EXTERNAL_EVENTS_TABLE`) — fetched by `getExternalEvents()`, shown as the "Campus involvement" carousel on `/about`. Falls back to `content/external-events.json` when the env var is missing or the fetch fails.
-
-| Airtable column | Type | Maps to |
-|---|---|---|
-| `Name` | text | `name` |
-| `Image` | attachment | `image` (first attachment's URL; gradient placeholder tile when empty) |
-
-**Recruitment Timeline table** (`RECRUITMENT_TIMELINE_TABLE`) — fetched by `getRecruitmentTimeline()`, drives the timeline on `/join`. Records render in Grid-view row order, so drag rows to reorder the timeline.
-
-| Airtable column | Type | Maps to |
-|---|---|---|
-| `Event` | text | `event` (card title) |
-| `Date` | text | `date` (card eyebrow, e.g. "Sep 3" or "Week 1") |
-| `Description` | long text | `description` |
-| `Time` | text | `time` (e.g. "6:00–7:30 PM"; null when unscheduled) |
-| `Room` | text | `room` (e.g. "Soda 306"; null when TBD/virtual) |
-
-**Partner Inquiries table** (`PARTNER_INQUIRIES_TABLE`) — the only table the site **writes** to. `app/api/partner-inquiry/route.ts` creates one row per Partners-page form submission; officers read leads directly in the base.
-
-| Airtable column | Type | Notes |
-|---|---|---|
-| `Name` | text | required |
-| `Company` | text | required |
-| `Email` | text | required; loosely validated |
-| `Interest` | single select | from `content/offerings.json` titles, or "Something else"; blank → "Not specified" |
-| `Message` | long text | required |
-
-The route writes with `typecast: true`, so adding an offering to `content/offerings.json` creates the matching single-select option automatically — no need to edit the base's field options first.
-
-**This route is why the site can no longer be statically exported.** It runs at request time (`ƒ /api/partner-inquiry` in the build output); everything else still prerenders. That's fine on Vercel, but moving to OCF/GitHub Pages (`output: 'export'`) would require swapping it for a third-party form endpoint such as Formspree.
-
-If any of the three inquiry env vars are missing the route returns HTTP 503 and the form surfaces its `mailto:` fallback — it deliberately does **not** report a false success. Unlike the read paths there is no local JSON fallback, since a dropped lead can't be recovered later. Submissions are unauthenticated writes, so the honeypot and the server-side length caps in `LIMITS` are the only things standing between the base and junk rows; keep them in sync with the form's `maxLength` attributes.
-
-**Attachment URL expiry:** Airtable attachment URLs are signed and expire roughly two hours after they're fetched. URLs are baked into the static build, so an image first requested long after a build can 404 until the next rebuild. This applies to logos and headshots alike — the rebuild hook below keeps URLs fresh.
-
-**To trigger a rebuild when Airtable data changes:** set up an Airtable automation → Vercel deploy hook.
+1. **Access** — GitHub repo, Vercel project, Airtable base, and the domain
+   registrar. These should belong to club accounts, not personal ones
+   ([checklist](docs/deployment.md#keeping-the-site-in-the-clubs-hands)).
+2. **The semester checklist** in [`content/README.md`](content/README.md#every-semester).
+3. **Open TODOs** — search the repo for `TODO` to find copy still waiting on
+   confirmation from leadership.
 
 ---
 
-## Adding a nav link
-
-1. Add the route to `components/Nav.tsx` in the `links` array.
-2. Add the same route to `components/Footer.tsx` in the `navLinks` array.
-
-Links that leave the site don't go in `links` — that array is mapped to `<Link>`, which is for client-side routes. Decal and Blog are each written out as their own `<li>` in both the desktop list and the mobile drawer; Blog is a plain `<a target="_blank">` to `BLOG_URL` (`lib/site.ts`). It is deliberately **not** in the footer's `navLinks` — the footer already links Medium in its socials row, though at the `@dssberkeley` profile rather than this publication — `lib/site.ts` notes the mismatch.
-
----
-
-## Deployment
-
-Deployed to Vercel on every push to `main`. No manual steps required. Environment variables must be set in the Vercel project dashboard.
-
----
-
-## Outstanding TODOs
-
-Search the codebase for `TODO` to find all placeholders. High-priority ones:
-
-- **All page headers**: copy marked `TODO: finalize with DSS leadership`
-- **`content/committees.json`**: Acadev's `"lead"` field is `"TODO: Committee Lead"` (the byline is hidden while it starts with `TODO`); Consulting's `"description"` is still draft copy (marked with a leading `TODO:` sentence that is stripped before rendering)
-- **Acadev activities**: all three "How we spend our time" tiles have photos, but their titles and bodies are drafted from the committee's old carousel captions rather than written by the committee — confirm the wording with the Acadev lead
-- **`content/projects.json`**: only used as a fallback now — real project data lives in Airtable (`CONSULTING_PROJECTS_TABLE`, `SOCIAL_GOOD_PROJECTS_TABLE`). Some Consulting Projects rows currently have blank `Project Name`/`Client` cells, and `Tech Stack` appears empty on every row checked so far — worth a pass in Airtable
-- **`app/join/page.tsx`**: all three hero links are live and read from `lib/site.ts` (`APPLICATION_URL`, `COFFEE_CHAT_URL`, `MAILING_LIST_URL`). The first two are also the destinations of the `/apply` and `/coffeechat` redirects — **one edit per constant updates the button and the flyer link together each semester**
-- **`app/contact/page.tsx`**: meeting room location is TBD; the mailing list card's "Subscribe" link is still `#` even though the Join page now has the real form in `MAILING_LIST_URL` — point it there; the GitHub org under `SOCIALS` is unverified
-- **`components/Nav.tsx`**: logo text placeholder — replace with SVG logo
-- **`data/partners.json`**: placeholder company names — replace with real past partners or wire up Airtable
-
----
-
-## Hard rules
-
-1. **No hardcoded content in components** — all text and data flows through `lib/content.ts` or is clearly marked as UI copy.
-2. **Colors only in `app/globals.css`** — never write hex values in component files.
-3. **`getPartners()` and `getProjects()` are server-side only** — never import them into a `"use client"` component.
-4. **Secrets stay server-side** — Airtable credentials live in `.env.local` (gitignored) and Vercel settings.
-5. **Default to Server Components** — add `"use client"` only when you need browser APIs or React state.
-6. **Footer disclaimer must stay** — required Berkeley independent-org language, do not remove.
+DSS is a student group acting independently of the University of California.

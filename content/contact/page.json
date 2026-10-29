@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "title": "Contact",
+    "description": "Get in touch with Data Science Society at UC Berkeley."
+  },
+
+  "hero": {
+    "heading": "Get in touch.",
+    "subtext": "Questions about joining, partnering, or anything else? We'd love to hear from you. We typically respond within 48 hours."
+  },
+
+  "methods": {
+    "eyebrow": "Reach us",
+    "heading": "Ways to connect.",
+    "email": {
+      "emoji": "✉️",
+      "title": "Email",
+      "body": "The fastest way to reach the officer team."
+    },
+    "location": {
+      "emoji": "📍",
+      "title": "Location",
+      "body": "We meet weekly on the UC Berkeley campus.",
+      "detail": "UC Berkeley Campus"
+    },
+    "mailingList": {
+      "emoji": "📬",
+      "title": "Mailing list",
+      "body": "Stay updated on events, workshops, and recruitment.",
+      "linkLabel": "Subscribe →"
+    }
+  },
+
+  "socials": {
+    "eyebrow": "Socials",
+    "heading": "Follow along."
+  },
+
+  "closingCta": {
+    "eyebrow": "Ready to chat?",
+    "heading": "We're always happy to talk.",
+    "subtext": "Whether you're a student, a potential partner, or just curious — send us an email and we'll get back to you.",
+    "button": "Send us an email"
+  }
+}

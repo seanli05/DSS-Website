@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import RevealOnScroll from "./RevealOnScroll";
+import { homePage } from "@/lib/content";
 
 /**
  * The two ways into DSS, as the page's primary conversion step.
@@ -13,53 +14,10 @@ import RevealOnScroll from "./RevealOnScroll";
  * Inner elements are drawn with `border-current` and opacity rather than fixed
  * colours, so the whole panel inverts in one move on hover with nothing left
  * behind in the old palette.
+ *
+ * Copy and photos: `paths` in content/home/page.json.
  */
-interface Path {
-  index: string;
-  title: string;
-  body: string;
-  href: string;
-  /** Set when href leaves this site, so the panel opens in a new tab. */
-  external?: boolean;
-  cta: string;
-  /** Shown in the frame until a real photo exists for this path. */
-  imageLabel: string;
-  /** Optional photo; when set it replaces the placeholder label. */
-  image?: { src: string; alt: string };
-}
-
-const PATHS: Path[] = [
-  {
-    index: "01",
-    title: "Find your committee.",
-    body:
-      "Acadev, Consulting, and Social Good are the three committees within our organization. Pick the one that best fits your interest and apply to join it!",
-    href: "/about#committees",
-    cta: "Explore committees",
-    imageLabel: "Committee photo",
-    image: {
-      // Its own asset, deliberately NOT /committees/social-good-hero.jpg. This card
-      // is about all three committees, so it must not follow whatever photo the
-      // Social Good committee happens to be using — it used to share that file and
-      // silently changed when that hero was swapped.
-      src: "/committee-group.jpg",
-      alt: "DSS members gathered on the UC Berkeley campus",
-    },
-  },
-  {
-    index: "02",
-    title: "Start with the DeCal.",
-    body:
-      "New to Berkeley, or still deciding whether data science is for you? Our project-based DeCal is a low-stakes way to find out where no experience is required!",
-    href: "/decal",
-    cta: "About the DeCal",
-    imageLabel: "DeCal photo",
-    image: {
-      src: "/decal-class.jpg",
-      alt: "DeCal students presenting their final project to the class in a Berkeley lecture hall",
-    },
-  },
-];
+const copy = homePage.paths;
 
 export default function HomePaths() {
   // Last section on the page, so it owns the handoff into the footer:
@@ -69,46 +27,36 @@ export default function HomePaths() {
       <div className="mx-auto max-w-6xl px-6 pb-20 pt-4 md:px-8 md:pb-24 lg:px-12 lg:pb-28">
         <RevealOnScroll delayMs={0}>
           <p className="text-[11px] uppercase tracking-[0.18em] text-primary">
-            (02) — Get involved
+            (02) — {copy.eyebrow}
           </p>
           <h2 className="mt-6 max-w-3xl text-[clamp(2rem,4vw,3.125rem)] font-normal leading-[1] tracking-tight text-ink">
-            Two ways to get started.
+            {copy.heading}
           </h2>
         </RevealOnScroll>
 
         <div className="mt-14 grid gap-8 md:grid-cols-2 md:gap-10">
-          {PATHS.map((path, i) => (
-            <RevealOnScroll key={path.index} delayMs={100 + i * 100}>
+          {copy.items.map((path, i) => (
+            <RevealOnScroll key={path.href} delayMs={100 + i * 100}>
               <Link
                 href={path.href}
-                {...(path.external
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
                 className="group flex h-full flex-col border border-border bg-bg p-6 text-ink transition-colors duration-150 hover:border-primary hover:bg-primary hover:text-white focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-[3px] focus-visible:outline-primary md:p-8"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] tracking-[0.18em] text-primary transition-colors duration-150 group-hover:text-white">
-                    {path.index}
+                    {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="h-2 w-2 border border-current opacity-40" aria-hidden="true" />
                 </div>
 
-                {/* border-current so the frame inverts with the panel on hover.
-                    Falls back to the label if a path has no photo yet. */}
+                {/* border-current so the frame inverts with the panel on hover. */}
                 <div className="relative mt-6 flex aspect-[4/3] items-center justify-center overflow-hidden border border-current opacity-100">
-                  {path.image ? (
-                    <Image
-                      src={path.image.src}
-                      alt={path.image.alt}
-                      fill
-                      sizes="(min-width: 768px) 50vw, 100vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <span className="px-4 text-center text-[10px] uppercase tracking-[0.18em] opacity-50">
-                      {path.imageLabel}
-                    </span>
-                  )}
+                  <Image
+                    src={path.image.src}
+                    alt={path.image.alt}
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover"
+                  />
                 </div>
 
                 <h3 className="mt-8 text-2xl leading-[1.15] tracking-tight md:text-3xl">

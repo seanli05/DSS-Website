@@ -1,122 +1,68 @@
 import type { Metadata } from "next";
+import PageHero from "@/components/PageHero";
 import Section from "@/components/Section";
 import EditorialButton from "@/components/EditorialButton";
 import RevealOnScroll from "@/components/RevealOnScroll";
+import { contactPage as copy } from "@/lib/content";
+import { LINKS, site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch with Data Science Society at UC Berkeley.",
-};
+// Copy: content/contact/page.json. Email and socials: content/site.json.
 
-// Square-corner hairline card, matching the homepage and Partners treatment.
-const CARD =
-  "flex h-full flex-col gap-4 border border-border bg-bg p-7 md:p-8";
+export const metadata: Metadata = copy.meta;
 
-const SOCIALS = [
-  {
-    platform: "Instagram",
-    handle: "@dssberkeley",
-    href: "https://www.instagram.com/dssberkeley/",
-    icon: "📸",
-  },
-  {
-    platform: "LinkedIn",
-    handle: "UC Berkeley Data Science Society",
-    href: "https://www.linkedin.com/company/dssberkeley/",
-    icon: "💼",
-  },
-  {
-    platform: "Medium",
-    handle: "@dssberkeley",
-    href: "https://medium.com/@dssberkeley",
-    icon: "✍️",
-  },
-  {
-    platform: "GitHub",
-    handle: "dss-berkeley", // TODO: verify org name
-    href: "https://github.com/dss-berkeley",
-    icon: "💻",
-  },
-];
+const CARD = "flex h-full flex-col gap-4 border border-border bg-bg p-7 md:p-8";
+const CARD_LINK = "mt-auto text-sm text-primary underline-offset-2 hover:underline";
+
+function MethodCard({
+  method,
+  delayMs,
+  children,
+}: {
+  method: { emoji: string; title: string; body: string };
+  delayMs: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <RevealOnScroll delayMs={delayMs} className={CARD}>
+      <span className="text-3xl">{method.emoji}</span>
+      <div>
+        <h3 className="font-semibold text-ink">{method.title}</h3>
+        <p className="mt-1 text-sm text-muted">{method.body}</p>
+      </div>
+      {children}
+    </RevealOnScroll>
+  );
+}
 
 export default function ContactPage() {
+  const { email, location, mailingList } = copy.methods;
+
   return (
     <>
-      {/* Page header — -mt-16/pt-16 pulls it up behind the fixed translucent nav (main has pt-16) */}
-      <section className="font-poppins relative -mt-16 overflow-hidden pt-16 surface-green-gradient">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 md:px-8 md:py-24 lg:px-12">
-          <h1 className="text-[clamp(2.5rem,5vw,4rem)] font-bold leading-[1.02] tracking-tight text-white">
-            Get in touch.
-          </h1>
-          <p className="mt-6 max-w-lg text-base leading-relaxed text-white/75 md:text-lg">
-            Questions about joining, partnering, or anything else? We&apos;d love
-            to hear from you. We typically respond within 48 hours.
-          </p>
-        </div>
-      </section>
+      <PageHero heading={copy.hero.heading} subtext={copy.hero.subtext} />
 
-      {/* One continuous gradient from the hero's green down into the footer's,
-          so both seams read as fades. Sections inside must stay transparent. */}
       <div className="fade-between-gradients">
-        {/* Contact methods */}
-        <Section index={1} eyebrow="Reach us" heading="Ways to connect." firstOnPage>
+        <Section index={1} eyebrow={copy.methods.eyebrow} heading={copy.methods.heading} firstOnPage>
           <div className="grid gap-8 sm:grid-cols-3">
-            {/* Email */}
-            <RevealOnScroll delayMs={100} className={CARD}>
-              <span className="text-3xl">✉️</span>
-              <div>
-                <h3 className="font-semibold text-ink">Email</h3>
-                <p className="mt-1 text-sm text-muted">
-                  The fastest way to reach the officer team.
-                </p>
-              </div>
-              <a
-                href="mailto:dss.berkeley@gmail.com"
-                className="mt-auto text-sm text-primary underline-offset-2 hover:underline"
-              >
-                dss.berkeley@gmail.com
+            <MethodCard method={email} delayMs={100}>
+              <a href={`mailto:${site.email}`} className={CARD_LINK}>
+                {site.email}
               </a>
-            </RevealOnScroll>
-
-            {/* Location */}
-            <RevealOnScroll delayMs={200} className={CARD}>
-              <span className="text-3xl">📍</span>
-              <div>
-                <h3 className="font-semibold text-ink">Location</h3>
-                <p className="mt-1 text-sm text-muted">
-                  We meet weekly on the UC Berkeley campus.
-                </p>
-              </div>
-              <p className="mt-auto text-sm text-muted">
-                {/* TODO: add actual meeting room/location */}
-                UC Berkeley Campus<br />
-                TODO: Meeting room TBD
-              </p>
-            </RevealOnScroll>
-
-            {/* Mailing list */}
-            <RevealOnScroll delayMs={300} className={CARD}>
-              <span className="text-3xl">📬</span>
-              <div>
-                <h3 className="font-semibold text-ink">Mailing list</h3>
-                <p className="mt-1 text-sm text-muted">
-                  Stay updated on events, workshops, and recruitment.
-                </p>
-              </div>
-              <a
-                href="#" // TODO: add mailing list sign-up link
-                className="mt-auto text-sm text-primary underline-offset-2 hover:underline"
-              >
-                Subscribe →
+            </MethodCard>
+            <MethodCard method={location} delayMs={200}>
+              <p className="mt-auto text-sm text-muted">{location.detail}</p>
+            </MethodCard>
+            <MethodCard method={mailingList} delayMs={300}>
+              <a href={LINKS.mailingList} target="_blank" rel="noopener noreferrer" className={CARD_LINK}>
+                {mailingList.linkLabel}
               </a>
-            </RevealOnScroll>
+            </MethodCard>
           </div>
         </Section>
 
-        {/* Social links */}
-        <Section index={2} eyebrow="Socials" heading="Follow along.">
+        <Section index={2} {...copy.socials}>
           <div className="flex max-w-lg flex-col gap-4">
-            {SOCIALS.map((s, i) => (
+            {site.socials.map((s, i) => (
               <RevealOnScroll key={s.platform} delayMs={100 + i * 100}>
                 <a
                   href={s.href}
@@ -124,7 +70,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-5 border border-border bg-bg px-6 py-4 transition-all duration-200 hover:-translate-y-1 hover:border-primary hover:shadow-card motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 >
-                  <span className="flex-none text-2xl">{s.icon}</span>
+                  <span className="flex-none text-2xl">{s.emoji}</span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-ink">{s.platform}</p>
                     <p className="truncate text-xs text-muted">{s.handle}</p>
@@ -136,16 +82,15 @@ export default function ContactPage() {
           </div>
         </Section>
 
-        {/* Simple email CTA — unnumbered, matching how Partners closes. */}
         <Section
-          eyebrow="Ready to chat?"
-          heading="We're always happy to talk."
-          subtext="Whether you're a student, a potential partner, or just curious — send us an email and we'll get back to you."
+          eyebrow={copy.closingCta.eyebrow}
+          heading={copy.closingCta.heading}
+          subtext={copy.closingCta.subtext}
           centered
         >
           <RevealOnScroll delayMs={100}>
-            <EditorialButton href="mailto:dss.berkeley@gmail.com" external>
-              Send us an email
+            <EditorialButton href={`mailto:${site.email}`} external>
+              {copy.closingCta.button}
             </EditorialButton>
           </RevealOnScroll>
         </Section>

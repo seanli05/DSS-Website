@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "title": "Join",
+    "description": "Join Data Science Society at UC Berkeley — apply now and become part of our community."
+  },
+
+  "hero": {
+    "heading": "Become a member.",
+    "subtext": "Applications for Fall 2026 open in the first week of classes. Here's everything you need to know.",
+    "applyButton": "Apply now",
+    "coffeeChatLink": "Sign up for coffee chats",
+    "mailingListLink": "Join our mailing list"
+  },
+
+  "timeline": {
+    "eyebrow": "Recruitment",
+    "heading": "Recruitment timeline",
+    "subtext": "Here are all of our Fall 2026 events that we will be hosting or sharing at. Come to as many as you can to learn about the club and network with our members! We will also be tabling around **Dwinelle and Wheeler** every day for the next week from **8am - 4pm**, so come by and say hi to our members!"
+  },
+
+  "interviewResources": {
+    "eyebrow": "Prepare",
+    "heading": "Interview resources",
+    "subtext": "These resources cover the Social Good and Consulting technical case interviews. To prepare for the Acadev interview, we recommend looking through the Data 100 textbook and the [Spring 2026 DeCal lecture slides](https://dssdecal.org/sp26/)."
+  },
+
+  "newbieExperience": {
+    "eyebrow": "Your first semester",
+    "heading": "The Newbie Experience"
+  },
+
+  "faq": {
+    "eyebrow": "FAQ",
+    "heading": "Common questions"
+  }
+}
